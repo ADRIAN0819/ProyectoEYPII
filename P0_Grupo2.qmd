@@ -62,7 +62,7 @@ variables <- data.frame(
   
   `Tipo de Dato` = c("Cuantitativo discreto", "Cualitativo nominal", "Cualitativo nominal", 
                      "Cuantitativo continuo", "Cualitativo ordinal", "Cuantitativo continuo", 
-                     "Cuantitativo discreto", "Cuantitativo discreto", "Cualitativo nominal",
+                     "Cualitativo ordinal", "Cuantitativo discreto", "Cualitativo nominal",
                      "Cuantitativo discreto", "Cuantitativo discreto", "Cualitativo nominal", 
                      "Cuantitativo discreto", "Cuantitativo discreto", "Cuantitativo discreto", 
                      "Cualitativo nominal", "Cualitativo ordinal", "Cualitativo ordinal", 
