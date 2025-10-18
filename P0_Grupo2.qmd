@@ -124,11 +124,10 @@ library(forcats)
 ```
 
 ```{r}
-library(readr)
-library(dplyr)
-
 DF <- read_csv("Estudiantes.csv", col_types = cols(.default = "c"))
+```
 
+```{r}
 DF <- DF %>%
   mutate(
     edad = as.integer(edad),
@@ -151,7 +150,7 @@ DF <- DF %>%
                                            levels = c("Académico", "Entretenimiento", "Noticias", "Socializar")),
     uso_redes_academicas = factor(uso_redes_academicas, levels = c("No", "Sí")),
     impacto_redes_actividades_extracurriculares = factor(impacto_redes_actividades_extracurriculares,
-                                                         levels = c("Desmotiva", "Motiva", "No afecta")),
+                                                         levels = c("Desmotiva", "Motiva", "No tiene efecto")),
     momento_uso_redes_sociales = factor(momento_uso_redes_sociales),
 
     afecta_concentracion_rendimiento = factor(afecta_concentracion_rendimiento,
@@ -186,6 +185,24 @@ DF <- DF %>%
 
 ```{r}
 str(DF)
+```
+
+```{r}
+df_na <- DF
+
+n <- nrow(df_na)
+
+result_table <- data.frame(
+  Variable = names(df_na),
+  Total = n,
+  Completos = colSums(!is.na(df_na)),
+  `Valores NA` = colSums(is.na(df_na)),
+  `% Completos` = round(colMeans(!is.na(df_na)) * 100, 2),
+  check.names = FALSE
+)
+
+kable(result_table, row.names = FALSE)
+
 ```
 
 # Bibliografía
