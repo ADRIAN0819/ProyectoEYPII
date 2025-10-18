@@ -113,6 +113,81 @@ El proyecto es factible ya que:
 
 Gracias a estas características, se puede realizar un análisis completo y cumplir con los requerimientos metodológicos del curso. En futuras entregas se adjuntará la base de datos en formato CSV (UTF-8).
 
+# PARTE 1
+
+```{r}
+library(readr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(forcats)
+```
+
+```{r}
+library(readr)
+library(dplyr)
+
+DF <- read_csv("Estudiantes.csv", col_types = cols(.default = "c"))
+
+DF <- DF %>%
+  mutate(
+    edad = as.integer(edad),
+    prom_estudio_dia = as.numeric(prom_estudio_dia),
+    prom_ciclo_pasado = as.numeric(prom_ciclo_pasado),
+    ciclo = factor(as.character(ciclo), levels = as.character(1:10), ordered = TRUE),
+    total_cursos_actuales = as.integer(total_cursos_actuales),
+    horas_ejercicio_semanal = as.integer(horas_ejercicio_semanal),
+    horas_sueño_xnoche = as.integer(horas_sueño_xnoche),
+    tiempo_max_sin_redes_dia = as.integer(tiempo_max_sin_redes_dia),
+    notificaciones_estudio_diario = as.integer(notificaciones_estudio_diario),
+    dias_redes_antes_de_dormir = as.integer(dias_redes_antes_de_dormir),
+    interaccion_persona_amigos_redes = as.integer(interaccion_persona_amigos_redes),
+
+    sexo = factor(sexo, levels = c("Femenino", "Masculino")),
+    tipo_universidad = factor(tipo_universidad, levels = c("Privada", "Pública")),
+    actividad_extracurricular_actual = factor(actividad_extracurricular_actual),
+    red_mas_usada = factor(red_mas_usada),
+    tipo_contenido_redes_sociales = factor(tipo_contenido_redes_sociales,
+                                           levels = c("Académico", "Entretenimiento", "Noticias", "Socializar")),
+    uso_redes_academicas = factor(uso_redes_academicas, levels = c("No", "Sí")),
+    impacto_redes_actividades_extracurriculares = factor(impacto_redes_actividades_extracurriculares,
+                                                         levels = c("Desmotiva", "Motiva", "No afecta")),
+    momento_uso_redes_sociales = factor(momento_uso_redes_sociales),
+
+    afecta_concentracion_rendimiento = factor(afecta_concentracion_rendimiento,
+                                              levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    impacto_redes_salud_mental = factor(impacto_redes_salud_mental,
+                                        levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    satisfaccion_interaccion_social_presencial = factor(satisfaccion_interaccion_social_presencial,
+                                                        levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    satisfaccion_rendimiento_academico = factor(satisfaccion_rendimiento_academico,
+                                                levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    frecuencia_descubrimiento_actividades_redes = factor(frecuencia_descubrimiento_actividades_redes,
+                                                         levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    
+    prom_dia_whatsapp = factor(prom_dia_whatsapp,
+                               levels = c("0 horas (no lo uso)", "Entre 1-3 horas", "Entre 3-6 horas",
+                                          "Entre 6-9 horas", "Entre 9-12 horas"), ordered = TRUE),
+    prom_dia_instagram = factor(prom_dia_instagram,
+                                levels = c("0 horas (no lo uso)", "Entre 1-3 horas", "Entre 3-6 horas",
+                                           "Entre 6-9 horas", "Entre 9-12 horas"), ordered = TRUE),
+    prom_dia_tiktok = factor(prom_dia_tiktok,
+                             levels = c("0 horas (no lo uso)", "Entre 1-3 horas", "Entre 3-6 horas",
+                                        "Entre 6-9 horas", "Entre 9-12 horas"), ordered = TRUE),
+    prom_dia_linkedin = factor(prom_dia_linkedin,
+                               levels = c("0 horas (no lo uso)", "Entre 1-3 horas", "Entre 3-6 horas",
+                                          "Entre 6-9 horas", "Entre 9-12 horas"), ordered = TRUE),
+    prom_dia_x = factor(prom_dia_x,
+                        levels = c("0 horas (no lo uso)", "Entre 1-3 horas", "Entre 3-6 horas",
+                                   "Entre 6-9 horas", "Entre 9-12 horas"), ordered = TRUE)
+  )
+
+```
+
+```{r}
+str(DF)
+```
+
 # Bibliografía
 
 1.  Valerio Ureña, Gabriel, & Serna Valdivi, River. (2018). *Redes sociales y bienestar psicológico del estudiante universitario.* Revista electrónica de investigación educativa, 20(3), 19-28. <https://doi.org/10.24320/redie.2018.20.3.1796>
