@@ -92,7 +92,7 @@ variables <- data.frame(
 )
 
 kable(variables, 
-      caption = "**Tabla 1:** Variables identificadas en la base de datos del estudio",
+      caption = "Tabla 1: Variables identificadas en la base de datos del estudio",
       align = c("c", "l", "c", "c")) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
                 full_width = TRUE,
