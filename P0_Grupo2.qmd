@@ -1,0 +1,122 @@
+---
+title: "P0_EstadisticaII"
+author: 
+  - "Adrian Urbina Mendoza"
+  - "Luciana Yangali Cáceres"
+  - "Jorge Leon Villarreyes"
+  - "Valentina Alvarez Beraun"
+  - "Mateo Rodríguez Ramos"
+format: 
+  html:
+    toc: true
+    page-layout: full
+    toc-depth: 3            
+    toc-location: left      
+    theme: flatly          
+    code-fold: true         
+    code-tools: true       
+    css: styles.css
+editor: visual
+---
+
+# Tema Propuesto
+
+Relación entre Salud Mental Digital y Hábitos de universitarios entre 16 y 29 años de edad, matriculados en universidades públicas o privadas durante el semestre 2025-1.
+
+# Relevancia
+
+Hoy en día, el uso de redes sociales se ha consolidado como una práctica esencial en la vida universitaria, pues contribuye a la interacción social y al bienestar psicológico de los estudiantes *(Valerio Ureña & Serna Valdivi, 2018).* Este uso se incrementa año tras año, lo que genera múltiples interrogantes sobre su impacto en el estilo y la calidad de vida de los estudiantes. En este contexto, resulta relevante contrastar lo señalado en la investigación de *Younes et al. (2016)*, el cual encontró que “la adicción a Internet se asocia significativamente con la presencia de insomnio, ansiedad, depresión, estrés y baja autoestima en estudiantes universitarios”
+
+Además, investigaciones internacionales han evidenciado que el uso excesivo de redes sociales y otras plataformas digitales puede asociarse a mayores niveles de ansiedad, estrés y dificultades en el descanso *(Twenge, 2019; Orben & Przybylski, 2019).* Sin embargo, en el contexto peruano aún existe un vacío en la información respecto a cómo estos hábitos digitales influyen en el desempeño académico y en la calidad de vida de los universitarios. Por ello, el presente estudio se tiene como objetivo analizar esta relación, con el fin de plantear iniciativas que apoyen el bienestar de los estudiantes y que sirvan para prevenir problemas de salud mental dentro del entorno académico.
+
+# Proveniencia de Datos
+
+Para el presente proyecto se decidió trabajar con una base de datos previamente recolectada durante el ciclo académico 2025-1, a través de un trabajo de campo basado en encuestas aplicadas a estudiantes universitarios de 16 a 29 años, matriculados en universidades públicas y privadas.
+
+El uso de esta base resulta pertinente, ya que abarca un ciclo académico completo, lo que permite observar de manera más clara la relación entre salud mental digital y hábitos de los universitarios en un período determinado. La base de datos incluye un número suficiente de observaciones y se encuentra en formato digital, lo que facilita su acceso, análisis y posterior procesamiento estadístico.
+
+De acuerdo con los objetivos del curso, este proyecto nos permitirá desarrollar competencias en la gestión, análisis y modelamiento estadístico de datos reales, vinculando los contenidos teóricos con una problemática social de gran relevancia.
+
+# Variables
+
+Se han podido identificar las siguientes variables en la base de datos escogida:
+
+```{r tabla-variables}
+#| warning: false
+#| message: false
+
+library(knitr)
+library(kableExtra)
+
+variables <- data.frame(
+  `N°` = 1:29,
+  Variable = c("edad", "sexo", "tipo_universidad", "prom_estudio_dia", "prom_dia_whatsapp",
+               "prom_ciclo_pasado", "ciclo", "total_cursos_actuales", "actividad_extracurricular_actual",
+               "horas_ejercicio_semanal", "horas_sueño_xnoche", "red_mas_usada", "tiempo_max_sin_redes_dia",
+               "notificaciones_estudio_diario", "dias_redes_antes_de_dormir", "tipo_contenido_redes_sociales",
+               "satisfaccion_interaccion_social_presencial", "afecta_concentracion_rendimiento",
+               "impacto_redes_actividades_extracurriculares", "impacto_redes_salud_mental",
+               "momento_uso_redes_sociales", "uso_redes_academicas", "satisfaccion_rendimiento_academico",
+               "interaccion_persona_amigos_redes", "frecuencia_descubrimiento_actividades_redes",
+               "prom_dia_instagram", "prom_dia_tiktok", "prom_dia_linkedin", "prom_dia_x"),
+  
+  `Tipo de Dato` = c("Cuantitativo discreto", "Cualitativo nominal", "Cualitativo nominal", 
+                     "Cuantitativo continuo", "Cualitativo ordinal", "Cuantitativo continuo", 
+                     "Cuantitativo discreto", "Cuantitativo discreto", "Cualitativo nominal",
+                     "Cuantitativo discreto", "Cuantitativo discreto", "Cualitativo nominal", 
+                     "Cuantitativo discreto", "Cuantitativo discreto", "Cuantitativo discreto", 
+                     "Cualitativo nominal", "Cualitativo ordinal", "Cualitativo ordinal", 
+                     "Cualitativo nominal", "Cualitativo ordinal", "Cualitativo nominal", 
+                     "Cualitativo nominal", "Cualitativo ordinal", "Cuantitativo discreto", 
+                     "Cualitativo ordinal", "Cualitativo ordinal", "Cualitativo ordinal", 
+                     "Cualitativo ordinal", "Cualitativo ordinal"),
+  
+  Categoría = c("Demográfica", "Demográfica", "Demográfica", "Académica", "Redes Sociales",
+                "Académica", "Académica", "Académica", "Actividades", "Salud", "Salud", 
+                "Redes Sociales", "Redes Sociales", "Redes Sociales", "Redes Sociales", 
+                "Redes Sociales", "Social", "Académica", "Actividades", "Salud Mental",
+                "Redes Sociales", "Redes Sociales", "Académica", "Social", "Actividades",
+                "Redes Sociales", "Redes Sociales", "Redes Sociales", "Redes Sociales")
+)
+
+kable(variables, 
+      caption = "**Tabla 1:** Variables identificadas en la base de datos del estudio",
+      align = c("c", "l", "c", "c")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                full_width = TRUE,
+                font_size = 12) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#3498db") %>%
+  column_spec(1, width = "0.8cm", bold = TRUE) %>%
+  column_spec(2, width = "4cm") %>%
+  column_spec(3, width = "2.5cm") %>%
+  column_spec(4, width = "2cm") %>%
+  collapse_rows(columns = 4, valign = "middle")
+```
+
+# Factibilidad
+
+El proyecto es factible ya que:
+
+-   Se cuenta con una base de datos existente y accesible, recolectada en el marco del ciclo 2025-1.
+
+-   La base contiene más de 1000 observaciones.
+
+-   Las variables están clasificadas en distintos tipos:
+
+    -   **Categóricas nominales:** Universidad (pública/privada), sexo, uso de redes sociales e impacto en sus actividades diarias.
+
+    -   **Categóricas ordinales:** Satisfacción con el rendimiento académico, efecto en horario de sueño y promedio de uso por red social.
+
+    -   **Cuantitativas continuas:** Promedio de nota del ciclo anterior, promedio de horas de estudio
+
+    -   **Cuantitativas discretas:** Horas de sueño por noche, horas de ejercicio semanal y edad.
+
+Gracias a estas características, se puede realizar un análisis completo y cumplir con los requerimientos metodológicos del curso. En futuras entregas se adjuntará la base de datos en formato CSV (UTF-8).
+
+# Bibliografía
+
+1.  Valerio Ureña, Gabriel, & Serna Valdivi, River. (2018). *Redes sociales y bienestar psicológico del estudiante universitario.* Revista electrónica de investigación educativa, 20(3), 19-28. <https://doi.org/10.24320/redie.2018.20.3.1796>
+
+2.  Younes, F., Halawi, G., Jabbour, H., El Osta, N., Karam, L., Hajj, A., & Rabbaa Khabbaz, L. (2016). *Internet Addiction and Relationships with Insomnia, Anxiety, Depression, Stress and Self-Esteem in University Students: A Cross-Sectional Designed Study.* PloS one, 11(9), e0161126.
+
+3.  Twenge, J. M. (2019). *iGen: Why Today's Super-Connected Kids Are Growing Up Less Rebellious, More Tolerant, Less Happy—and Completely Unprepared for Adulthood.*
