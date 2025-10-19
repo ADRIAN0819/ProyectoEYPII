@@ -386,13 +386,49 @@ muestra
 write_csv(muestra, "muestra.csv")
 ```
 
+```{r}
+DF <- read_csv("muestra.csv", col_types = cols(.default = "c"))
+```
+
 # P2
 
-------
+------------------------------------------------------------------------
 
 # P3
 
-------
+## Situación 1 — IC para una **proporción**
+
+¿Qué proporción de estudiantes **usa redes sociales para acceder a información académica**?
+
+```{r}
+# IC 96% para una proporción (Wald) usando la muestra en DF
+nc <- 0.96
+alpha <- 1 - nc
+z_critico <- qnorm(1 - alpha/2)
+
+x <- sum(DF$uso_redes_academicas == "Sí", na.rm = TRUE)  # éxitos
+n <- sum(!is.na(DF$uso_redes_academicas))                # n válido
+p <- x / n
+
+error_estandar <- sqrt(p * (1 - p) / n)
+margen_de_error <- z_critico * error_estandar
+
+extremo_inferior <- p - margen_de_error
+extremo_superior <- p + margen_de_error
+
+# Imprimir resultados:  
+print(paste("significación:",alpha)) 
+print(paste("Error estándar:", error_estandar)) 
+print(paste("Z crítico:", z_critico)) 
+print(paste("margen de error o Tolerancia:", margen_de_error))  
+print(paste("IC: (",round(extremo_inferior, 4),";", round(extremo_superior, 4),")"))  
+
+
+```
+
+Con un nivel de significación α=0.04 (confianza del 96%), estimamos la proporción de estudiantes que utilizan redes sociales con fines académicos. El intervalo de confianza obtenido es **\[0.8475, 0.9168\]**, lo que indica que, en la población de interés, **entre 84.75% y 91.68%** de los estudiantes harían uso académico de las redes.
+
+**Para el proyecto**, este resultado respalda que el **uso académico de redes es alto** en la población estudiantil.
 
 # Bibliografía
 
