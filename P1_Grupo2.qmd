@@ -377,6 +377,14 @@ muestra
 write_csv(muestra, "muestra.csv")
 ```
 
+# P2
+
+------
+
+# P3
+
+------
+
 # Bibliografía
 
 1.  Valerio Ureña, Gabriel, & Serna Valdivi, River. (2018). *Redes sociales y bienestar psicológico del estudiante universitario.* Revista electrónica de investigación educativa, 20(3), 19-28. <https://doi.org/10.24320/redie.2018.20.3.1796>

@@ -31,7 +31,7 @@ Además, investigaciones internacionales han evidenciado que el uso excesivo de 
 
 # Objetivos y preguntas de investigación
 
-------
+------------------------------------------------------------------------
 
 # Proveniencia de Datos
 
@@ -43,11 +43,11 @@ De acuerdo con los objetivos del curso, este proyecto nos permitirá desarrollar
 
 # Tecnologías y uso en el mundo real
 
--------
+------------------------------------------------------------------------
 
 # Metodología estadística (EP1)
 
--------
+------------------------------------------------------------------------
 
 # Variables
 
