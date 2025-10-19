@@ -1,0 +1,386 @@
+---
+title: "P0_EstadisticaII"
+author: 
+  - "Adrian Urbina Mendoza"
+  - "Luciana Yangali Cáceres"
+  - "Jorge Leon Villarreyes"
+  - "Valentina Alvarez Beraun"
+  - "Mateo Rodríguez Ramos"
+format: 
+  html:
+    toc: true
+    page-layout: full
+    toc-depth: 3            
+    toc-location: left      
+    theme: flatly          
+    code-fold: true         
+    code-tools: true       
+    css: styles.css
+editor: visual
+---
+
+# Tema Propuesto
+
+Relación entre Salud Mental Digital y Hábitos de universitarios entre 16 y 29 años de edad, matriculados en universidades públicas o privadas durante el semestre 2025-1.
+
+# Introducción y relevancia del tema
+
+Hoy en día, el uso de redes sociales se ha consolidado como una práctica esencial en la vida universitaria, pues contribuye a la interacción social y al bienestar psicológico de los estudiantes *(Valerio Ureña & Serna Valdivi, 2018).* Este uso se incrementa año tras año, lo que genera múltiples interrogantes sobre su impacto en el estilo y la calidad de vida de los estudiantes. En este contexto, resulta relevante contrastar lo señalado en la investigación de *Younes et al. (2016)*, el cual encontró que “la adicción a Internet se asocia significativamente con la presencia de insomnio, ansiedad, depresión, estrés y baja autoestima en estudiantes universitarios”
+
+Además, investigaciones internacionales han evidenciado que el uso excesivo de redes sociales y otras plataformas digitales puede asociarse a mayores niveles de ansiedad, estrés y dificultades en el descanso *(Twenge, 2019; Orben & Przybylski, 2019).* Sin embargo, en el contexto peruano aún existe un vacío en la información respecto a cómo estos hábitos digitales influyen en el desempeño académico y en la calidad de vida de los universitarios. Por ello, el presente estudio se tiene como objetivo analizar esta relación, con el fin de plantear iniciativas que apoyen el bienestar de los estudiantes y que sirvan para prevenir problemas de salud mental dentro del entorno académico.
+
+# Objetivos y preguntas de investigación
+
+------------------------------------------------------------------------
+
+# Proveniencia de Datos
+
+Para el presente proyecto se decidió trabajar con una base de datos previamente recolectada durante el ciclo académico 2025-1, a través de un trabajo de campo basado en encuestas aplicadas a estudiantes universitarios de 16 a 29 años, matriculados en universidades públicas y privadas.
+
+El uso de esta base resulta pertinente, ya que abarca un ciclo académico completo, lo que permite observar de manera más clara la relación entre salud mental digital y hábitos de los universitarios en un período determinado. La base de datos incluye un número suficiente de observaciones y se encuentra en formato digital, lo que facilita su acceso, análisis y posterior procesamiento estadístico.
+
+De acuerdo con los objetivos del curso, este proyecto nos permitirá desarrollar competencias en la gestión, análisis y modelamiento estadístico de datos reales, vinculando los contenidos teóricos con una problemática social de gran relevancia.
+
+# Tecnologías y uso en el mundo real
+
+------------------------------------------------------------------------
+
+# Metodología estadística (EP1)
+
+------------------------------------------------------------------------
+
+# Variables
+
+Se han podido identificar las siguientes variables en la base de datos escogida:
+
+```{r tabla-variables}
+#| warning: false
+#| message: false
+
+library(knitr)
+library(kableExtra)
+
+variables <- data.frame(
+  `N°` = 1:29,
+  Variable = c("edad", "sexo", "tipo_universidad", "prom_estudio_dia", "prom_dia_whatsapp",
+               "prom_ciclo_pasado", "ciclo", "total_cursos_actuales", "actividad_extracurricular_actual",
+               "horas_ejercicio_semanal", "horas_sueño_xnoche", "red_mas_usada", "tiempo_max_sin_redes_dia",
+               "notificaciones_estudio_diario", "dias_redes_antes_de_dormir", "tipo_contenido_redes_sociales",
+               "satisfaccion_interaccion_social_presencial", "afecta_concentracion_rendimiento",
+               "impacto_redes_actividades_extracurriculares", "impacto_redes_salud_mental",
+               "momento_uso_redes_sociales", "uso_redes_academicas", "satisfaccion_rendimiento_academico",
+               "interaccion_persona_amigos_redes", "frecuencia_descubrimiento_actividades_redes",
+               "prom_dia_instagram", "prom_dia_tiktok", "prom_dia_linkedin", "prom_dia_x"),
+  
+  `Tipo de Dato` = c("Cuantitativo discreto", "Cualitativo nominal", "Cualitativo nominal", 
+                     "Cuantitativo continuo", "Cualitativo ordinal", "Cuantitativo continuo", 
+                     "Cualitativo ordinal", "Cuantitativo discreto", "Cualitativo nominal",
+                     "Cuantitativo discreto", "Cuantitativo discreto", "Cualitativo nominal", 
+                     "Cuantitativo discreto", "Cuantitativo discreto", "Cuantitativo discreto", 
+                     "Cualitativo nominal", "Cualitativo ordinal", "Cualitativo ordinal", 
+                     "Cualitativo nominal", "Cualitativo ordinal", "Cualitativo nominal", 
+                     "Cualitativo nominal", "Cualitativo ordinal", "Cuantitativo discreto", 
+                     "Cualitativo ordinal", "Cualitativo ordinal", "Cualitativo ordinal", 
+                     "Cualitativo ordinal", "Cualitativo ordinal"),
+  
+  Categoría = c("Demográfica", "Demográfica", "Demográfica", "Académica", "Redes Sociales",
+                "Académica", "Académica", "Académica", "Actividades", "Salud", "Salud", 
+                "Redes Sociales", "Redes Sociales", "Redes Sociales", "Redes Sociales", 
+                "Redes Sociales", "Social", "Académica", "Actividades", "Salud Mental",
+                "Redes Sociales", "Redes Sociales", "Académica", "Social", "Actividades",
+                "Redes Sociales", "Redes Sociales", "Redes Sociales", "Redes Sociales")
+)
+
+kable(variables, 
+      caption = "Tabla 1: Variables identificadas en la base de datos del estudio",
+      align = c("c", "l", "c", "c")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                full_width = TRUE,
+                font_size = 12) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#3498db") %>%
+  column_spec(1, width = "0.8cm", bold = TRUE) %>%
+  column_spec(2, width = "4cm") %>%
+  column_spec(3, width = "2.5cm") %>%
+  column_spec(4, width = "2cm") %>%
+  collapse_rows(columns = 4, valign = "middle")
+```
+
+# Factibilidad
+
+El proyecto es factible ya que:
+
+-   Se cuenta con una base de datos existente y accesible, recolectada en el marco del ciclo 2025-1.
+
+-   La base contiene más de 1000 observaciones.
+
+-   Las variables están clasificadas en distintos tipos:
+
+    -   **Categóricas nominales:** Universidad (pública/privada), sexo, uso de redes sociales e impacto en sus actividades diarias.
+
+    -   **Categóricas ordinales:** Satisfacción con el rendimiento académico, efecto en horario de sueño y promedio de uso por red social.
+
+    -   **Cuantitativas continuas:** Promedio de nota del ciclo anterior, promedio de horas de estudio
+
+    -   **Cuantitativas discretas:** Horas de sueño por noche, horas de ejercicio semanal y edad.
+
+Gracias a estas características, se puede realizar un análisis completo y cumplir con los requerimientos metodológicos del curso. En futuras entregas se adjuntará la base de datos en formato CSV (UTF-8).
+
+# PARTE 1
+
+```{r}
+library(readr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(forcats)
+```
+
+```{r}
+DF <- read_csv("Estudiantes.csv", col_types = cols(.default = "c"))
+```
+
+```{r}
+DF <- DF %>%
+  mutate(
+    edad = as.integer(edad),
+    prom_estudio_dia = as.numeric(prom_estudio_dia),
+    prom_ciclo_pasado = as.numeric(prom_ciclo_pasado),
+    ciclo = factor(as.character(ciclo), levels = as.character(1:10), ordered = TRUE),
+    total_cursos_actuales = as.integer(total_cursos_actuales),
+    horas_ejercicio_semanal = as.integer(horas_ejercicio_semanal),
+    horas_sueño_xnoche = as.integer(horas_sueño_xnoche),
+    tiempo_max_sin_redes_dia = as.integer(tiempo_max_sin_redes_dia),
+    notificaciones_estudio_diario = as.integer(notificaciones_estudio_diario),
+    dias_redes_antes_de_dormir = as.integer(dias_redes_antes_de_dormir),
+    interaccion_persona_amigos_redes = as.integer(interaccion_persona_amigos_redes),
+
+    sexo = factor(sexo, levels = c("Femenino", "Masculino")),
+    tipo_universidad = factor(tipo_universidad, levels = c("Privada", "Pública")),
+    actividad_extracurricular_actual = factor(actividad_extracurricular_actual),
+    red_mas_usada = factor(red_mas_usada),
+    tipo_contenido_redes_sociales = factor(tipo_contenido_redes_sociales,
+                                           levels = c("Académico", "Entretenimiento", "Noticias", "Socializar")),
+    uso_redes_academicas = factor(uso_redes_academicas, levels = c("No", "Sí")),
+    impacto_redes_actividades_extracurriculares = factor(impacto_redes_actividades_extracurriculares,
+                                                         levels = c("Desmotiva", "Motiva", "No tiene efecto")),
+    momento_uso_redes_sociales = factor(momento_uso_redes_sociales),
+
+    afecta_concentracion_rendimiento = factor(afecta_concentracion_rendimiento,
+                                              levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    impacto_redes_salud_mental = factor(impacto_redes_salud_mental,
+                                        levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    satisfaccion_interaccion_social_presencial = factor(satisfaccion_interaccion_social_presencial,
+                                                        levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    satisfaccion_rendimiento_academico = factor(satisfaccion_rendimiento_academico,
+                                                levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    frecuencia_descubrimiento_actividades_redes = factor(frecuencia_descubrimiento_actividades_redes,
+                                                         levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    
+    prom_dia_whatsapp = factor(prom_dia_whatsapp,
+                               levels = c("0 horas (no lo uso)", "Entre 1-3 horas", "Entre 3-6 horas",
+                                          "Entre 6-9 horas", "Entre 9-12 horas"), ordered = TRUE),
+    prom_dia_instagram = factor(prom_dia_instagram,
+                                levels = c("0 horas (no lo uso)", "Entre 1-3 horas", "Entre 3-6 horas",
+                                           "Entre 6-9 horas", "Entre 9-12 horas"), ordered = TRUE),
+    prom_dia_tiktok = factor(prom_dia_tiktok,
+                             levels = c("0 horas (no lo uso)", "Entre 1-3 horas", "Entre 3-6 horas",
+                                        "Entre 6-9 horas", "Entre 9-12 horas"), ordered = TRUE),
+    prom_dia_linkedin = factor(prom_dia_linkedin,
+                               levels = c("0 horas (no lo uso)", "Entre 1-3 horas", "Entre 3-6 horas",
+                                          "Entre 6-9 horas", "Entre 9-12 horas"), ordered = TRUE),
+    prom_dia_x = factor(prom_dia_x,
+                        levels = c("0 horas (no lo uso)", "Entre 1-3 horas", "Entre 3-6 horas",
+                                   "Entre 6-9 horas", "Entre 9-12 horas"), ordered = TRUE)
+  )
+
+```
+
+```{r}
+str(DF)
+```
+
+```{r}
+df_na <- DF
+
+n <- nrow(df_na)
+
+result_table <- data.frame(
+  Variable = names(df_na),
+  Total = n,
+  Completos = colSums(!is.na(df_na)),
+  `Valores NA` = colSums(is.na(df_na)),
+  `% Completos` = round(colMeans(!is.na(df_na)) * 100, 2),
+  check.names = FALSE
+)
+
+
+kable(result_table, row.names = FALSE)
+
+```
+
+```{r}
+df_na
+```
+
+# P1
+
+## Tamaño de muestra para nuestra data
+
+```{r}
+nrow(df_na)
+```
+
+Primero, hallaremos el tamaño de muestra óptimo para nuestras variables cuantitativas:
+
+```{r}
+variables_numericas <- sapply(df_na, is.numeric)
+variables_cuantitativas <- names(df_na)[variables_numericas]
+
+cat("Variables cuantitativas encontradas:\n")
+print(variables_cuantitativas)
+```
+
+```{r}
+# Calcular desviaciones estándar
+desviaciones <- sapply(df_na[variables_cuantitativas], sd, na.rm = TRUE)
+
+cat("\nDesviaciones estándar:\n")
+print(desviaciones)
+```
+
+```{r echo=TRUE}
+Tamaño_muestra_media<-function (ds, nc, t){return ((qnorm((1+nc)/2)*ds/t)^2)}
+
+desv.est=8.900324#desviación estándar  (dato)
+nc=0.96#nivel de confianza 
+
+t=1 #tolerancia
+
+Tamaño_muestra_media(desv.est,nc,t)
+```
+
+Tamaño de muestra para:
+
+edad: 257.1364 (Tol: 0.3)
+
+prom_estudio_dia: 319.7174 (Tol: 0.3)
+
+prom_ciclo_pasado: 298.0289 (Tol: 0.6)
+
+total_cursos_actuales: 347.5482 (Tol: 0.15)
+
+horas_ejercicio_semanal: 263.6122 (Tol: 0.5)
+
+horas_sueño_xnoche: 272.9765 (Tol: 0.15)
+
+tiempo_max_sin_redes_dia: 300.8955 (Tol: 0.6)
+
+notificaciones_estudio_diario: 331.1856 (Tol: 1.5)
+
+dias_redes_antes_de_dormir: 390.2158 (Tol: 0.2)
+
+interaccion_persona_amigos_redes: 334.123 (Tol: 1)
+
+Entonces, la muestra máxima cuantitativa sería: 347.5482 que pasa a ser 348
+
+Para variables cualitativas:
+
+```{r}
+# Identificar variables cualitativas
+variables_no_numericas <- sapply(df_na, function(x) !is.numeric(x))
+variables_cualitativas <- names(df_na)[variables_no_numericas]
+
+cat("Variables cualitativas encontradas:\n")
+print(variables_cualitativas)
+```
+
+```{r}
+# Para una variable específica
+variable <- variables_cualitativas[19]  # Primera variable cualitativa
+tabla_frecuencias <- table(df_na[[variable]])
+proporciones <- prop.table(tabla_frecuencias)  # En porcentaje
+
+cat("Proporciones para:", variable, "\n")
+print(proporciones)
+```
+
+Observación: En nuestro dataset, hay algunas variables cualitativas que tienen más de dos valores posibles, por lo que no se puede usar directamente el código proporcionado por el profesor. Por ende, se hará uso de la proporción que sea más cercana a 0.5, o la más conservadora.
+
+```{r}
+Tamaño_muestral_proporciones<-function (po, nc, t){return (po*(1-po)*((qnorm((1+nc)/2) /t)^2) )}
+
+po=0.712758375  #Proporcion poblacional o proporcion estimada
+nc=0.96#nivel de confianza (dato)
+t=0.050 #tolerancia ( en proporciones la tolerancia no pasa de 1)
+
+Tamaño_muestral_proporciones(po,nc,t)
+```
+
+Tamaños de muestra cualitativa para:
+
+1.  "sexo": 275.393 (Tol: 0.060)
+
+2.  "tipo_universidad": 315.2984 (Tol: 0.050)
+
+3.  "prom_dia_whatsapp": 292.5329 (Tol: 0.060)
+
+4.  "ciclo": 255.4911 (Tol: 0.050)
+
+5.  "actividad_extracurricular_actual": 292.8445 (Tol: 0.060)
+
+6.  "red_mas_usada": 291.3654 (Tol: 0.060)
+
+7.  "tipo_contenido_redes_sociales": 354.1118 (Tol: 0.050)
+
+8.  "satisfaccion_interaccion_social_presencial": 334.1264 (Tol: 0.055)
+
+9.  "afecta_concentracion_rendimiento": 365.5023 (Tol: 0.050)
+
+10. "impacto_redes_actividades_extracurriculares": 292.3487 (Tol: 0.060)
+
+11. "impacto_redes_salud_mental": 260.1794 (Tol: 0.060)
+
+12. "momento_uso_redes_sociales": 287.3459 (Tol: 0.060)
+
+13. "uso_redes_academicas": 317.4495 (Tol: 0.040)
+
+14. "satisfaccion_rendimiento_academico": 285.5579 (Tol: 0.060)
+
+15. "frecuencia_descubrimiento_actividades_redes": 269.4867 (Tol: 0.060)
+
+16. "prom_dia_instagram": 289.3336 (Tol: 0.060)
+
+17. "prom_dia_tiktok": 284.3253 (Tol: 0.060)
+
+18. "prom_dia_linkedin": 322.582 (Tol: 0.050)
+
+19. "prom_dia_x": 345.4175 (Tol: 0.050)
+
+Entonces, nuestro tamaño de muestra máximo cualitativo sería 365.5023 que pasa a ser 366.
+
+Para elegir el tamaño de muestra final aplicamos: máx(max_cuantitativo, max_cualitativo)
+
+Comparando el máximo tamaño de muestra cuantitativo con el cualitativo, tenemos que nuestro tamaño de muestra final será de 366.
+
+```{r}
+# Para que los resultados sean reproducibles
+set.seed(123)  # Cualquier número
+max_size = 366
+muestra <- df_na[sample(nrow(df_na), max_size), ]
+```
+
+```{r}
+muestra
+```
+
+```{r}
+write_csv(muestra, "muestra.csv")
+```
+
+# Bibliografía
+
+1.  Valerio Ureña, Gabriel, & Serna Valdivi, River. (2018). *Redes sociales y bienestar psicológico del estudiante universitario.* Revista electrónica de investigación educativa, 20(3), 19-28. <https://doi.org/10.24320/redie.2018.20.3.1796>
+
+2.  Younes, F., Halawi, G., Jabbour, H., El Osta, N., Karam, L., Hajj, A., & Rabbaa Khabbaz, L. (2016). *Internet Addiction and Relationships with Insomnia, Anxiety, Depression, Stress and Self-Esteem in University Students: A Cross-Sectional Designed Study.* PloS one, 11(9), e0161126.
+
+3.  Twenge, J. M. (2019). *iGen: Why Today's Super-Connected Kids Are Growing Up Less Rebellious, More Tolerant, Less Happy—and Completely Unprepared for Adulthood.*
