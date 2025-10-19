@@ -53,56 +53,65 @@ De acuerdo con los objetivos del curso, este proyecto nos permitirá desarrollar
 
 Se han podido identificar las siguientes variables en la base de datos escogida:
 
-```{r tabla-variables}
-#| warning: false
-#| message: false
-
+```{r}
+library(dplyr)
+library(tibble)
 library(knitr)
 library(kableExtra)
 
-variables <- data.frame(
-  `N°` = 1:29,
-  Variable = c("edad", "sexo", "tipo_universidad", "prom_estudio_dia", "prom_dia_whatsapp",
-               "prom_ciclo_pasado", "ciclo", "total_cursos_actuales", "actividad_extracurricular_actual",
-               "horas_ejercicio_semanal", "horas_sueño_xnoche", "red_mas_usada", "tiempo_max_sin_redes_dia",
-               "notificaciones_estudio_diario", "dias_redes_antes_de_dormir", "tipo_contenido_redes_sociales",
-               "satisfaccion_interaccion_social_presencial", "afecta_concentracion_rendimiento",
-               "impacto_redes_actividades_extracurriculares", "impacto_redes_salud_mental",
-               "momento_uso_redes_sociales", "uso_redes_academicas", "satisfaccion_rendimiento_academico",
-               "interaccion_persona_amigos_redes", "frecuencia_descubrimiento_actividades_redes",
-               "prom_dia_instagram", "prom_dia_tiktok", "prom_dia_linkedin", "prom_dia_x"),
-  
-  `Tipo de Dato` = c("Cuantitativo discreto", "Cualitativo nominal", "Cualitativo nominal", 
-                     "Cuantitativo continuo", "Cualitativo ordinal", "Cuantitativo continuo", 
-                     "Cualitativo ordinal", "Cuantitativo discreto", "Cualitativo nominal",
-                     "Cuantitativo discreto", "Cuantitativo discreto", "Cualitativo nominal", 
-                     "Cuantitativo discreto", "Cuantitativo discreto", "Cuantitativo discreto", 
-                     "Cualitativo nominal", "Cualitativo ordinal", "Cualitativo ordinal", 
-                     "Cualitativo nominal", "Cualitativo ordinal", "Cualitativo nominal", 
-                     "Cualitativo nominal", "Cualitativo ordinal", "Cuantitativo discreto", 
-                     "Cualitativo ordinal", "Cualitativo ordinal", "Cualitativo ordinal", 
-                     "Cualitativo ordinal", "Cualitativo ordinal"),
-  
-  Categoría = c("Demográfica", "Demográfica", "Demográfica", "Académica", "Redes Sociales",
-                "Académica", "Académica", "Académica", "Actividades", "Salud", "Salud", 
-                "Redes Sociales", "Redes Sociales", "Redes Sociales", "Redes Sociales", 
-                "Redes Sociales", "Social", "Académica", "Actividades", "Salud Mental",
-                "Redes Sociales", "Redes Sociales", "Académica", "Social", "Actividades",
-                "Redes Sociales", "Redes Sociales", "Redes Sociales", "Redes Sociales")
+# ---------------------------
+# Definir variables
+# ---------------------------
+tabla <- tribble(
+  ~`N°`, ~Variable, ~Descripción, ~`Tipo de Dato`, ~Categoría,
+  1, "edad", "¿Cuál es tu edad?", "Cuantitativo discreto", "Demográfica",
+  2, "sexo", "¿Cuál es tu sexo?", "Cualitativo nominal", "Demográfica",
+  3, "tipo_universidad", "¿Estás en una universidad privada o pública?", "Cualitativo nominal", "Demográfica",
+  4, "prom_estudio_dia", "¿Cuántas horas en promedio al día estudias?", "Cualitativo ordinal", "Académica",
+  5, "prom_dia_whatsapp", "¿Cuántas horas al día en promedio usas WhatsApp?", "Cualitativo ordinal", "Redes Sociales",
+  6, "prom_dia_instagram", "¿Cuántas horas al día en promedio usas Instagram?", "Cualitativo ordinal", "Redes Sociales",
+  7, "prom_dia_tiktok", "¿Cuántas horas al día en promedio usas TikTok?", "Cualitativo ordinal", "Redes Sociales",
+  8, "prom_dia_linkedin", "¿Cuántas horas al día en promedio usas LinkedIn?", "Cualitativo ordinal", "Redes Sociales",
+  9, "prom_dia_x", "¿Cuántas horas al día en promedio usas X (Twitter)?", "Cualitativo ordinal", "Redes Sociales",
+  10, "ciclo", "¿En qué ciclo te encuentras?", "Cualitativo ordinal", "Académica",
+  11, "prom_ciclo_pasado", "¿Cuál fue tu promedio ponderado el ciclo pasado?", "Cuantitativo continuo", "Académica",
+  12, "total_cursos_actuales", "¿Cuántas asignaturas cursas actualmente?", "Cuantitativo discreto", "Académica",
+  13, "actividad_extracurricular_actual", "¿En qué tipo de actividades extracurriculares participas actualmente?", "Cualitativo nominal", "Actividades",
+  14, "horas_ejercicio_semanal", "¿Cuántas horas a la semana haces ejercicio físico?", "Cuantitativo discreto", "Salud",
+  15, "horas_sueño_xnoche", "¿Cuántas horas duermes aproximadamente por noche?", "Cuantitativo discreto", "Salud",
+  16, "red_mas_usada", "¿Qué plataforma de red social es la que más usas?", "Cualitativo nominal", "Redes Sociales",
+  17, "tiempo_max_sin_redes_dia", "¿Cuál es el tiempo máximo que puedes estar sin revisar tus redes sociales?", "Cuantitativo discreto", "Redes Sociales",
+  18, "notificaciones_estudio_diario", "¿Cuántas veces al día revisas tu teléfono por notificaciones de redes sociales mientras estudias?", "Cuantitativo discreto", "Redes Sociales",
+  19, "dias_redes_antes_de_dormir", "¿Cuántos días a la semana sueles usar redes sociales antes de dormir?", "Cuantitativo discreto", "Redes Sociales",
+  20, "tipo_contenido_redes_sociales", "¿Qué tipo de contenido consumes principalmente en redes sociales?", "Cualitativo nominal", "Redes Sociales",
+  21, "satisfaccion_interaccion_social_presencial", "¿Qué tan satisfecho estás con tu interacción social presencial con amigos o compañeros en tu centro de estudio y/o trabajo?", "Cualitativo ordinal", "Social",
+  22, "afecta_concentracion_rendimiento", "¿Consideras que el uso de redes sociales afecta tu capacidad de concentración y rendimiento académico?", "Cualitativo ordinal", "Académica",
+  23, "impacto_redes_actividades_extracurriculares", "¿Consideras que el uso de redes sociales te motiva o desmotiva a participar en actividades extracurriculares?", "Cualitativo ordinal", "Actividades",
+  24, "impacto_redes_salud_mental", "¿Qué tanto sientes que el uso excesivo de redes sociales puede afectar tu salud mental (autoestima, etc.)?", "Cualitativo ordinal", "Salud Mental",
+  25, "momento_uso_redes_sociales", "¿En qué momento del día usas más las redes sociales?", "Cualitativo nominal", "Redes Sociales",
+  26, "uso_redes_academicas", "¿Utilizas las redes sociales para acceder a información académica?", "Cualitativo nominal", "Redes Sociales",
+  27, "satisfaccion_rendimiento_academico", "¿Qué tan satisfecho(a) estás con tu rendimiento académico actual?", "Cualitativo ordinal", "Académica",
+  28, "interaccion_persona_amigos_redes", "¿Con cuántos de los amigos que conociste a través de redes sociales interactúas también en persona?", "Cuantitativo discreto", "Social",
+  29, "frecuencia_descubrimiento_actividades_redes", "¿Con qué frecuencia descubres actividades extracurriculares a través de redes sociales?", "Cualitativo ordinal", "Actividades"
 )
 
-kable(variables, 
-      caption = "Tabla 1: Variables identificadas en la base de datos del estudio",
-      align = c("c", "l", "c", "c")) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
-                full_width = TRUE,
-                font_size = 12) %>%
+# ---------------------------
+# Mostrar tabla formateada
+# ---------------------------
+kable(tabla,
+      caption = "Tabla 1: Variables del estudio con descripción y tipo de dato",
+      align = c("c","l","l","c","c"),
+      booktabs = TRUE) %>%
+  kable_styling(bootstrap_options = c("striped","hover","condensed","responsive"),
+                full_width = TRUE, font_size = 12) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#3498db") %>%
   column_spec(1, width = "0.8cm", bold = TRUE) %>%
-  column_spec(2, width = "4cm") %>%
-  column_spec(3, width = "2.5cm") %>%
-  column_spec(4, width = "2cm") %>%
-  collapse_rows(columns = 4, valign = "middle")
+  column_spec(2, width = "3.5cm") %>%
+  column_spec(3, width = "7.5cm") %>%
+  column_spec(4, width = "2.6cm") %>%
+  column_spec(5, width = "2.6cm") %>%
+  collapse_rows(columns = 5, valign = "middle")
+
 ```
 
 # Factibilidad
