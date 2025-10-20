@@ -31,6 +31,18 @@ Además, investigaciones internacionales han evidenciado que el uso excesivo de 
 
 # Objetivos y preguntas de investigación
 
+## Objetivos
+
+1.  **Identificar los patrones de uso de redes sociales y hábitos de vida** de los estudiantes universitarios de 16 a 29 años, matriculados en universidades públicas y privadas durante el semestre 2025-1, con el fin de caracterizar el comportamiento digital de esta población.
+
+2.  **Comparar y analizar el impacto del uso de redes sociales** en el rendimiento académico, salud mental y calidad de sueño entre estudiantes de universidades públicas y privadas, para identificar diferencias significativas entre ambos grupos.
+
+3.  **Evaluar la relación entre el tiempo dedicado a redes sociales** y variables de bienestar estudiantil (promedio académico, horas de sueño, actividad física y satisfacción personal), mediante análisis estadístico inferencial.
+
+4.  **Concientizar sobre el impacto del uso excesivo de redes sociales** en la salud mental digital de los universitarios peruanos, visibilizando la problemática del uso problemático de plataformas digitales en el contexto académico.
+
+5.  **Aplicar los conocimientos del curso de Estadística II** para abordar una problemática social contemporánea, mediante el uso de distribuciones muestrales, intervalos de confianza y análisis estadístico riguroso que permita generar recomendaciones basadas en evidencia.
+
 ------------------------------------------------------------------------
 
 # Proveniencia de Datos
@@ -42,6 +54,46 @@ El uso de esta base resulta pertinente, ya que abarca un ciclo académico comple
 De acuerdo con los objetivos del curso, este proyecto nos permitirá desarrollar competencias en la gestión, análisis y modelamiento estadístico de datos reales, vinculando los contenidos teóricos con una problemática social de gran relevancia.
 
 # Tecnologías y uso en el mundo real
+
+En el contexto actual, el análisis de comportamiento digital y salud mental se ha convertido en un área de interés tanto para la industria tecnológica como para el ámbito de la salud pública. Diversas organizaciones y plataformas utilizan tecnologías modernas para estudiar y monitorear el bienestar digital de los usuarios.
+
+## Herramientas y Tecnologías Aplicadas
+
+### 1. Análisis de Comportamiento Digital
+
+-   **Screen Time Analytics**: Plataformas como iOS Screen Time y Android Digital Wellbeing implementan sistemas de monitoreo de uso de aplicaciones, permitiendo a los usuarios visualizar patrones de consumo digital y establecer límites de tiempo *(Apple Inc., 2024; Google, 2024)*.
+
+-   **Social Media Analytics**: Herramientas como Meta Business Suite, TikTok Analytics e Instagram Insights utilizan algoritmos de machine learning para analizar patrones de engagement, tiempo de uso y comportamiento de usuarios, proporcionando métricas detalladas sobre interacciones digitales *(Meta Platforms, 2024)*.
+
+### 2. Aplicaciones en Salud Mental Digital
+
+-   **Aplicaciones de Bienestar**: Plataformas como Calm, Headspace y aplicaciones universitarias especializadas implementan sistemas de tracking del bienestar estudiantil mediante cuestionarios estandarizados, ejercicios de mindfulness y análisis de comportamiento digital *(Huberty et al., 2019)*.
+
+-   **Sistemas de Detección Temprana**: Instituciones educativas de vanguardia implementan sistemas de *early warning* que correlacionan el uso de plataformas de aprendizaje digital (LMS) con indicadores académicos y de salud mental, permitiendo intervenciones oportunas *(Pistilli & Arnold, 2010)*.
+
+### 3. Herramientas de Ingeniería de Datos y Análisis
+
+-   **Big Data Analytics**: Uso de lenguajes de programación como **Python** (con bibliotecas como pandas, numpy, scikit-learn) y **R** (tidyverse, ggplot2) para el análisis estadístico de grandes volúmenes de datos de comportamiento digital.
+
+-   **Visualización de Datos**: Herramientas empresariales como Tableau y Power BI, junto con bibliotecas especializadas como ggplot2 y Plotly, permiten representar patrones de uso, correlaciones y tendencias de manera interactiva.
+
+-   **Machine Learning**: Modelos predictivos basados en Random Forest, Redes Neuronales y Análisis de Regresión para identificar usuarios en riesgo de adicción digital, problemas de salud mental o bajo rendimiento académico.
+
+### 4. Aplicación en Negocios y Marketing Digital
+
+-   **Customer Engagement Analysis**: Empresas tecnológicas analizan patrones de uso para optimizar experiencias de usuario, personalizar contenido y fomentar un engagement responsable que considere el bienestar digital de los usuarios.
+
+-   **EdTech Platforms**: Plataformas educativas como Canvas, Moodle, Blackboard y Google Classroom integran analytics de comportamiento estudiantil para mejorar resultados académicos, identificar estudiantes en riesgo y personalizar experiencias de aprendizaje.
+
+## Relevancia en el Contexto Peruano
+
+En Perú, el tema de salud mental digital está cobrando relevancia institucional:
+
+-   El **Ministerio de Salud (MINSA)** ha implementado el programa "Salud Mental en Universidades" que incluye componentes de monitoreo del bienestar estudiantil y uso de tecnologías digitales *(MINSA, 2023)*.
+
+-   Universidades peruanas como UTEC, PUCP y UPC están implementando sistemas de *learning analytics* y programas de bienestar estudiantil que consideran el impacto del uso de tecnologías digitales en el rendimiento académico y salud mental.
+
+-   El sector privado, a través de startups peruanas de *healthtech* y *edtech*, está desarrollando soluciones tecnológicas para el monitoreo del bienestar digital y la prevención de problemas de salud mental en población joven.
 
 ------------------------------------------------------------------------
 
@@ -593,8 +645,28 @@ Con un nivel de confianza del 96%, se encontró que los estudiantes de universid
 
 # Bibliografía
 
+## Referencias sobre Salud Mental y Redes Sociales
+
 1.  Valerio Ureña, Gabriel, & Serna Valdivi, River. (2018). *Redes sociales y bienestar psicológico del estudiante universitario.* Revista electrónica de investigación educativa, 20(3), 19-28. <https://doi.org/10.24320/redie.2018.20.3.1796>
 
-2.  Younes, F., Halawi, G., Jabbour, H., El Osta, N., Karam, L., Hajj, A., & Rabbaa Khabbaz, L. (2016). *Internet Addiction and Relationships with Insomnia, Anxiety, Depression, Stress and Self-Esteem in University Students: A Cross-Sectional Designed Study.* PloS one, 11(9), e0161126.
+2.  Younes, F., Halawi, G., Jabbour, H., El Osta, N., Karam, L., Hajj, A., & Rabbaa Khabbaz, L. (2016). *Internet Addiction and Relationships with Insomnia, Anxiety, Depression, Stress and Self-Esteem in University Students: A Cross-Sectional Designed Study.* PloS one, 11(9), e0161126. <https://doi.org/10.1371/journal.pone.0161126>
 
-3.  Twenge, J. M. (2019). *iGen: Why Today's Super-Connected Kids Are Growing Up Less Rebellious, More Tolerant, Less Happy—and Completely Unprepared for Adulthood.*
+3.  Twenge, J. M. (2019). *iGen: Why Today's Super-Connected Kids Are Growing Up Less Rebellious, More Tolerant, Less Happy—and Completely Unprepared for Adulthood.* Atria Books.
+
+4.  Orben, A., & Przybylski, A. K. (2019). The association between adolescent well-being and digital technology use. *Nature Human Behaviour*, 3(2), 173-182. <https://doi.org/10.1038/s41562-018-0506-1>
+
+## Referencias sobre Tecnologías y Herramientas Digitales
+
+5.  Apple Inc. (2024). *Screen Time & Digital Wellbeing.* Recuperado de <https://www.apple.com/ios/health/>
+
+6.  Google. (2024). *Digital Wellbeing - Android.* Recuperado de <https://www.android.com/digital-wellbeing/>
+
+7.  Meta Platforms. (2024). *Facebook & Instagram Analytics Tools.* Recuperado de <https://business.facebook.com/>
+
+8.  Huberty, J., Green, J., Glissmann, C., Larkey, L., Puzia, M., & Lee, C. (2019). Efficacy of the Mindfulness Meditation Mobile App "Calm" to Reduce Stress Among College Students: Randomized Controlled Trial. *JMIR mHealth and uHealth*, 7(6), e14273. <https://doi.org/10.2196/14273>
+
+9.  Pistilli, M. D., & Arnold, K. E. (2010). Purdue Signals: Mining real-time academic data to enhance student success. *About Campus*, 15(3), 22-24. <https://doi.org/10.1002/abc.20025>
+
+## Referencias Institucionales Peruanas
+
+10. Ministerio de Salud del Perú - MINSA. (2023). *Programa de Salud Mental en Universidades.* Recuperado de <https://www.gob.pe/minsa>
