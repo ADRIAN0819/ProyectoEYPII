@@ -487,7 +487,10 @@ Con un nivel de significación α=0.04 (confianza del 96%), estimamos la proporc
 
 ## Situación 2 — Diferencia de medias: rendimiento (pública vs privada)
 
-¿Difieren las **medias** de `prom_ciclo_pasado` entre **tipo_universidad = Pública** vs **Privada**?
+Tratamos de comparar el impacto del uso de redes sociales en el rendimiento académico entre estudiantes de universidades públicas y privadas.
+
+**Pregunta de investigación:**\
+¿Difieren las medias de `prom_ciclo_pasado` entre los tipos de universidad (Pública vs Privada)?
 
 ```{r}
 # Paso 1: Filtrado de datos válidos
