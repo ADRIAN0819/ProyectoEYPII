@@ -627,6 +627,12 @@ VC2 <- qf(1 - alpha/2, n2-1, n1-1)
 extremo_inf <- (var1/var2) * VC1
 extremo_sup <- (var1/var2) * VC2
 
+var1
+var2
+n1
+n2
+VC1
+VC2
 extremo_inf
 extremo_sup
 ```
@@ -731,23 +737,17 @@ Los resultados obtenidos con la muestra fueron los siguientes:
 
 $$
 \text{Tamaño del grupo 1 (uso nocturno alto): } 287 
-$$
-$$
+$$ $$
 \text{Tamaño del grupo 2 (uso nocturno bajo): } 79 \\
-$$
-$$
+$$ $$
 \text{Proporciones muestrales: } (p_1 = 0.4216), (p_2 = 0.3671) \\
-$$
-$$
+$$ $$
 \text{Diferencia: } (\hat{p}_1 - \hat{p}_2 = 0.0545) \\
-$$
-$$
+$$ $$
 \text{Error estándar: } 0.0616 \\
-$$
-$$
+$$ $$
 \text{Margen de error: } 0.1264 \\
-$$
-$$
+$$ $$
 \text{IC 96%: } [-0.0719, 0.1810]
 $$
 
