@@ -3491,11 +3491,6 @@ window.Quarto = {
   <li><a href="#situación-2-diferencia-de-medias-rendimiento-pública-vs-privada" id="toc-situación-2-diferencia-de-medias-rendimiento-pública-vs-privada" class="nav-link" data-scroll-target="#situación-2-diferencia-de-medias-rendimiento-pública-vs-privada">Situación 2 — Diferencia de medias: rendimiento (pública vs privada)</a>
   <ul class="collapse">
   <li><a href="#planteamiento-1" id="toc-planteamiento-1" class="nav-link" data-scroll-target="#planteamiento-1">Planteamiento</a></li>
-  <li><a href="#estadísticas-muestrales" id="toc-estadísticas-muestrales" class="nav-link" data-scroll-target="#estadísticas-muestrales">Estadísticas muestrales</a></li>
-  <li><a href="#diferencia-de-medias-y-error-estándar" id="toc-diferencia-de-medias-y-error-estándar" class="nav-link" data-scroll-target="#diferencia-de-medias-y-error-estándar">Diferencia de medias y error estándar</a></li>
-  <li><a href="#grados-de-libertad" id="toc-grados-de-libertad" class="nav-link" data-scroll-target="#grados-de-libertad">Grados de libertad:</a></li>
-  <li><a href="#valor-crítico-96" id="toc-valor-crítico-96" class="nav-link" data-scroll-target="#valor-crítico-96">Valor crítico (96%)</a></li>
-  <li><a href="#intervalo-de-confianza-al-96" id="toc-intervalo-de-confianza-al-96" class="nav-link" data-scroll-target="#intervalo-de-confianza-al-96">Intervalo de confianza al 96%</a></li>
   </ul></li>
   <li><a href="#situación-3--diferencia-de-proporciones-impacto-en-salud-mental-según-uso-nocturno-de-redes-sociales" id="toc-situación-3--diferencia-de-proporciones-impacto-en-salud-mental-según-uso-nocturno-de-redes-sociales" class="nav-link" data-scroll-target="#situación-3--diferencia-de-proporciones-impacto-en-salud-mental-según-uso-nocturno-de-redes-sociales">Situación 3- Diferencia de proporciones: Impacto en salud mental según uso nocturno de redes sociales</a>
   <ul class="collapse">
@@ -4725,9 +4720,8 @@ Desviaciones estándar:</code></pre>
 <span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>Publ <span class="ot">&lt;-</span> <span class="fu">subset</span>(DFx, tipo_universidad <span class="sc">==</span> <span class="st">&quot;Pública&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-</section>
-<section id="estadísticas-muestrales" class="level3">
-<h3 class="anchored" data-anchor-id="estadísticas-muestrales">Estadísticas muestrales</h3>
+<section id="estadísticas-muestrales" class="level4">
+<h4 class="anchored" data-anchor-id="estadísticas-muestrales">Estadísticas muestrales</h4>
 <p><span class="math display">\[
 \text{Para cada grupo } k \in \{1=\text{Privada},\,2=\text{Pública}\}:
 \quad n_k \ (\text{tamaño}),\quad \bar x_k \ (\text{media}),\quad s_k \ (\text{desv. est.}).
@@ -4771,8 +4765,8 @@ Desviaciones estándar:</code></pre>
 </div>
 <p>Complementaremos el análisis con el fundamento teórico detrás del código en R:</p>
 </section>
-<section id="diferencia-de-medias-y-error-estándar" class="level3">
-<h3 class="anchored" data-anchor-id="diferencia-de-medias-y-error-estándar">Diferencia de medias y error estándar</h3>
+<section id="diferencia-de-medias-y-error-estándar" class="level4">
+<h4 class="anchored" data-anchor-id="diferencia-de-medias-y-error-estándar">Diferencia de medias y error estándar</h4>
 <p><span class="math display">\[
 \hat\Delta=\bar x_1-\bar x_2,\qquad
 SE=\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}.
@@ -4782,8 +4776,8 @@ SE=\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}.
 SE=\sqrt{\frac{4.221017^2}{267}+\frac{6.145050^2}{98}}\approx 0.67235.
 \]</span></p>
 </section>
-<section id="grados-de-libertad" class="level3">
-<h3 class="anchored" data-anchor-id="grados-de-libertad">Grados de libertad:</h3>
+<section id="grados-de-libertad" class="level4">
+<h4 class="anchored" data-anchor-id="grados-de-libertad">Grados de libertad:</h4>
 <p><span class="math display">\[
 \nu \approx
 \frac{\left(\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}\right)^2}{
@@ -4793,8 +4787,8 @@ SE=\sqrt{\frac{4.221017^2}{267}+\frac{6.145050^2}{98}}\approx 0.67235.
 \approx 132.06.
 \]</span></p>
 </section>
-<section id="valor-crítico-96" class="level3">
-<h3 class="anchored" data-anchor-id="valor-crítico-96">Valor crítico (96%)</h3>
+<section id="valor-crítico-96" class="level4">
+<h4 class="anchored" data-anchor-id="valor-crítico-96">Valor crítico (96%)</h4>
 <p><span class="math display">\[
 t^\* = t_{0.98,\ \nu\approx132} \approx 2.07.
 \]</span></p>
@@ -4830,8 +4824,8 @@ t^\* = t_{0.98,\ \nu\approx132} \approx 2.07.
 </div>
 </div>
 </section>
-<section id="intervalo-de-confianza-al-96" class="level3">
-<h3 class="anchored" data-anchor-id="intervalo-de-confianza-al-96">Intervalo de confianza al 96%</h3>
+<section id="intervalo-de-confianza-al-96" class="level4">
+<h4 class="anchored" data-anchor-id="intervalo-de-confianza-al-96">Intervalo de confianza al 96%</h4>
 <p><span class="math display">\[
 \hat\Delta \pm t^\* SE
 = 3.59042 \pm 2.07\times 0.67235
@@ -4859,6 +4853,7 @@ mean of x mean of y
 </div>
 </div>
 <p>Con un nivel de confianza del 96%, se encontró que los estudiantes de universidades privadas presentan un promedio de rendimiento entre <strong>2.20 y 4.99 puntos superior</strong> al de los estudiantes de universidades públicas. Dado que el intervalo de confianza no incluye el valor cero y el p-valor es extremadamente bajo (p &lt; 0.001), se concluye que <strong>existe una diferencia significativa</strong> en el rendimiento académico promedio según el tipo de universidad.</p>
+</section>
 </section>
 </section>
 <section id="situación-3--diferencia-de-proporciones-impacto-en-salud-mental-según-uso-nocturno-de-redes-sociales" class="level2">
@@ -6036,7 +6031,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb74-597"><a href="#cb74-597" aria-hidden="true" tabindex="-1"></a>Publ <span class="ot">&lt;-</span> <span class="fu">subset</span>(DFx, tipo_universidad <span class="sc">==</span> <span class="st">&quot;Pública&quot;</span>)</span>
 <span id="cb74-598"><a href="#cb74-598" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb74-599"><a href="#cb74-599" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb74-600"><a href="#cb74-600" aria-hidden="true" tabindex="-1"></a><span class="fu">### Estadísticas muestrales</span></span>
+<span id="cb74-600"><a href="#cb74-600" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Estadísticas muestrales</span></span>
 <span id="cb74-601"><a href="#cb74-601" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb74-602"><a href="#cb74-602" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb74-603"><a href="#cb74-603" aria-hidden="true" tabindex="-1"></a>\text{Para cada grupo } k \in <span class="sc">\{</span>1=\text{Privada},\,2=\text{Pública}<span class="sc">\}</span>:</span>
@@ -6061,7 +6056,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb74-624"><a href="#cb74-624" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb74-625"><a href="#cb74-625" aria-hidden="true" tabindex="-1"></a>Complementaremos el análisis con el fundamento teórico detrás del código en R:</span>
 <span id="cb74-626"><a href="#cb74-626" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb74-627"><a href="#cb74-627" aria-hidden="true" tabindex="-1"></a><span class="fu">### Diferencia de medias y error estándar</span></span>
+<span id="cb74-627"><a href="#cb74-627" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Diferencia de medias y error estándar</span></span>
 <span id="cb74-628"><a href="#cb74-628" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb74-629"><a href="#cb74-629" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb74-630"><a href="#cb74-630" aria-hidden="true" tabindex="-1"></a>\hat\Delta=\bar x_1-\bar x_2,\qquad</span>
@@ -6073,7 +6068,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb74-636"><a href="#cb74-636" aria-hidden="true" tabindex="-1"></a>SE=\sqrt{\frac{4.221017^2}{267}+\frac{6.145050^2}{98}}\approx 0.67235.</span>
 <span id="cb74-637"><a href="#cb74-637" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb74-638"><a href="#cb74-638" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb74-639"><a href="#cb74-639" aria-hidden="true" tabindex="-1"></a><span class="fu">### Grados de libertad:</span></span>
+<span id="cb74-639"><a href="#cb74-639" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Grados de libertad:</span></span>
 <span id="cb74-640"><a href="#cb74-640" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb74-641"><a href="#cb74-641" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb74-642"><a href="#cb74-642" aria-hidden="true" tabindex="-1"></a>\nu \approx </span>
@@ -6084,7 +6079,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb74-647"><a href="#cb74-647" aria-hidden="true" tabindex="-1"></a>\approx 132.06.</span>
 <span id="cb74-648"><a href="#cb74-648" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb74-649"><a href="#cb74-649" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb74-650"><a href="#cb74-650" aria-hidden="true" tabindex="-1"></a><span class="fu">### Valor crítico (96%)</span></span>
+<span id="cb74-650"><a href="#cb74-650" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Valor crítico (96%)</span></span>
 <span id="cb74-651"><a href="#cb74-651" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb74-652"><a href="#cb74-652" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb74-653"><a href="#cb74-653" aria-hidden="true" tabindex="-1"></a>t^<span class="sc">\*</span> = t_{0.98,\ \nu\approx132} \approx 2.07.</span>
@@ -6110,7 +6105,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb74-675"><a href="#cb74-675" aria-hidden="true" tabindex="-1"></a>extremo_sup</span>
 <span id="cb74-676"><a href="#cb74-676" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb74-677"><a href="#cb74-677" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb74-678"><a href="#cb74-678" aria-hidden="true" tabindex="-1"></a><span class="fu">### Intervalo de confianza al 96%</span></span>
+<span id="cb74-678"><a href="#cb74-678" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Intervalo de confianza al 96%</span></span>
 <span id="cb74-679"><a href="#cb74-679" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb74-680"><a href="#cb74-680" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb74-681"><a href="#cb74-681" aria-hidden="true" tabindex="-1"></a>\hat\Delta \pm t^<span class="sc">\*</span> SE</span>

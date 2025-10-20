@@ -501,9 +501,9 @@ DF <- DF %>%
 
 ------------------------------------------------------------------------
 
-# P3
+# P3 INTERVALOS DE CONFIANZA
 
-## Situación 1 — IC para una **proporción**
+## Situación 1 — IC para una proporción
 
 ### Planteamiento
 
@@ -557,7 +557,7 @@ Priv <- subset(DFx, tipo_universidad == "Privada")
 Publ <- subset(DFx, tipo_universidad == "Pública")
 ```
 
-### Estadísticas muestrales
+#### Estadísticas muestrales
 
 $$
 \text{Para cada grupo } k \in \{1=\text{Privada},\,2=\text{Pública}\}:
@@ -582,7 +582,7 @@ sd(Publ$prom_ciclo_pasado)     # Desviación estándar Pública
 
 Complementaremos el análisis con el fundamento teórico detrás del código en R:
 
-### Diferencia de medias y error estándar
+#### Diferencia de medias y error estándar
 
 $$
 \hat\Delta=\bar x_1-\bar x_2,\qquad
@@ -594,7 +594,7 @@ $$
 SE=\sqrt{\frac{4.221017^2}{267}+\frac{6.145050^2}{98}}\approx 0.67235.
 $$
 
-### Grados de libertad:
+#### Grados de libertad:
 
 $$
 \nu \approx 
@@ -605,7 +605,7 @@ $$
 \approx 132.06.
 $$
 
-### Valor crítico (96%)
+#### Valor crítico (96%)
 
 $$
 t^\* = t_{0.98,\ \nu\approx132} \approx 2.07.
@@ -631,7 +631,7 @@ extremo_inf
 extremo_sup
 ```
 
-### Intervalo de confianza al 96%
+#### Intervalo de confianza al 96%
 
 $$
 \hat\Delta \pm t^\* SE
