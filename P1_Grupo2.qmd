@@ -490,12 +490,12 @@ Con un nivel de significación α=0.04 (confianza del 96%), estimamos la proporc
 ¿Difieren las **medias** de `prom_ciclo_pasado` entre **tipo_universidad = Pública** vs **Privada**?
 
 ```{r}
-# --- Paso 1: Filtrado de datos válidos ---
+# Paso 1: Filtrado de datos válidos
 # Se consideran estudiantes entre 16 y 29 años con promedio registrado
 DFx <- subset(DF, is.na(edad) | (edad >= 16 & edad <= 29))
 DFx <- subset(DFx, !is.na(prom_ciclo_pasado) & tipo_universidad %in% c("Privada", "Pública"))
 
-# --- Paso 2: Separación por tipo de universidad ---
+# Paso 2: Separación por tipo de universidad
 Priv <- subset(DFx, tipo_universidad == "Privada")
 Publ <- subset(DFx, tipo_universidad == "Pública")
 ```
@@ -515,7 +515,7 @@ $$
 $$
 
 ```{r}
-# --- Paso 3: Cálculo de medias y desviaciones estándar ---
+# Paso 3: Cálculo de medias y desviaciones estándar 
 mean(Priv$prom_ciclo_pasado)   # Media Privada
 sd(Priv$prom_ciclo_pasado)     # Desviación estándar Privada
 
@@ -581,7 +581,7 @@ $$
 $$
 
 ```{r}
-# --- Paso 5: Prueba t para la diferencia de medias (Welch) ---
+# Paso 5: Prueba t para la diferencia de medias (Welch)
 t.test(Priv$prom_ciclo_pasado, Publ$prom_ciclo_pasado,
        var.equal = FALSE, conf.level = 0.96)
 ```
