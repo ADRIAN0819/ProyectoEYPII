@@ -186,7 +186,7 @@ El proyecto es factible ya que:
 
 Gracias a estas características, se puede realizar un análisis completo y cumplir con los requerimientos metodológicos del curso. En futuras entregas se adjuntará la base de datos en formato CSV (UTF-8).
 
-# PARTE 1
+# LECTURA BASE DE DATOS
 
 ```{r}
 library(readr)
@@ -730,12 +730,24 @@ print(paste("IC: (", extremo_inferior, ";", extremo_superior, ")"))
 Los resultados obtenidos con la muestra fueron los siguientes:
 
 $$
-\text{Tamaño del grupo 1 (uso nocturno alto): } 287 \\
+\text{Tamaño del grupo 1 (uso nocturno alto): } 287 
+$$
+$$
 \text{Tamaño del grupo 2 (uso nocturno bajo): } 79 \\
+$$
+$$
 \text{Proporciones muestrales: } (p_1 = 0.4216), (p_2 = 0.3671) \\
+$$
+$$
 \text{Diferencia: } (\hat{p}_1 - \hat{p}_2 = 0.0545) \\
+$$
+$$
 \text{Error estándar: } 0.0616 \\
+$$
+$$
 \text{Margen de error: } 0.1264 \\
+$$
+$$
 \text{IC 96%: } [-0.0719, 0.1810]
 $$
 
