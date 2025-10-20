@@ -453,6 +453,8 @@ DF <- DF %>%
 
 ## Situación 1 — IC para una **proporción**
 
+### Planteamiento
+
 ¿Qué proporción de estudiantes **usa redes sociales para acceder a información académica**?
 
 ```{r}
@@ -487,9 +489,9 @@ Con un nivel de significación α=0.04 (confianza del 96%), estimamos la proporc
 
 ## Situación 2 — Diferencia de medias: rendimiento (pública vs privada)
 
-Tratamos de comparar el impacto del uso de redes sociales en el rendimiento académico entre estudiantes de universidades públicas y privadas.
+### Planteamiento
 
-**Pregunta de investigación:**\
+Tratamos de comparar el impacto del uso de redes sociales en el rendimiento académico entre estudiantes de universidades públicas y privadas.\
 ¿Difieren las medias de `prom_ciclo_pasado` entre los tipos de universidad (Pública vs Privada)?
 
 ```{r}
@@ -525,6 +527,8 @@ sd(Priv$prom_ciclo_pasado)     # Desviación estándar Privada
 mean(Publ$prom_ciclo_pasado)   # Media Pública
 sd(Publ$prom_ciclo_pasado)     # Desviación estándar Pública
 ```
+
+Complementaremos el análisis con el fundamento teórico detrás del código en R:
 
 ### Diferencia de medias y error estándar
 
@@ -590,6 +594,112 @@ t.test(Priv$prom_ciclo_pasado, Publ$prom_ciclo_pasado,
 ```
 
 Con un nivel de confianza del 96%, se encontró que los estudiantes de universidades privadas presentan un promedio de rendimiento entre **2.20 y 4.99 puntos superior** al de los estudiantes de universidades públicas. Dado que el intervalo de confianza no incluye el valor cero y el p-valor es extremadamente bajo (p \< 0.001), se concluye que **existe una diferencia significativa** en el rendimiento académico promedio según el tipo de universidad.
+
+## Situación 3- Diferencia de proporciones: Impacto en salud mental según uso nocturno de redes sociales
+
+### Planteamiento
+
+En esta situación se busca analizar si los universitarios peruanos de 16 a 29 años que usan redes sociales con mayor frecuencia antes de dormir (≥5 noches por semana) presentan mayor proporción de alto impacto en salud mental (niveles 4 y 5 en la escala) que quienes no lo hacen tan seguido.
+
+### Fundamento teórico
+
+El intervalo de confianza para la **diferencia de proporciones** se utiliza cuando se desea comparar la proporción de éxito en dos grupos independientes.\
+Sea:
+
+$$
+\hat{p}_1 = \frac{x_1}{n_1}, \qquad \hat{p}_2 = \frac{x_2}{n_2}
+$$
+
+donde:
+
+$$
+(x_1), (x_2): \text{ número de individuos que presentan la característica de interés (éxitos).} \\
+(n_1), (n_2): \text{ tamaños muestrales de cada grupo.}
+$$
+
+El estimador puntual de la diferencia es:
+
+$$
+\hat{p}_1 - \hat{p}_2
+$$
+
+y su error estándar se calcula como:
+
+$$
+SE = \sqrt{\frac{\hat{p}_1(1-\hat{p}_1)}{n_1} + \frac{\hat{p}_2(1-\hat{p}_2)}{n_2}}
+$$
+
+El intervalo de confianza al nivel (1 - alpha) es entonces:
+
+$$
+(\hat{p}_1 - \hat{p}_2) \pm z_{1-\alpha/2} \times SE
+$$
+
+Si el intervalo **incluye el valor cero**, no se puede afirmar que exista una diferencia estadísticamente significativa entre las proporciones de ambos grupos.
+
+### Desarrollo y código
+
+```{r}
+DF16_29 <- DF |>
+  filter(as.integer(edad) >= 16, as.integer(edad) <= 29)
+
+# Definir alto uso nocturno y alto impacto (codificación numérica 1–5)
+DFy <- DF16_29 |>
+  mutate(
+    alto_noct    = dias_redes_antes_de_dormir >= 5,
+    alto_impacto = as.numeric(impacto_redes_salud_mental) >= 4
+  ) |>
+  filter(!is.na(alto_noct), !is.na(alto_impacto))
+
+# Conteos por grupo
+n1 <- sum(DFy$alto_noct)                            
+x1 <- sum(DFy$alto_noct & DFy$alto_impacto)         
+n2 <- sum(!DFy$alto_noct)                           
+x2 <- sum(!DFy$alto_noct & DFy$alto_impacto)        
+
+# Proporciones muestrales
+p1 <- x1/n1
+p2 <- x2/n2
+
+# Nivel de confianza (96%)
+nc <- 0.96
+alpha <- 1 - nc
+z_crítico <- qnorm(1 - alpha/2, 0, 1)
+
+# Cálculo del intervalo de confianza (Wald)
+error_estandar <- sqrt(p1*(1-p1)/n1 + p2*(1-p2)/n2)
+margen_de_error <- z_crítico * error_estandar
+extremo_inferior <- (p1 - p2) - margen_de_error
+extremo_superior <- (p1 - p2) + margen_de_error
+
+print(paste("IC: (", extremo_inferior, ";", extremo_superior, ")"))
+```
+
+Los resultados obtenidos con la muestra fueron los siguientes:
+
+$$
+\text{Tamaño del grupo 1 (uso nocturno alto): } 287 \\
+\text{Tamaño del grupo 2 (uso nocturno bajo): } 79 \\
+\text{Proporciones muestrales: } (p_1 = 0.4216), (p_2 = 0.3671) \\
+\text{Diferencia: } (\hat{p}_1 - \hat{p}_2 = 0.0545) \\
+\text{Error estándar: } 0.0616 \\
+\text{Margen de error: } 0.1264 \\
+\text{IC 96%: } [-0.0719, 0.1810]
+$$
+
+```{r}
+# Reproducción del intervalo con los valores hallados
+p1 <- 0.4216; p2 <- 0.3671; n1 <- 287; n2 <- 79
+z <- qnorm(0.98)
+se <- sqrt(p1*(1-p1)/n1 + p2*(1-p2)/n2)
+li <- (p1-p2) - z*se; ls <- (p1-p2) + z*se
+c(LI = li, LS = ls)
+```
+
+Con un **nivel de confianza del 96 %**, la diferencia de proporciones de estudiantes con **alto impacto en salud mental** entre quienes usan redes **≥ 5 noches por semana** y quienes lo hacen con menor frecuencia se encuentra entre **−7.2 % y +18.1 %**.
+
+Dado que el intervalo **incluye 0**, **no se evidencia una diferencia estadísticamente significativa** entre ambos grupos.\
+Sin embargo, el valor puntual (≈ 5.4 % más alto en los de uso nocturno intenso) sugiere una **tendencia leve** hacia mayor afectación entre quienes utilizan redes sociales con mayor frecuencia antes de dormir.
 
 # Bibliografía
 
