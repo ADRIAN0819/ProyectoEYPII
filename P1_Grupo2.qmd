@@ -119,7 +119,7 @@ tabla <- tribble(
   1, "edad", "¿Cuál es tu edad?", "Cuantitativo discreto", "Demográfica",
   2, "sexo", "¿Cuál es tu sexo?", "Cualitativo nominal", "Demográfica",
   3, "tipo_universidad", "¿Estás en una universidad privada o pública?", "Cualitativo nominal", "Demográfica",
-  4, "prom_estudio_dia", "¿Cuántas horas en promedio al día estudias?", "Cualitativo ordinal", "Académica",
+  4, "prom_estudio_dia", "¿Cuántas horas en promedio al día estudias?", "Cuantitativo continuo", "Académica",
   5, "prom_dia_whatsapp", "¿Cuántas horas al día en promedio usas WhatsApp?", "Cualitativo ordinal", "Redes Sociales",
   6, "prom_dia_instagram", "¿Cuántas horas al día en promedio usas Instagram?", "Cualitativo ordinal", "Redes Sociales",
   7, "prom_dia_tiktok", "¿Cuántas horas al día en promedio usas TikTok?", "Cualitativo ordinal", "Redes Sociales",
@@ -137,8 +137,8 @@ tabla <- tribble(
   19, "dias_redes_antes_de_dormir", "¿Cuántos días a la semana sueles usar redes sociales antes de dormir?", "Cuantitativo discreto", "Redes Sociales",
   20, "tipo_contenido_redes_sociales", "¿Qué tipo de contenido consumes principalmente en redes sociales?", "Cualitativo nominal", "Redes Sociales",
   21, "satisfaccion_interaccion_social_presencial", "¿Qué tan satisfecho estás con tu interacción social presencial con amigos o compañeros en tu centro de estudio y/o trabajo?", "Cualitativo ordinal", "Social",
-  22, "afecta_concentracion_rendimiento", "¿Consideras que el uso de redes sociales afecta tu capacidad de concentración y rendimiento académico?", "Cualitativo ordinal", "Académica",
-  23, "impacto_redes_actividades_extracurriculares", "¿Consideras que el uso de redes sociales te motiva o desmotiva a participar en actividades extracurriculares?", "Cualitativo ordinal", "Actividades",
+  22, "afecta_concentracion_rendimiento", "¿Cuanto consideras que el uso de redes sociales afecta tu capacidad de concentración y rendimiento académico?", "Cualitativo ordinal", "Académica",
+  23, "impacto_redes_actividades_extracurriculares", "¿Cuanto consideras que el uso de redes sociales te motiva o desmotiva a participar en actividades extracurriculares?", "Cualitativo ordinal", "Actividades",
   24, "impacto_redes_salud_mental", "¿Qué tanto sientes que el uso excesivo de redes sociales puede afectar tu salud mental (autoestima, etc.)?", "Cualitativo ordinal", "Salud Mental",
   25, "momento_uso_redes_sociales", "¿En qué momento del día usas más las redes sociales?", "Cualitativo nominal", "Redes Sociales",
   26, "uso_redes_academicas", "¿Utilizas las redes sociales para acceder a información académica?", "Cualitativo nominal", "Redes Sociales",
@@ -279,19 +279,22 @@ kable(result_table, row.names = FALSE)
 
 ```
 
-```{r}
-df_na
-```
-
 # P1
 
 ## Tamaño de muestra para nuestra data
 
+Primero, hallamos el tamaño total de nuestra data, para darnos una idea de con qué estamos trabajando.
+
 ```{r}
 nrow(df_na)
 ```
+### Variables cuantitativas
 
-Primero, hallaremos el tamaño de muestra óptimo para nuestras variables cuantitativas:
+Nuestra población es de 1419 personas, lo cual es bastante. Entonces, sería muy útil sacar una muestra para realizar estimaciones sobre la media o la varianza.
+
+Por ello, hallaremos el tamaño de muestra óptimo para nuestras variables cuantitativas:
+
+Procedemos a ver cuáles son nuestras variables cuantitativas de nuestro dataset.
 
 ```{r}
 variables_numericas <- sapply(df_na, is.numeric)
@@ -301,6 +304,10 @@ cat("Variables cuantitativas encontradas:\n")
 print(variables_cuantitativas)
 ```
 
+En clase, se nos fue proporcionado un código que nos sacaba un tamaño de muestra en base a la desviación estándar, el nivel de confianza y la toleracia (hiperparámetro).
+
+Nuestro nivel de confianza es de 96%. Pero tenemos que hallar las desviaciones estándar de nuestros atributos cuantitativos. Por ello, hallamos las desviaciones
+
 ```{r}
 # Calcular desviaciones estándar
 desviaciones <- sapply(df_na[variables_cuantitativas], sd, na.rm = TRUE)
@@ -308,6 +315,8 @@ desviaciones <- sapply(df_na[variables_cuantitativas], sd, na.rm = TRUE)
 cat("\nDesviaciones estándar:\n")
 print(desviaciones)
 ```
+
+Ahora calculamos los tamaños de muestra para nuestro atributos:
 
 ```{r echo=TRUE}
 Tamaño_muestra_media<-function (ds, nc, t){return ((qnorm((1+nc)/2)*ds/t)^2)}
@@ -322,29 +331,36 @@ Tamaño_muestra_media(desv.est,nc,t)
 
 Tamaño de muestra para:
 
-edad: 257.1364 (Tol: 0.3)
+-   edad: 257.1364 (Tol: 0.3)
 
-prom_estudio_dia: 319.7174 (Tol: 0.3)
+-   prom_estudio_dia: 319.7174 (Tol: 0.3)
 
-prom_ciclo_pasado: 298.0289 (Tol: 0.6)
+-   prom_ciclo_pasado: 298.0289 (Tol: 0.6)
 
-total_cursos_actuales: 347.5482 (Tol: 0.15)
+-   total_cursos_actuales: 347.5482 (Tol: 0.15)
 
-horas_ejercicio_semanal: 263.6122 (Tol: 0.5)
+-   horas_ejercicio_semanal: 263.6122 (Tol: 0.5)
 
-horas_sueño_xnoche: 272.9765 (Tol: 0.15)
+-   horas_sueño_xnoche: 272.9765 (Tol: 0.15)
 
-tiempo_max_sin_redes_dia: 300.8955 (Tol: 0.6)
+-   tiempo_max_sin_redes_dia: 300.8955 (Tol: 0.6)
 
-notificaciones_estudio_diario: 331.1856 (Tol: 1.5)
+-   notificaciones_estudio_diario: 331.1856 (Tol: 1.5)
 
-dias_redes_antes_de_dormir: 390.2158 (Tol: 0.2)
+-   dias_redes_antes_de_dormir: 390.2158 (Tol: 0.2)
 
-interaccion_persona_amigos_redes: 334.123 (Tol: 1)
+-   interaccion_persona_amigos_redes: 334.123 (Tol: 1)
 
-Entonces, la muestra máxima cuantitativa sería: 347.5482 que pasa a ser 348
+Para hallar el tamaño de muestra, aplicamos: 
 
-Para variables cualitativas:
+$$
+n=\max_{1\leq i\leq M} n_{i}
+$$
+Es decir, de todos los tamaños de muestra que tenemos, tenemos que elegir el más grande. Entonces, la muestra máxima cuantitativa sería: 347.5482 que pasa a ser 348.
+
+### Variables Cualitativas
+
+Para variables cualitativas, necesitamos saber las proporciones de cada valor que puede tomar cada atributo cuanlitativo.
 
 ```{r}
 # Identificar variables cualitativas
@@ -417,11 +433,20 @@ Tamaños de muestra cualitativa para:
 
 19. "prom_dia_x": 345.4175 (Tol: 0.050)
 
+Volvemos a usar: 
+
+$$
+n=\max_{1\leq i\leq M} n_{i}
+$$
 Entonces, nuestro tamaño de muestra máximo cualitativo sería 365.5023 que pasa a ser 366.
+
+## Tamaño final de la muestra:
 
 Para elegir el tamaño de muestra final aplicamos: máx(max_cuantitativo, max_cualitativo)
 
 Comparando el máximo tamaño de muestra cuantitativo con el cualitativo, tenemos que nuestro tamaño de muestra final será de 366.
+
+Entonces, sacamos la muestra y la guardamos en un csv, para los futuros ejercicios.
 
 ```{r}
 # Para que los resultados sean reproducibles
