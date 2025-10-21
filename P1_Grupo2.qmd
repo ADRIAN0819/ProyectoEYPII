@@ -1,5 +1,5 @@
 ---
-title: "P0_EstadisticaII"
+title: "P1_EstadisticaII"
 author: 
   - "Adrian Urbina Mendoza"
   - "Luciana Yangali Cáceres"
