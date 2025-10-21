@@ -1,5 +1,5 @@
 ---
-title: "P1_EstadisticaII"
+title: "P0_EstadisticaII"
 author: 
   - "Adrian Urbina Mendoza"
   - "Luciana Yangali Cáceres"
@@ -523,7 +523,506 @@ DF <- DF %>%
 
 # P2
 
-------------------------------------------------------------------------
+
+### **Caso de Estudio 1:**
+
+Efecto del uso nocturno de redes sociales en las horas de sueño de estudiantes universitarios
+
+#### *Contexto:*
+
+El incremento del uso nocturno de redes sociales entre los jóvenes universitarios se ha asociado con una reducción en las horas de descanso, afectando su concentración y bienestar general.
+
+Se desea analizar si los estudiantes que usan redes sociales más de 5 noches por semana duermen significativamente menos horas que aquellos que las usan menos de 3 noches por semana. Este análisis contribuye al objetivo de comparar el impacto del uso de redes sociales en el rendimiento académico y la calidad del sueño de los universitarios.
+
+#### *Tipo de análisis y distribución utilizada:*
+
+El objetivo es comparar las medias de horas de sueño entre dos grupos independientes (A y B), definidos por su frecuencia de uso nocturno de redes sociales.
+
+\
+Por ello, se analizará la distribución muestral de la diferencia de medias, que nos permite inferir si la diferencia observada entre ambos grupos es estadísticamente significativa o podría deberse al azar.
+
+Dado que ambas muestras superan los 30 elementos y se desconoce la distribución poblacional de las horas de sueño, se aplica el Teorema del Límite Central (TLC), que garantiza que la distribución muestral de las medias se aproxima a una distribución normal. La diferencia de medias muestrales se distribuye como:
+
+$$
+\bar{X}_A - \bar{X}_B \sim N\left(
+  \mu_A - \mu_B,\;
+  \sqrt{\frac{\sigma_A^2}{n_A} + \frac{\sigma_B^2}{n_B}}
+\right)
+$$
+
+#### *Variables utilizadas:*
+
+-   `dias_redes_antes_de_dormir` : número de días por semana que el estudiante usa redes antes de dormir.
+
+-   `horas_sueño_xnoche` : promedio de horas dormidas por noche.
+
+#### *Grupos definidos:*
+
+-   Grupo A: quienes usan redes ≤ 3 días por semana
+
+-   Grupo B: quienes usan redes ≥ 5 días por semana
+
+```{r}
+
+# Crear grupos
+grupo_A <- DF %>% filter(dias_redes_antes_de_dormir <= 3)
+grupo_B <- DF %>% filter(dias_redes_antes_de_dormir >= 5)
+```
+
+#### *Estadísticos descriptivos:*
+
+Se necesitan los promedios, desviaciones estándar de `horas_sueño_xnoche` en cada grupo, y sus tamaños muestrales (`n`):
+
+```{r}
+# Estadísticos resumen
+resumen = DF %>%
+  mutate(grupo = case_when(
+    dias_redes_antes_de_dormir <= 3 ~ "A_poco_uso",
+    dias_redes_antes_de_dormir >= 5 ~ "B_alto_uso",
+    TRUE ~ "intermedio"
+  )) %>%
+  filter(grupo != "intermedio") %>%
+  group_by(grupo) %>%
+  summarise(
+    n = n(),
+    media = mean(horas_sueño_xnoche, na.rm = TRUE),
+    sd = sd(horas_sueño_xnoche, na.rm = TRUE)
+  )
+
+resumen
+```
+
+De aca se obtiene que:
+
+-   El grupo A cuenta con 54 registros, un $\overline{x}$ de 6,2222 y un $s$ de 1,4879
+
+-   El grupo B cuenta con 287 registros, un $\overline{x}$ de 6,2578 y un $s$ de 1,1631
+
+Estos valores son nuestras estimaciones de los parámetros poblacionales.
+
+#### *Cálculos inferenciales:*
+
+-   La diferencia de medias:
+
+$$
+\bar{X}_A - \bar{X}_B
+$$Esta cantidad representa cuánto difiere, en promedio, el número de horas de sueño entre los dos grupos.
+
+-   La desviación estándar de la diferencia:
+
+$$
+\sigma_{\bar{X}_A - \bar{X}_B} = \sqrt{\frac{s_A^2}{n_A} + \frac{s_B^2}{n_B}}
+$$
+
+donde:
+
+1.  $s_A, s_B$ son las desviaciones estándar muestrales de cada grupo,
+
+2.  $n_A,n_B$ son los tamaños de muestra
+
+3.  $\sigma_{\bar{X} _A - \bar{X}_B}$ mide la variabilidad esperada entre posibles diferencias de medias si se repite el muestreo muchas veces.
+
+-   Probabilidad de observar una diferencia igual o mayor a 0.5 horas:
+
+Se utiliza la distribución normal estándar:
+
+$$
+P(\bar{X}_A - \bar{X}_B \ge 0.5) = 1 - \Phi\left(
+  \frac{0.5 - (\bar{X}_A - \bar{X}_B)}{
+    \sigma_{\bar{X}_A - \bar{X}_B}
+  }
+\right)
+$$
+
+donde $\Phi(z)$ es la función de distribución acumulada de la normal estándar.
+
+A continuación se calculan la diferencia de medias, su desviación estándar y la probabilidad de observar una diferencia de al menos 0.5 horas.
+
+```{r}
+# Extraer valores del resumen
+muA = resumen$media[resumen$grupo == "A_poco_uso"]
+muB = resumen$media[resumen$grupo == "B_alto_uso"]
+sigmaA = resumen$sd[resumen$grupo == "A_poco_uso"]
+sigmaB = resumen$sd[resumen$grupo == "B_alto_uso"]
+nA = resumen$n[resumen$grupo == "A_poco_uso"]
+nB = resumen$n[resumen$grupo == "B_alto_uso"]
+
+# Media y desviación de la diferencia
+media_dif = muA - muB
+desv_dif = sqrt((sigmaA^2 / nA) + (sigmaB^2 / nB))
+
+# Probabilidad de que la diferencia sea >= 0.5 h
+probabilidad = pnorm(0.5, mean = media_dif, sd = desv_dif, lower.tail = FALSE)
+
+media_dif; desv_dif; probabilidad
+```
+
+Se obtuvo que:
+
+-   La diferencia promedio real entre los grupos (en horas):
+
+    $$
+    |\bar{X}_A - \bar{X}_B|=0.0356
+    $$
+
+-   La desviación estándar de la diferencia muestral:
+
+    $$
+    \sigma_{\bar{X}_A - \bar{X}_B} = 0.2138
+    $$
+
+-   La probabilidad de una diferencia mayor o igual a 0.5 horas:
+
+    $$
+    P(\bar{X}_A - \bar{X}_B \ge 0.5) = 0.0061
+    $$
+
+#### *Visualización de la distribución muestral:*
+
+```{r, echo=FALSE}
+# Crear un rango de posibles diferencias
+difs <- seq(-1, 1, length.out = 200)
+densidad <- dnorm(difs, mean = media_dif, sd = desv_dif)
+
+ggplot(data.frame(difs, densidad), aes(x = difs, y = densidad)) +
+  geom_line(color = "steelblue", size = 1) +
+  geom_vline(xintercept = 0.5, color = "red", linetype = "dashed") +
+  labs(
+    title = "Distribución muestral de la diferencia de medias",
+    x = "Diferencia de medias (horas)",
+    y = "Densidad"
+  ) +
+  theme_minimal()
+
+```
+
+El gráfico muestra que la distribución muestral de la diferencia de medias está centrada cerca de cero, lo que indica una diferencia promedio mínima en las horas de sueño entre los grupos. La línea roja (diferencia de 0.5 horas) cae en la cola derecha de la distribución, donde la probabilidad es muy baja, evidenciando que sería poco común observar una diferencia tan grande por azar. Esto respalda la conclusión de que el uso nocturno frecuente de redes sociales no se asocia significativamente con una menor cantidad de sueño en esta muestra.
+
+#### *Interpretación de los resultados:*
+
+Los resultados muestran que la diferencia promedio real en las horas de sueño entre ambos grupos es muy pequeña (≈ 0.036 horas). La desviación estándar muestral de la diferencia es 0.214, lo que sugiere una baja variabilidad entre posibles diferencias obtenidas en muestras similares. La probabilidad de observar una diferencia igual o mayor a 0.5 horas fue 0.0061, lo que indica que es muy poco probable que ocurra por azar.
+
+Por tanto, el uso frecuente de redes antes de dormir no parece asociarse con una reducción significativa en las horas de sueño dentro de esta muestra.
+
+Sin embargo, es importante considerar que pueden existir otros factores (como el nivel de estrés o el tipo de contenido consumido) que moderen esta relación.
+
+En conclusión, los resultados no respaldan la hipótesis de una diferencia significativa en las horas de sueño asociada al uso frecuente de redes sociales antes de dormir.
+
+
+
+## Caso de estudio 2:
+
+Se desea evaluar la variabilidad en el tiempo de estudio diario entre estudiantes universitarios de diferente sexo que utilizan redes sociales de manera intensa, para este caso será enfocada en Instagram. Se tienen 2 poblaciones, una de sexo femenino y otra de sexo masculino. El primer grupo son los estudiantes de sexo masculino que usan Instagram más de 3 horas al día. El otro grupo son los estudiantes de sexo femenino que usan Instagram más de 3 horas al día. ¿Cuál es la probabilidad de que la varianza del promedio de horas de estudio diarias de los estudiantes masculinos que usan Instagram más de 3 horas al día supere a la varianza de las estudiantes femeninas que usan Instagram más de 3 horas al día en un 40% de su valor?
+
+### Variables a utilizar:
+
+-   `sexo` : Determina el sexo del estudiante.
+
+-   `prom_estudio_dia` : promedio de horas de estudio en el día.
+
+### Solución
+
+Primero, tenemos que hallar las dos poblaciones: Masculino y Femenino.
+
+```{r}
+# Población 1: Masculino
+datos_masculino <- DF %>%
+  filter(sexo == "Masculino") %>%
+  filter(!is.na(prom_estudio_dia))
+
+# Población 2: Femenino
+datos_femenino <- DF %>%
+  filter(sexo == "Femenino") %>%
+  filter(!is.na(prom_estudio_dia))
+```
+
+Ahora podemos sacar las varianzas de nuestras poblaciones:
+
+```{r}
+varF <- var(datos_femenino$prom_estudio_dia)
+varF
+```
+
+```{r}
+varM <- var(datos_masculino$prom_estudio_dia)
+varM
+```
+
+Ahora hallamos el tamaño de nuestras muestras, para masculino como para femenino:
+
+```{r, echo=FALSE}
+
+M_2 <- datos_masculino %>%
+  filter(prom_dia_instagram %in% c("Entre 3-6 horas", "Entre 6-9 horas", "Entre 9-12 horas")) %>%
+  filter(!is.na(prom_estudio_dia)) %>%
+  filter(!is.na(sexo))
+
+cat("=== DATOS FILTRADOS ===\n")
+cat("Total de estudiantes masculinos que usan Instagram >3 horas (nm):", nrow(M_2), "\n\n")
+
+```
+
+```{r, echo=FALSE}
+
+F_2 <- datos_femenino %>%
+  filter(prom_dia_instagram %in% c("Entre 3-6 horas", "Entre 6-9 horas", "Entre 9-12 horas")) %>%
+  filter(!is.na(prom_estudio_dia)) %>%
+  filter(!is.na(sexo))
+
+cat("=== DATOS FILTRADOS ===\n")
+cat("Total de estudiantes femeninos que usan Instagram >3 horas (nf):", nrow(F_2), "\n\n")
+
+```
+
+Podemos visualizar estas dos muestras de la siguiente manera:
+
+```{r, echo=FALSE}
+# Combinar ambos dataframes y agregar columna de sexo
+M_2_plot <- M_2 %>%
+  mutate(sexo = "Masculino")
+
+F_2_plot <- F_2 %>%
+  mutate(sexo = "Femenino")
+
+# Unir ambos dataframes
+datos_combinados <- bind_rows(M_2_plot, F_2_plot) %>%
+  mutate(sexo = factor(sexo, levels = c("Femenino", "Masculino")))
+
+# Crear boxplot comparativo
+ggplot(datos_combinados, aes(x = sexo, y = prom_estudio_dia, fill = sexo)) +
+  geom_boxplot(alpha = 0.7, outlier.color = "red", outlier.shape = 16) +
+  geom_jitter(width = 0.2, alpha = 0.3, size = 2) +
+  stat_summary(fun = mean, geom = "point", shape = 23, size = 4, 
+               fill = "white", color = "black", stroke = 1.5) +
+  labs(title = "Distribución del Tiempo de Estudio por Sexo",
+       subtitle = "Estudiantes que usan Instagram >3 horas/día",
+       x = "Sexo",
+       y = "Horas de Estudio Diarias",
+       caption = paste0("n(Masculino) = ", nrow(M_2), 
+                       " | n(Femenino) = ", nrow(F_2),
+                       "\nVar(M) = ", round(var(M_2$prom_estudio_dia, na.rm = TRUE), 3),
+                       " | Var(F) = ", round(var(F_2$prom_estudio_dia, na.rm = TRUE), 3))) +
+  scale_fill_manual(values = c("Femenino" = "#FF69B4", "Masculino" = "#4169E1")) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+        plot.subtitle = element_text(hjust = 0.5, size = 11),
+        plot.caption = element_text(hjust = 0.5, size = 9),
+        legend.position = "none",
+        axis.title = element_text(face = "bold"),
+        panel.grid.major.x = element_blank())
+
+```
+
+ Los resultados muestran que la varianza del tiempo de estudio en hombres (11.834) es aproximadamente 2.37 veces mayor que en mujeres (4.99), superando ampliamente el umbral del 40% establecido en la pregunta de investigación. Esta diferencia sustancial indica que los estudiantes masculinos presentan una mayor inconsistencia en sus hábitos de estudio, con algunos estudiando muy poco y otros dedicando hasta 20 horas diarias, mientras que las estudiantes femeninas mantienen patrones más regulares y concentrados alrededor de 4 horas diarias.
+ 
+ Esto implica que el uso intensivo de Instagram afecta de manera diferenciada la consistencia de los hábitos de estudio según el género: las mujeres demuestran mayor autorregulación y estabilidad en sus rutinas académicas a pesar del uso intensivo de redes sociales, mientras que los hombres exhiben comportamientos más polarizados, con mayor dispersión entre aquellos que compensan el tiempo en redes estudiando más y aquellos que se distraen considerablemente. Este hallazgo resulta relevante para comprender cómo las redes sociales impactan diferencialmente el rendimiento académico según características demográficas de los estudiantes universitarios.
+
+
+A continuación, calculamos la probabilidad:
+
+$$
+P\left(S_M^2 \geq S_F^2 \cdot 1{,}40\right) \
+=P\left(\frac{S_M^2}{S_F^2} \cdot \frac{\sigma_M^2}{\sigma_F^2} \geq 1{,}40 \frac{\sigma_M^2}{\sigma_F^2}\right) \
+=P\left(F(nm-1, nf-1) \geq 1{,}40\frac{\sigma_M^2}{\sigma_F^2}\right)
+$$
+
+Siendo:
+
+-   nm: Tamaño de muestra de masculino
+-   nf: tamaño de muestra de femenino.
+
+```{r}
+pf(1.40*varM/varF,41,33, lower.tail = FALSE)
+```
+
+### Conclusiones
+
+Se halló que la probabilidad es de aproximadamente 6%. Esto significa que, si repetimos el muestreo muchas veces, solo en aproximadamente 6 de cada 100 muestras observaríamos que la varianza masculina supera en 40% o más a la femenina. Este resultado sugiere que aunque es poco probable que esta diferencia de varianzas ocurra por azar en muestras aleatorias, en los datos observados el fenómeno está claramente presente.
+
+
+
+## Caso de estudio 3:
+
+Se desea analizar si los estudiantes que realizan más horas de ejercicio físico a la semana presentan, en promedio, un rendimiento académico previo (medido como el prom_ciclo_pasado) al menos 0.5 puntos superior al de aquellos que realizan menos actividad física.
+
+Para ello, se utilizarán las siguientes variables del conjunto de datos:
+
+-   *prom_ciclo_pasado:* variable continua, que representa el promedio académico obtenido por el estudiante en el ciclo anterior.
+
+-   *horas_ejercicio_semanal:* variable discreta, que indica el número de horas dedicadas al ejercicio físico por semana. Se utilizará para dividir la muestra en dos grupos:
+
+    -   *Alto ejercicio:* estudiantes que realizan 5 horas o más por semana.
+
+    -   *Bajo ejercicio:* estudiantes que realizan menos de 5 horas por semana.
+
+-   *prom_estudio_dia:* variable continua, que representa las horas promedio de estudio diario. Esta variable podrá considerarse más adelante como covariable para controlar su posible efecto en el rendimiento.
+
+El análisis se basará en el uso de distribuciones muestrales de la diferencia de medias y la aproximación normal proporcionada por el Teorema Central del Límite (TCL).
+
+### Concepto Estadistico
+
+Aplicaremos una distribución muestral de la diferencia de medias. Si se extraen muestras independientes de dos poblaciones, la diferencia muestral de medias
+
+$$
+\overline{X_1} - \overline{X_2}
+$$
+
+se distribuye aproximadamente como una normal:
+
+$$
+\overline{X_1} - \overline{X_2} ~ N( \mu_1 - \mu_2, \sqrt{\frac{S^2_1}{n_1}+\frac{S^2_2}{n_2}}
+$$ Usaremos esta distribución para hallar la probabilidad de que la diferencia sea \>= 0.5.
+
+### Resolución práctica
+
+Transformamos la variable para poder evaluarla por intervalos:
+
+```{r}
+DF_S3 <- DF %>%
+  mutate(
+    grupo_ejercicio = ifelse(horas_ejercicio_semanal >= 5, 
+                            "Alto ejercicio (≥5h)", 
+                            "Bajo ejercicio (<5h)")
+  )
+```
+
+Vemos la frecuencia y proporción de cada clase:
+
+```{r}
+tabla_freq <- table(DF_S3$grupo_ejercicio)
+cat("\nDistribución de estudiantes por grupo:\n")
+print(tabla_freq)
+cat("\nPorcentajes:\n")
+print(prop.table(tabla_freq) * 100)
+```
+
+Vemos los datos estádisticos
+
+```{r, echo=FALSE}
+estadisticas <- DF_S3 %>%
+  group_by(grupo_ejercicio) %>%
+  summarise(
+    n = n(),
+    media = mean(prom_ciclo_pasado, na.rm = TRUE),
+    mediana = median(prom_ciclo_pasado, na.rm = TRUE),
+    desv_std = sd(prom_ciclo_pasado, na.rm = TRUE),
+    varianza = var(prom_ciclo_pasado, na.rm = TRUE),
+    minimo = min(prom_ciclo_pasado, na.rm = TRUE),
+    maximo = max(prom_ciclo_pasado, na.rm = TRUE),
+    Q1 = quantile(prom_ciclo_pasado, 0.25, na.rm = TRUE),
+    Q3 = quantile(prom_ciclo_pasado, 0.75, na.rm = TRUE),
+    error_std = sd(prom_ciclo_pasado) / sqrt(n())
+  )
+print(estadisticas)
+```
+
+\
+Revisamos las distribuciones mediante histogramas:
+
+```{r, echo=FALSE}
+# Gráfico 1: Histogramas por grupo
+p1 <- ggplot(DF_S3, aes(x = prom_ciclo_pasado, fill = grupo_ejercicio)) +
+  geom_histogram(alpha = 0.6, position = "identity", bins = 20) +
+  facet_wrap(~grupo_ejercicio, ncol = 1) +
+  labs(title = "Distribución del Promedio Académico por Grupo",
+       x = "Promedio Ciclo Pasado",
+       y = "Frecuencia") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+# Gráfico 2: Boxplots comparativos
+p2 <- ggplot(DF_S3, aes(x = grupo_ejercicio, y = prom_ciclo_pasado, 
+                        fill = grupo_ejercicio)) +
+  geom_boxplot(alpha = 0.7) +
+  geom_jitter(width = 0.2, alpha = 0.3) +
+  stat_summary(fun = mean, geom = "point", shape = 23, size = 3, 
+               fill = "red", color = "red") +
+  labs(title = "Comparación de Promedios Académicos",
+       subtitle = "El rombo rojo indica la media",
+       x = "Grupo de Ejercicio",
+       y = "Promedio Ciclo Pasado") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+# Gráfico 3: Densidad
+p3 <- ggplot(DF_S3, aes(x = prom_ciclo_pasado, fill = grupo_ejercicio)) +
+  geom_density(alpha = 0.5) +
+  geom_vline(DF_S3 = estadisticas, aes(xintercept = media, color = grupo_ejercicio),
+             linetype = "dashed", size = 1) +
+  labs(title = "Distribución de Densidad por Grupo",
+       x = "Promedio Ciclo Pasado",
+       y = "Densidad",
+       fill = "Grupo",
+       color = "Media") +
+  theme_minimal()
+
+# Mostrar gráficos
+print(p1)
+print(p2)
+```
+
+Vamos a separar los grupos por las clases en que clasificamos la variable de promedio de horas de ejercicio. De esta manera calcularemos sus estadísticos mustrales.\
+
+```{r, echo=FALSE}
+# Separar grupos
+grupo_alto <- DF_S3 %>% filter(grupo_ejercicio == "Alto ejercicio (≥5h)")
+grupo_bajo <- DF_S3 %>% filter(grupo_ejercicio == "Bajo ejercicio (<5h)")
+```
+
+```{r, echo=FALSE}
+# Estadísticos muestrales
+n1 <- nrow(grupo_alto)
+n2 <- nrow(grupo_bajo)
+x_barra1 <- mean(grupo_alto$prom_ciclo_pasado, na.rm= TRUE)
+x_barra2 <- mean(grupo_bajo$prom_ciclo_pasado, na.rm= TRUE)
+s1 <- sd(grupo_alto$prom_ciclo_pasado, na.rm= TRUE)
+s2 <- sd(grupo_bajo$prom_ciclo_pasado, na.rm= TRUE)
+```
+
+```{r, echo=FALSE}
+cat("\n--- Estadísticos Muestrales ---\n")
+cat(sprintf("Grupo Alto Ejercicio: n₁ = %d, x̄₁ = %.4f, s₁ = %.4f\n", n1, x_barra1, s1))
+cat(sprintf("Grupo Bajo Ejercicio: n₂ = %d, x̄₂ = %.4f, s₂ = %.4f\n", n2, x_barra2, s2))
+```
+
+Tenemos un $n_2 =245$ con un $\overline{X_2} = 13.2061$ y $S_2=4.8043$
+
+```{r, echo=FALSE}
+# Diferencia observada
+diferencia_obs <- x_barra1 - x_barra2
+cat(sprintf("\nDiferencia observada: x̄₁ - x̄₂ = %.4f\n", diferencia_obs))
+```
+
+```{r, echo=FALSE}
+# Error estándar de la diferencia
+delta0 <- 0.5021
+ee_diferencia <- sqrt((s1^2/n1) + (s2^2/n2))
+ee_diferencia
+```
+
+```{r}
+# Estadístico Z
+z_calculado <- (diferencia_obs - delta0) / ee_diferencia
+cat(sprintf("\nEstadístico de prueba: Z = %.4f\n", z_calculado))
+```
+
+
+```{r}
+# Valor crítico y p-valor
+alpha <- 0.05
+z_critico <- qnorm(1 - alpha)
+p_valor <- 1 - pnorm(z_calculado)
+cat(sprintf("Valor crítico (α=0.05): Z_crítico = %.4f\n", z_critico))
+cat(sprintf("P-valor: %.6f\n", p_valor))
+```
+
+### Conclusiones:
+
+No existe evidencia estadística suficiente para afirmar que los estudiantes con alto nivel de ejercicio físico tienen, en promedio, un rendimiento académico previo **al menos 0.5 puntos superior** al de los estudiantes con bajo nivel de ejercicio.
+
+En otras palabras, aunque el grupo con mayor actividad física podría mostrar una leve diferencia positiva, **esta no es estadísticamente significativa** según los datos disponibles.
+
+
 
 # P3 INTERVALOS DE CONFIANZA
 
