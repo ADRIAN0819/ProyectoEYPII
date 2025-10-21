@@ -288,6 +288,7 @@ Primero, hallamos el tamaño total de nuestra data, para darnos una idea de con 
 ```{r}
 nrow(df_na)
 ```
+
 ### Variables cuantitativas
 
 Nuestra población es de 1419 personas, lo cual es bastante. Entonces, sería muy útil sacar una muestra para realizar estimaciones sobre la media o la varianza.
@@ -351,12 +352,11 @@ Tamaño de muestra para:
 
 -   interaccion_persona_amigos_redes: 334.123 (Tol: 1)
 
-Para hallar el tamaño de muestra, aplicamos: 
+Para hallar el tamaño de muestra, aplicamos:
 
 $$
 n=\max_{1\leq i\leq M} n_{i}
-$$
-Es decir, de todos los tamaños de muestra que tenemos, tenemos que elegir el más grande. Entonces, la muestra máxima cuantitativa sería: 347.5482 que pasa a ser 348.
+$$ Es decir, de todos los tamaños de muestra que tenemos, tenemos que elegir el más grande. Entonces, la muestra máxima cuantitativa sería: 347.5482 que pasa a ser 348.
 
 ### Variables Cualitativas
 
@@ -433,12 +433,11 @@ Tamaños de muestra cualitativa para:
 
 19. "prom_dia_x": 345.4175 (Tol: 0.050)
 
-Volvemos a usar: 
+Volvemos a usar:
 
 $$
 n=\max_{1\leq i\leq M} n_{i}
-$$
-Entonces, nuestro tamaño de muestra máximo cualitativo sería 365.5023 que pasa a ser 366.
+$$ Entonces, nuestro tamaño de muestra máximo cualitativo sería 365.5023 que pasa a ser 366.
 
 ## Tamaño final de la muestra:
 
@@ -532,7 +531,24 @@ DF <- DF %>%
 
 ### Planteamiento
 
-¿Qué proporción de estudiantes **usa redes sociales para acceder a información académica**?
+Estimar, con **96% de confianza**, la **proporción de estudiantes** que **utilizan redes sociales para acceder a información académica** en la población objetivo.
+
+### Población y variable
+
+-   **Población:** estudiantes universitarios considerados en el estudio.\
+-   **Variable:** `uso_redes_academicas` (Sí/No). Éxito = “Sí”.
+
+## Método de estimación (IC 96%)
+
+A partir de la muestra de tamaño $$n$$, se calcula la proporción muestral $$\hat p = x/n$$ y el **intervalo de confianza (IC) de Wald**:
+
+$$
+\hat p \pm z_{0.98}\,\sqrt{\frac{\hat p(1-\hat p)}{n}}.
+$$
+
+donde $$z_{0.98} \approx 2.0537$$ corresponde a un nivel de confianza del 96% donde α=0.04
+
+### Cálculo en R
 
 ```{r}
 # IC 96% para una proporción (Wald) usando la muestra en DF
