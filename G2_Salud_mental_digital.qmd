@@ -95,7 +95,7 @@ En Perú, el tema de salud mental digital está cobrando relevancia instituciona
 
 Se han podido identificar las siguientes variables en la base de datos escogida:
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
 library(tibble)
 library(knitr)
@@ -193,11 +193,11 @@ El proyecto es factible ya que:
 
 Gracias a estas características, se puede realizar un análisis completo y cumplir con los requerimientos metodológicos del curso. En futuras entregas se adjuntará la base de datos en formato CSV (UTF-8).
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 DF <- read_csv("Estudiantes.csv", col_types = cols(.default = "c"))
 ```
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 DF <- DF %>%
   mutate(
     edad = as.integer(edad),
@@ -253,11 +253,7 @@ DF <- DF %>%
 
 ```
 
-```{r}
-str(DF)
-```
-
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 df_na <- DF
 
 n <- nrow(df_na)
@@ -276,7 +272,7 @@ kable(result_table, row.names = FALSE)
 
 ```
 
-# P1 OBTENER LA MUESTRA
+# Obtención de la muestra
 
 ## Tamaño de muestra para nuestra data
 
@@ -294,7 +290,7 @@ Por ello, hallaremos el tamaño de muestra óptimo para nuestras variables cuant
 
 Procedemos a ver cuáles son nuestras variables cuantitativas de nuestro dataset.
 
-```{r}
+```{r echo=FALSE}
 variables_numericas <- sapply(df_na, is.numeric)
 variables_cuantitativas <- names(df_na)[variables_numericas]
 
@@ -306,17 +302,17 @@ En clase, se nos fue proporcionado un código que nos sacaba un tamaño de muest
 
 Nuestro nivel de confianza es de 96%. Pero tenemos que hallar las desviaciones estándar de nuestros atributos cuantitativos. Por ello, hallamos las desviaciones
 
-```{r}
+```{r echo=FALSE}
 # Calcular desviaciones estándar
 desviaciones <- sapply(df_na[variables_cuantitativas], sd, na.rm = TRUE)
 
-cat("\nDesviaciones estándar:\n")
+cat("Desviaciones estándar:\n")
 print(desviaciones)
 ```
 
 Ahora calculamos los tamaños de muestra para nuestro atributos:
 
-```{r echo=TRUE}
+```{r echo=FALSE}
 Tamaño_muestra_media<-function (ds, nc, t){return ((qnorm((1+nc)/2)*ds/t)^2)}
 
 desv.est=8.900324#desviación estándar  (dato)
@@ -361,7 +357,7 @@ Es decir, de todos los tamaños de muestra que tenemos, tenemos que elegir el m�
 
 Para variables cualitativas, necesitamos saber las proporciones de cada valor que puede tomar cada atributo cuanlitativo.
 
-```{r}
+```{r echo=FALSE}
 # Identificar variables cualitativas
 variables_no_numericas <- sapply(df_na, function(x) !is.numeric(x))
 variables_cualitativas <- names(df_na)[variables_no_numericas]
@@ -370,7 +366,7 @@ cat("Variables cualitativas encontradas:\n")
 print(variables_cualitativas)
 ```
 
-```{r}
+```{r echo=FALSE}
 # Para una variable específica
 variable <- variables_cualitativas[19]  # Primera variable cualitativa
 tabla_frecuencias <- table(df_na[[variable]])
@@ -382,7 +378,7 @@ print(proporciones)
 
 Observación: En nuestro dataset, hay algunas variables cualitativas que tienen más de dos valores posibles, por lo que no se puede usar directamente el código proporcionado por el profesor. Por ende, se hará uso de la proporción que sea más cercana a 0.5, o la más conservadora.
 
-```{r}
+```{r echo=FALSE}
 Tamaño_muestral_proporciones<-function (po, nc, t){return (po*(1-po)*((qnorm((1+nc)/2) /t)^2) )}
 
 po=0.712758375  #Proporcion poblacional o proporcion estimada
@@ -448,23 +444,23 @@ Comparando el máximo tamaño de muestra cuantitativo con el cualitativo, tenemo
 
 Entonces, sacamos la muestra y la guardamos en un csv, para los futuros ejercicios.
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 # Para que los resultados sean reproducibles
 set.seed(123)  # Cualquier número
 max_size = 366
 muestra <- df_na[sample(nrow(df_na), max_size), ]
 ```
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 muestra
 ```
 
-```{r}
+```{r echo=FALSE}
 #Para guardar la muerta en un csv
 #write_csv(muestra, "muestra.csv")
 ```
 
-```{r}
+```{r echo=FALSE}
 write_csv(muestra, "muestra.csv")
 ```
 
@@ -518,7 +514,7 @@ DF <- DF %>%
   )
 ```
 
-```{r}
+```{r echo=FALSE}
 # Verificar estructura de datos
 cat("Dimensiones del dataset:", nrow(DF), "filas x", ncol(DF), "columnas\n")
 cat("Total de observaciones válidas para análisis:",
@@ -527,7 +523,7 @@ cat("Total de observaciones válidas para análisis:",
                                "dias_redes_antes_de_dormir")])), "\n")
 ```
 
-# P2 CASOS DE DISTRIBUCIONES
+# Analísis de las distribuciones
 
 ### Caso 1
 
@@ -686,7 +682,7 @@ Se obtuvo que:
 
 #### Visualización de la distribución muestral:
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Crear un rango de posibles diferencias
 difs <- seq(-1, 1, length.out = 200)
 densidad <- dnorm(difs, mean = media_dif, sd = desv_dif)
@@ -717,17 +713,17 @@ En conclusión, los resultados no respaldan la hipótesis de una diferencia sign
 
 ## Caso 2
 
-## Contexto
+#### Contexto
 
 Se desea evaluar la variabilidad en el tiempo de estudio diario entre estudiantes universitarios de diferente sexo que utilizan redes sociales de manera intensa, para este caso será enfocada en Instagram. Se tienen 2 poblaciones, una de sexo femenino y otra de sexo masculino. El primer grupo son los estudiantes de sexo masculino que usan Instagram más de 3 horas al día. El otro grupo son los estudiantes de sexo femenino que usan Instagram más de 3 horas al día. ¿Cuál es la probabilidad de que la varianza del promedio de horas de estudio diarias de los estudiantes masculinos que usan Instagram más de 3 horas al día supere a la varianza de las estudiantes femeninas que usan Instagram más de 3 horas al día en un 40% de su valor?
 
-### Variables a utilizar:
+#### Variables a utilizar:
 
 -   `sexo` : Determina el sexo del estudiante.
 
 -   `prom_estudio_dia` : promedio de horas de estudio en el día.
 
-### Solución
+#### Solución
 
 Primero, tenemos que hallar las dos poblaciones: Masculino y Femenino.
 
@@ -841,11 +837,11 @@ Siendo:
 pf(1.40*varM/varF,41,33, lower.tail = FALSE)
 ```
 
-### Conclusiones
+#### Conclusiones
 
 Se halló que la probabilidad es de aproximadamente 6%. Esto significa que, si repetimos el muestreo muchas veces, solo en aproximadamente 6 de cada 100 muestras observaríamos que la varianza masculina supera en 40% o más a la femenina. Este resultado sugiere que aunque es poco probable que esta diferencia de varianzas ocurra por azar en muestras aleatorias, en los datos observados el fenómeno está claramente presente.
 
-# Caso 3
+## Caso 3
 
 Se desea analizar si los estudiantes que realizan más horas de ejercicio físico a la semana presentan, en promedio, un rendimiento académico previo (medido como el prom_ciclo_pasado) al menos 0.5 puntos superior al de aquellos que realizan menos actividad física.
 
@@ -863,7 +859,7 @@ Para ello, se utilizarán las siguientes variables del conjunto de datos:
 
 El análisis se basará en el uso de distribuciones muestrales de la diferencia de medias y la aproximación normal proporcionada por el Teorema Central del Límite (TCL).
 
-### Concepto Estadistico
+#### Concepto Estadistico
 
 Aplicaremos una distribución muestral de la diferencia de medias. Si se extraen muestras independientes de dos poblaciones, la diferencia muestral de medias
 
@@ -879,7 +875,7 @@ $$
 
 Usaremos esta distribución para hallar la probabilidad de que la diferencia sea \>= 0.5.
 
-### Resolución práctica
+#### Resolución práctica
 
 Transformamos la variable para poder evaluarla por intervalos:
 
@@ -924,7 +920,7 @@ print(estadisticas)
 
 Revisamos las distribuciones mediante histogramas:
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Gráfico 1: Histogramas por grupo
 p1 <- ggplot(DF_S3, aes(x = prom_ciclo_pasado, fill = grupo_ejercicio)) +
   geom_histogram(alpha = 0.6, position = "identity", bins = 20) +
@@ -952,8 +948,9 @@ p2 <- ggplot(DF_S3, aes(x = grupo_ejercicio, y = prom_ciclo_pasado,
 # Gráfico 3: Densidad
 p3 <- ggplot(DF_S3, aes(x = prom_ciclo_pasado, fill = grupo_ejercicio)) +
   geom_density(alpha = 0.5) +
-  geom_vline(DF_S3 = estadisticas, aes(xintercept = media, color = grupo_ejercicio),
-             linetype = "dashed", size = 1) +
+  geom_vline(data = estadisticas,
+           aes(xintercept = media, color = grupo_ejercicio),
+           linetype = "dashed", size = 1) +
   labs(title = "Distribución de Densidad por Grupo",
        x = "Promedio Ciclo Pasado",
        y = "Densidad",
@@ -1020,13 +1017,13 @@ cat(sprintf("Valor crítico (α=0.05): Z_crítico = %.4f\n", z_critico))
 cat(sprintf("P-valor: %.6f\n", p_valor))
 ```
 
-### Conclusiones
+#### Conclusiones
 
 No existe evidencia estadística suficiente para afirmar que los estudiantes con alto nivel de ejercicio físico tienen, en promedio, un rendimiento académico previo **al menos 0.5 puntos superior** al de los estudiantes con bajo nivel de ejercicio.
 
 En otras palabras, aunque el grupo con mayor actividad física podría mostrar una leve diferencia positiva, **esta no es estadísticamente significativa** según los datos disponibles.
 
-# P3 INTERVALOS DE CONFIANZA
+# Analísis de los Intervalos de Confianza
 
 ## Caso 1: IC para una proporción
 
@@ -1099,7 +1096,7 @@ Priv <- subset(DFx, tipo_universidad == "Privada")
 Publ <- subset(DFx, tipo_universidad == "Pública")
 ```
 
-#### Estadísticas muestrales
+### Estadísticas muestrales
 
 $$
 \text{Para cada grupo } k \in \{1=\text{Privada},\,2=\text{Pública}\}:
@@ -1124,7 +1121,7 @@ sd(Publ$prom_ciclo_pasado)     # Desviación estándar Pública
 
 Complementaremos el análisis con el fundamento teórico detrás del código en R:
 
-#### Diferencia de medias y error estándar
+### Diferencia de medias y error estándar
 
 $$
 \hat\Delta=\bar x_1-\bar x_2,\qquad
@@ -1136,7 +1133,7 @@ $$
 SE=\sqrt{\frac{4.221017^2}{267}+\frac{6.145050^2}{98}}\approx 0.67235.
 $$
 
-#### Grados de libertad:
+### Grados de libertad:
 
 $$
 \nu \approx 
@@ -1147,7 +1144,7 @@ $$
 \approx 132.06.
 $$
 
-#### Valor crítico (96%)
+### Valor crítico (96%)
 
 $$
 t^\* = t_{0.98,\ \nu\approx132} \approx 2.07.
@@ -1179,7 +1176,7 @@ extremo_inf
 extremo_sup
 ```
 
-#### Intervalo de confianza al 96%
+### Intervalo de confianza al 96%
 
 $$
 \hat\Delta \pm t^\* SE
@@ -1315,7 +1312,7 @@ Con un **nivel de confianza del 96 %**, la diferencia de proporciones de estudia
 Dado que el intervalo **incluye 0**, **no se evidencia una diferencia estadísticamente significativa** entre ambos grupos.\
 Sin embargo, el valor puntual (≈ 5.4 % más alto en los de uso nocturno intenso) sugiere una **tendencia leve** hacia mayor afectación entre quienes utilizan redes sociales con mayor frecuencia antes de dormir.
 
-# P4 ANÁLISIS DE CASOS CON PRUEBAS DE HIPOTESIS
+# Análisis con Pruebas de Hipotesis
 
 ## Caso 1: Comparación base del rendimiento académico entre universidades
 
@@ -1336,6 +1333,9 @@ Las proporciones a evaluar son:
 
 $$
 \pi_1 :\text{proporción de alumnos con promedio aprobatorio } (\geq 13) \text{en universidades privadas}\\
+$$
+
+$$
 \pi_2 : \text{proporción de alumnos con promedio aprobatorio } (\geq 13) \text{en universidades publicas}\\
 $$
 
@@ -1343,6 +1343,9 @@ Por lo cual nuestras hipótesis sería referentes a la igualdad de las proporcio
 
 $$   
 H_{o}:\text{No hay diferencia en la proporción de alumnos aprobados en ambas universidades} \\
+$$
+
+$$
 H_{a}:\text{Sí hay diferencia en la proporción de alumnos aprobados en ambas universidades}
 $$
 
@@ -1350,7 +1353,10 @@ De otra manera:
 
 $$
 H_o: \pi_1 = \pi_2\\
-H_a: \pi_2 \neq \pi_2
+$$
+
+$$
+H_a: \pi_1 \neq \pi_2
 $$
 
 Asumimos un 4% de significación.
@@ -1483,6 +1489,9 @@ Por lo cual nuestras hipótesis sería:
 
 $$
 H_o: \text{El promedio de las horas de sueño diario de los estudiantes es de almenos 7 horas} \\
+$$
+
+$$
 H_a: \text{El promedio de las horas de sueño diario de los estudiantes es menor a 7 horas}
 $$
 
@@ -1490,6 +1499,8 @@ De otra manera:
 
 $$
 H_o: \mu \ge 7 \\
+$$
+$$
 H_a: \mu < 7
 $$
 
@@ -1607,6 +1618,8 @@ De otra manera:
 
 $$
 H_o: \mu_1 = \mu_2 \\
+$$
+$$
 H_a: \mu_1 \neq \mu_2
 $$
 
@@ -1616,6 +1629,9 @@ Dado que es un problema de diferencia de medias, primero tendremos que comprobar
 
 $$
 H_o: \sigma_1 = \sigma_2 \\
+$$
+
+$$
 H_a: \sigma_1 \neq \sigma_2 
 $$
 
@@ -1788,7 +1804,7 @@ Aunque privadas tiene un valor ligeramente mayor (más impacto negativo percibid
 
 Ambos perciben que el impacto de las redes sociales en su rendimiento es medio, lo que puede indicar que no atribuyen su bajo rendimiento al consumo de las redes sociales.
 
-# P5 ANÁLISIS DE CASOS CON PRUEBAS NO PARA MÉTRICAS
+# Análisis con pruebas no parametrias
 
 ## Caso 1: Prueba de Independencia - Relación entre plataforma usada y rendimiento acadímico
 
@@ -1806,13 +1822,18 @@ Entonces nuestras hipótesis serían:
 
 $$
 H_o: \text{La red social que el estudiante usa con mayor frecuencia no esta asociada con la percepción de rendimiento} \\
+$$
+$$
 H_a: \text{La red social que el estudiante usa con mayor frecuencia esta asociada con la percepción de rendimiento}
 $$
 
 De otro modo:
 
 $$
-H_o: \text{Las dos variables son independientes} \\
+H_o: \text{Las dos variables son independientes}
+$$
+
+$$
 H_a: \text{Las dos variables son dependientes}
 $$
 
@@ -1820,7 +1841,7 @@ $$
 
 Primero se debe agrupar las redes sociales con muy pocos usuarios (como LinkedIn o Telegram) en una categoría "Otros". Esto se debe a que la prueba de Chi-Cuadrado funciona cuando hay al menos 5 personas por grupo. Algunas redes solo cuentan con 1 registro, como Linkedin. Si previamente no se agrupan en otra categoría, la fórmula matemática se rompe y el resultado no sería válido.
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 datos_red = read_csv("muestra.csv")
 
 # Agrupación de redes sociales (Preprocesamiento necesario)
@@ -1854,7 +1875,7 @@ Por lo que, los grados de libertad serían:
 
 Ahora, se calcularán los valores esperados. Verificamos cuántos estudiantes "debería" haber en cada celda si las variables no tuvieran relación.
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 chisq.test(tab)$expected  # Ver valores esperados en tabla cruzada
 ```
 
@@ -1892,7 +1913,7 @@ Dado que la variable *horas_ejercicio_semanal* no presenta distribución normal 
 
 **Visualizando distribución de la variable de Horas de ejercicio semanal**
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 DF$horas_ejercicio_semanal <- as.numeric(DF$horas_ejercicio_semanal)
 
 ggplot(DF, aes(x = factor(horas_ejercicio_semanal))) +
@@ -1909,12 +1930,16 @@ ggplot(DF, aes(x = factor(horas_ejercicio_semanal))) +
 
 La pregunta central:
 
-$$ \text{¿Los estudiantes universitarios realizan en medianana al menos 3 horas semanales de ejercicio físico?}$$
+$$ 
+\text{¿Los estudiantes universitarios realizan en medianana al menos 3 horas semanales de ejercicio físico?}
+$$
 
 Las Hipótesis serían:
 
 $$
-H_o: \text{La mediana del número de horas de ejercicio semanal es almenos de 3 horas}  \\
+H_o: \text{La mediana del número de horas de ejercicio semanal es almenos de 3 horas}
+$$
+$$
 H_a: \text{La mediana del número de horas de ejercicio semanal es menor a 3 horas} 
 $$
 
@@ -1967,7 +1992,9 @@ Si encontramos diferencias significativas, esto permite entender cuándo los est
 ### Planteamieto de Hipótesis
 
 $$
-H_o: \text{La distribución de la red social más usuada  por los estudiantes es uniforme. Se usan todas por igual}\\
+H_o: \text{La distribución de la red social más usuada  por los estudiantes es uniforme. Se usan todas por igual}
+$$
+$$
 H_a: \text{La distribución no es uniforme. Algunas plataformas se usan más que otras}
 $$
 
@@ -2067,7 +2094,7 @@ Esto indica que el uso de redes sociales presenta un patrón claramente diferenc
 
 -   mala higiene del sueño
 
-# P6 ANÁLISIS DE REGRESIÓN LINEAL MÚLTIPLE
+# Analisis de la Regresión Lineal Multiple
 
 ## Contexto y Objetivo
 
@@ -2360,7 +2387,7 @@ Con base en el modelo de regresión lineal múltiple ajustado, se pueden estable
 
 ------------------------------------------------------------------------
 
-# P7 DISEÑO EXPERIMENTAL - ANOVA DE UN FACTOR
+# Diseño del Experimento - Anova factor
 
 ## Contexto y Objetivo
 
@@ -2769,8 +2796,18 @@ for (i in 1:nrow(tukey_tabla)) {
 
 5.  **Recomendaciones**: Con base en estos hallazgos, se sugiere `r if(p_valor < 0.04) "implementar intervenciones educativas sobre higiene del sueño digital y establecer límites en el uso de redes sociales antes de dormir para mejorar el descanso y, consecuentemente, el rendimiento académico de los estudiantes" else "continuar monitoreando estos patrones y realizar estudios complementarios con muestras más grandes o diseños experimentales alternativos"`.
 
-------------------------------------------------------------------------
-# CONCLUSIONES GENERALES
+
+# Limitaciones del estudio
+
+El presente trabajo presenta algunas limitaciones que es importante considerar al interpretar los resultados. En primer lugar, el diseño del estudio es observacional y transversal: la información se obtuvo mediante una encuesta aplicada una sola vez durante el ciclo 2025-1, por lo que no se realizó seguimiento en el tiempo a los mismos estudiantes. Esto impide establecer relaciones causales entre el uso de redes sociales, los hábitos de vida y el rendimiento académico; sólo es posible identificar asociaciones
+
+En segundo lugar, la información proviene de un cuestionario de autorreporte. Esto implica posibles sesgos de memoria y de deseabilidad social; por ejemplo, algunos estudiantes podrían subestimar el tiempo real de uso de redes o sobreestimar sus horas de estudio y de sueño. Además, varias variables de salud mental y de impacto percibido se midieron con escalas tipo Likert diseñadas para este estudio y no mediante instrumentos clínicamente validados, lo que limita la comparabilidad con otras investigaciones.
+
+En tercer lugar, aunque la base de datos contiene un número elevado de observaciones y se trabajó con una muestra de tamaño adecuado, esta no necesariamente es representativa de todos los estudiantes universitarios del Perú. La mayor parte de los participantes proviene de un subconjunto de universidades y carreras, por lo que los resultados deben interpretarse como válidos para poblaciones de características similares, pero no generalizarse de forma automática a todo el sistema universitario.
+
+Finalmente, en los modelos estadísticos utilizados no se controló explícitamente por todas las posibles variables de confusión (por ejemplo, carga laboral, responsabilidades familiares o condiciones previas de salud mental). Es posible que parte de las asociaciones observadas esté influida por estos factores no medidos. A pesar de estas limitaciones, el estudio ofrece una primera aproximación cuantitativa al vínculo entre salud mental digital, hábitos de vida y rendimiento académico en estudiantes universitarios peruanos, y sienta una base sólida para investigaciones futuras más específicas.
+
+# Conclusiones Generales
 
 El presente estudio tuvo como propósito analizar la relación entre el uso de redes sociales, los hábitos de vida y la salud mental digital de estudiantes universitarios de 16 a 29 años matriculados en instituciones públicas y privadas durante el semestre 2025-1. Este análisis permitió comprender de manera integral cómo las prácticas digitales actuales se relacionan con el bienestar académico, emocional y físico de los estudiantes, en coherencia con los cinco objetivos planteados.
 
@@ -2789,7 +2826,7 @@ Finalmente, el análisis mediante ANOVA permitió evaluar si la cantidad de hora
 En conjunto, todos estos hallazgos ofrecen una visión multidimensional de la relación entre comportamiento digital y bienestar estudiantil, cumpliendo plenamente con el Objetivo 5 del curso al demostrar la aplicación rigurosa de técnicas estadísticas para comprender una problemática contemporánea de alta relevancia social. Este estudio no solo aporta evidencia empírica al contexto peruano —donde existe un vacío importante en la literatura— sino que también proporciona bases para futuras investigaciones y para el diseño de estrategias institucionales que promuevan un uso más equilibrado y saludable de las redes sociales en la comunidad universitaria.
 
 
-# RECOMENDACIONES
+# Recomendaciones
 
 ## Recomendaciones metodológicas para futuras investigaciones
 
@@ -2824,6 +2861,7 @@ En conjunto, todos estos hallazgos ofrecen una visión multidimensional de la re
 7. Incorporar apoyo psicológico preventivo, ofreciendo recursos de orientación sobre autocontrol digital, manejo del tiempo y regulación emocional, en línea con las necesidades detectadas en la población estudiada.
 
 8. Impulsar una cultura digital equilibrada, en la que se reconozca tanto el valor académico de las redes sociales como los riesgos asociados a su uso excesivo o desordenado.
+
 
 # Bibliografía
 
