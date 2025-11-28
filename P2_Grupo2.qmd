@@ -116,7 +116,725 @@ cat("Total de observaciones válidas para análisis:",
                                "dias_redes_antes_de_dormir")])), "\n")
 ```
 
-------------------------------------------------------------------------
+# ANÁLISIS DE CASOS CON PRUEBAS DE HIPOTESIS
+
+## Caso 1: Comparación base del rendimiento académico entre universidades
+
+La SUNEDU está estudiando los hábitos de estudio de los universitarios para comprender qué factores podrían influir en el rendimiento académico. Para evitar sesgos, solo se consideran **estudiantes que ya tienen al menos un ciclo cursado**, es decir, aquellos cuyo **promedio del ciclo anterior es mayor que 0**. Los estudiantes recién ingresados no se incluyen porque no cuentan con historial académico.
+
+En este estudio, se desea comparar a dos grupos:
+
+-   Estudiantes de universidades privadas
+
+-   Estudiantes de universidades públicas
+
+El objetivo es evaluar si **la proporción de estudiantes con promedio aprobatorio (≥ 13)** es similar en ambos tipos de universidad.\
+La dirección académica desea comprobar, con evidencia estadística, si ambas proporciones pueden considerarse iguales.
+
+### **Planteamiento de la hipótesis:**
+
+Las proporciones a evaluar son:
+
+$$
+\pi_1 :\text{proporción de alumnos con promedio aprobatorio } (\geq 13) \text{en universidades privadas}\\
+\pi_2 : \text{proporción de alumnos con promedio aprobatorio } (\geq 13) \text{en universidades publicas}\\
+$$
+
+Por lo cual nuestras hipótesis sería referentes a la igualdad de las proporciones:
+
+$$   
+H_{o}:\text{No hay diferencia en la proporción de alumnos aprobados en ambas universidades} \\
+H_{a}:\text{Sí hay diferencia en la proporción de alumnos aprobados en ambas universidades}
+$$
+
+De otra manera:
+
+$$
+H_o: \pi_1 = \pi_2\\
+H_a: \pi_2 \neq \pi_2
+$$
+
+Asumimos un 4% de significación.
+
+### **Resolución del caso**:
+
+Vamos a calcular las proporciones del dataset original de datos:
+
+```{r}
+datos = DF_muestra %>%
+  mutate(prom_ciclo_pasado = as.numeric(prom_ciclo_pasado)) %>% #Convertir texto a número
+  filter(prom_ciclo_pasado > 0) %>%#Filtro alumnos con al menos 1 ciclo
+  mutate(aprobado = ifelse(prom_ciclo_pasado >= 13, 1, 0))#
+
+#estudiantes de privada y que hayan aprobado
+n1 = sum(datos$tipo_universidad == "Privada")
+x1 = sum(datos$tipo_universidad == "Privada" & datos$aprobado == 1)
+
+#estudiantes de pública y que hayan aprobado
+n2 = sum(datos$tipo_universidad == "Pública")
+x2 = sum(datos$tipo_universidad == "Pública" & datos$aprobado == 1)
+
+#proporcion de aprobados/total estudiantes privada
+p1= x1/n1
+
+#proporcion de aprobados/total estudiantes privada
+p2 = x2/n2
+
+#calculando proporcion ponderada
+pp= (x1+x2)/(n1+n2)
+
+# Cálculo del Estadístico Z
+Zo = (p1-p2) / sqrt(pp * (1-pp) * (1/n1 + 1/n2))
+
+# Imprimimos los resultados
+print(paste("tamaño muestral A (Privada) =", n1))
+print(paste("tamaño muestral B (Pública) =", n2))
+print(paste("proporción muestral A =", round(p1, 4)))
+print(paste("proporción muestral B =", round(p2, 4)))
+print(paste("Proporción ponderada =", round(pp, 4)))
+print(paste("El estadístico de prueba Zo es", round(Zo, 4)))
+```
+
+Dado que es una prueba de dos colas ($\neq$) , la región sombreada (rechazo) estará en ambos extremos de la gráfica y cada área es $\alpha / 2 = 0.025$.
+
+Se tiene que calcular el valor crítico, es decir, el número (Z) que delimita la región de rechazo. Se calculará con la normal estándar.
+
+```{r}
+alfa = 0.04
+# Valor crítico izquierdo
+VC1 = qnorm(alfa/2, 0, 1) 
+print(paste("Valor Crítico Inferior:", VC1))
+
+# Valor crítico derecho
+VC2 = qnorm(1 - alfa/2, 0, 1)
+print(paste("Valor Crítico Superior:", VC2))
+```
+
+Como $Z_o = 5.81$, es mayor que $VC_2 = 2.05$, por lo que cae en la región sombreada.
+
+Por tanto, se rechaza $H_o$
+
+```{r}
+rango_limite <- max(abs(c(VC1, VC2, Zo))) + 1.5 
+x_vals <- seq(-rango_limite, rango_limite, length.out = 1000)
+df_norm <- data.frame(x = x_vals, y = dnorm(x_vals))
+
+# Tema gráfico (estético)
+tema_grafico <- theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+# --- Generación del Gráfico ---
+grafico1 <- ggplot(df_norm, aes(x, y)) +
+  geom_line(size = 1) +
+  
+  # 1. Áreas de rechazo (Rojo) usando tus variables VC1 y VC2
+  geom_area(data = subset(df_norm, x <= VC1), fill = "red", alpha = 0.3) +
+  geom_area(data = subset(df_norm, x >= VC2), fill = "red", alpha = 0.3) +
+  
+  # 2. Líneas de Valores Críticos (Rojo Discontinuo)
+  geom_vline(xintercept = c(VC1, VC2), linetype = "dashed", color = "red") +
+  
+  # 3. Línea del Estadístico de Prueba Zo (Azul)
+  geom_vline(xintercept = Zo, linetype = "dashed", color = "blue", size = 1) +
+  
+  # 4. Etiquetas de texto
+  annotate("text", x = VC1 - 0.2, y = 0.1, label = paste("VC:", round(VC1, 2)), color = "red", hjust = 1) +
+  annotate("text", x = VC2 + 0.2, y = 0.1, label = paste("VC:", round(VC2, 2)), color = "red", hjust = 0) +
+  
+  # Etiqueta para Zo (ajustada para que no se superponga si está lejos)
+  annotate("text", x = Zo, y = 0.15, label = paste("Zo:", round(Zo, 2)), color = "blue", vjust = -0.5) +
+  
+  # Etiqueta central de aceptación (Calculada con tu 'alfa')
+  annotate("text", x = 0, y = 0.2, label = paste("Región de Aceptación\n(", (1-alfa)*100, "%)", sep="")) +
+  
+  # Títulos
+  labs(title = "Caso 1: Prueba Z de Dos Colas (Proporciones)", x = "Estadístico Z") +
+  tema_grafico
+
+# Mostrar Gráfico
+print(grafico1)
+```
+
+### Conclusión:
+
+Dado que se rechaza $H_o$, existe evidencia estadística suficiente (con un 96% de confianza) para afirmar que sí hay diferencia en la proporción de aprobados entre universidades privadas y públicas. Los datos sugieren que el rendimiento no es igual en ambos grupos.
+
+## Caso 2: Hábitos de sueño para el bienestar corporal
+
+Una institución de bienestar universitario está evaluando los hábitos de sueño de los estudiantes, ya que en los últimos ciclos se han reportado incrementos en problemas de estrés, fatiga y bajo rendimiento académico.
+
+Con el fin de analizar la situación, se toma una **muestra aleatoria de estudiantes que cursan el periodo académico 2025-1** , para asegurar que ya están adaptados a la carga académica. A cada estudiante se le registró cuántas **horas de sueño** tiene en promedio por noche.
+
+Estudios previos sugieren que los estudiantes deberían dormir **al menos 7 horas diarias** para mantener un adecuado rendimiento y bienestar. Sin embargo, existe preocupación de que los estudiantes actuales estén durmiendo menos de esa cantidad.
+
+Para este análisis contamos con una muestra, obtenida previamente, de 366 estudiantes.
+
+### **Planteamiento de la hipótesis:**
+
+La media a evaluar es:
+
+$$
+\mu = \text{horas de sueño diarios de los estudiantes durante este ciclo}
+$$
+
+Por lo cual nuestras hipótesis sería:
+
+$$
+H_o: \text{El promedio de las horas de sueño diario de los estudiantes es de almenos 7 horas} \\
+H_a: \text{El promedio de las horas de sueño diario de los estudiantes es menor a 7 horas}
+$$
+
+De otra manera:
+
+$$
+H_o: \mu \ge 7 \\
+H_a: \mu < 7
+$$
+
+Asumimos un 4% de significación.
+
+### **Resolución del caso:**
+
+Dado que el tamaño de la muestra es grande ($n>30$) se aplicó el Teorema del Límite Central para utilizar el estadístico $T$. Se estandarizó la media muestral calculando cuántas desviaciones estándar se alejan del valor hipotético de 7 horas.
+
+```{r}
+#limpiamos variable a utilizar, borramos NAs
+datos_sueño = DF_muestra %>%
+  mutate(horas_sueño_xnoche = as.numeric(horas_sueño_xnoche)) %>%
+  filter(!is.na(horas_sueño_xnoche)) 
+
+#estadisticas de variable
+n = length(datos_sueño$horas_sueño_xnoche)
+media_muestral = mean(datos_sueño$horas_sueño_xnoche)
+desviacion_std = sd(datos_sueño$horas_sueño_xnoche)
+mu_hipotesis = 7
+
+#cálculo estadístico de prueba To
+
+error_estandar = desviacion_std / sqrt(n)
+To = (media_muestral - mu_hipotesis) / error_estandar
+
+print(paste("Tamaño de muestra (n) =", n))
+print(paste("Media muestral (x_barra) =", round(media_muestral, 4)))
+print(paste("Desviación estándar (S) =", round(desviacion_std, 4)))
+print(paste("Estadístico de prueba (To) =", round(To, 4)))
+```
+
+Al plantearse una hipótesis alternativa de 'menor que' ($H_a: \mu < 7$ ), se utilizará una prueba de **cola izquierda**. Se calculará **Valor Crítico** correspondiente a un $\alpha=0.04$. Si el estadístico calculado ($Z_{calc}$) es menor que el valor crítico, se rechaza la hipótesis nula, confirmando que el promedio de sueño es inferior al recomendado.
+
+```{r}
+alfa = 0.04
+VC = qnorm(alfa, 0, 1)
+
+print(paste("Valor Crítico (VC) =", round(VC, 4)))
+```
+
+Dado que $T_o = -11.39$ es mucho menor a $VC= -1.75$, cae en la región sombreada. Por tanto, se rechaza $H_o$.
+
+```{r}
+rango_limite <- max(abs(c(VC, To))) + 2 
+
+# Creamos la secuencia de datos para la curva
+x_vals <- seq(-rango_limite, rango_limite, length.out = 1000)
+df_norm <- data.frame(x = x_vals, y = dnorm(x_vals))
+
+tema_grafico <- theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+grafico2 <- ggplot(df_norm, aes(x, y)) +
+  geom_line(size = 1) +
+  
+  # 1. Área de rechazo (Cola izquierda roja) usando tu variable VC
+  geom_area(data = subset(df_norm, x <= VC), fill = "red", alpha = 0.3) +
+  
+  # 2. Línea del Valor Crítico (Rojo Discontinuo)
+  geom_vline(xintercept = VC, linetype = "dashed", color = "red") +
+  
+  # 3. Línea del Estadístico de Prueba To (Azul)
+  geom_vline(xintercept = To, linetype = "dashed", color = "blue", size = 1) +
+  
+  # 4. Etiquetas de texto
+  # Etiqueta para el Valor Crítico
+  annotate("text", x = VC + 0.5, y = 0.1, label = paste("VC:", round(VC, 2)), color = "red", hjust = 0) +
+  
+  # Etiqueta para el Estadístico To (ajustada para que no choque)
+  annotate("text", x = To, y = 0.05, label = paste("To:", round(To, 2)), color = "blue", vjust = -1) +
+  
+  # Texto de regiones
+  annotate("text", x = -rango_limite + 2, y = 0.02, label = "Región de\nRechazo", color = "red", size=3) +
+  annotate("text", x = 0, y = 0.15, label = paste("Región de Aceptación\n(", (1-alfa)*100, "%)", sep="")) +
+  
+  # Títulos
+  labs(title = "Caso 2: Prueba de Cola Izquierda (Media)", x = "Estadístico de Prueba") +
+  tema_grafico
+
+# Mostrar Gráfico 2
+print(grafico2)
+```
+
+### Conclusión
+
+Se concluye que existe evidencia suficiente (con un 96% de confianza) para afirmar que el promedio de horas de sueño de los estudiantes es **significativamente menor a 7 horas**. Esto valida la preocupación de la institución sobre el bienestar estudiantil.
+
+## Caso 3: Impacto percibido de redes sociales en la salud mental
+
+Como parte del estudio sobre comportamiento digital y bienestar estudiantil para el semestre 2025-1, se mide el **impacto percibido de las redes sociales en la salud mental** en una muestra representativa de estudiantes universitarios de 16 a 29 años (matriculados en universidades públicas y privadas). El impacto se valora en una escala Likert de **1 (ningún impacto)** a **5 (impacto muy negativo)** y, por convenio del equipo de investigación, se trata la escala como variable numérica continua para análisis de medias y comparación de grupos.
+
+El objetivo es ver un contraste estadístico que compare **la media del impacto percibido** entre estudiantes de **universidades privadas** y **universidades públicas**.
+
+### **Planteamiento de la hipótesis:**
+
+Nuestras medias a evaluar son:
+
+$$
+\mu_1 = \text{media verdadera del puntaje de impacto en universidades privadas} \\
+\mu_2 = \text{media verdadera del puntaje de impacto en universidades publicas}
+$$
+
+Queremos saber si **las medias son iguales** (hipótesis de igualdad).
+
+$$   
+H_{o}:\text{No hay diferencia en la media del puntaje de impacto en ambas universidades} \\
+H_{a}:\text{Sí hay diferencia en la media del puntaje de impacto en ambas universidades}
+$$
+
+De otra manera:
+
+$$
+H_o: \mu_1 = \mu_2 \\
+H_a: \mu_1 \neq \mu_2
+$$
+
+### **Resolución del caso**:
+
+Dado que es un problema de diferencia de medias, primero tendremos que comprobar si las varianzas de ambas poblaciones son iguales. Utilizaremos el **var.test** para comprobarlo, con un 96% de confianza y con las siguientes hipótesis:
+
+$$
+H_o: \sigma_1 = \sigma_2 \\
+H_a: \sigma_1 \neq \sigma_2 
+$$
+
+El nivel de significación es de:
+
+$$
+\alpha = 1 - 0.96 = 0.04
+$$\
+
+```{r}
+# Tratamos nuestras variables:
+DF_muestra$impacto_redes_salud_mental <- as.numeric(DF_muestra$impacto_redes_salud_mental)
+
+## Lo separamos en DF diferentes para publico y privado
+
+DF_publico <- DF_muestra %>% filter(tipo_universidad == "Pública")
+DF_privado <- DF_muestra %>% filter(tipo_universidad == "Privada")
+
+var.test(
+  DF_publico$impacto_redes_salud_mental,
+  DF_privado$impacto_redes_salud_mental,
+  null.value = 1,
+  alternative = "two.sided",
+  conf.level = 0.96
+)
+```
+
+**Resultados:**
+
+-   **Estadístico de prueba:** 1.194
+
+-   **p-valor:** 0.2717
+
+-   **Intervalo de Confianza:** (0.857, 1.709)
+
+**Gráfico:**
+
+```{r}
+library(ggplot2)
+
+# Parámetros del F-test
+To <- 1.194011
+VC_inf <- 0.731
+VC_sup <- 1.338
+alfa <- 0.04
+
+# Rango para graficar la densidad F
+x_vals <- seq(0, 4, length.out = 1000)
+df_norm <- data.frame(x = x_vals, y = df(x_vals, df1 = 98, df2 = 266))
+
+tema_grafico <- theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+
+ggplot(df_norm, aes(x, y)) +
+  geom_line(size = 1) +
+  
+  # Área de rechazo izquierda
+  geom_area(data = subset(df_norm, x <= VC_inf), fill = "red", alpha = 0.3) +
+  
+  # Área de rechazo derecha
+  geom_area(data = subset(df_norm, x >= VC_sup), fill = "red", alpha = 0.3) +
+  
+  # Líneas de valores críticos
+  geom_vline(xintercept = VC_inf, linetype="dashed", color="red") +
+  geom_vline(xintercept = VC_sup, linetype="dashed", color="red") +
+  
+  # Estadístico To
+  geom_vline(xintercept = To, linetype="dashed", color="blue", size=1) +
+  
+  annotate("text", x = To, y = 0.3, label = paste("To =", round(To,3)),
+           color="blue", vjust=-0.5) +
+  annotate("text", x = VC_inf, y = 0.25, label = paste("VC inf =", round(VC_inf,3)),
+           color="red", vjust=-0.5, hjust=1.1) +
+  annotate("text", x = VC_sup, y = 0.25, label = paste("VC sup =", round(VC_sup,3)),
+           color="red", vjust=-0.5, hjust=-0.1) +
+  
+  labs(title = "F-test: Comparación de Varianzas",
+       x = "Estadístico F") +
+  tema_grafico
+```
+
+### **Conclusión estadística:**
+
+$$
+p-valor > \alpha = 0.04
+$$
+
+**Entonces no se rechaza la hipótesis nula**
+
+No hay evidencia estadísticamente significativa para afirmar que las varianzas del impacto percibido de redes sociales son diferentes entre estudiantes de universidades públicas y privadas.
+
+Ahora pasamos a evaluar el **t.test** para corroborar la hipótesis de igualdad de medias:
+
+```{r}
+t.test(
+  DF_publico$impacto_redes_salud_mental,
+  DF_privado$impacto_redes_salud_mental,
+  mu = 0,
+  var.equal = TRUE,
+  alternative = "two.sided",
+  conf.level = 0.96
+)
+```
+
+**Resultados:**
+
+-   **Estadístico de prueba:** -0.92375
+
+-   **p-valor:** 0.3562
+
+-   **Intervalo de confianza:** (-0.408, 0.156)
+
+-   **Media pública:** 3.09094
+
+-   **Media privada:** 3.2172
+
+**Gráfico:**
+
+```{r}
+# Parámetros del t-test
+To <- -0.92375
+VC <- 2.054   # VC positivo, para graficar uso ±VC
+alfa <- 0.04
+
+# Rango para la densidad normal / t
+x_vals <- seq(-4, 4, length.out = 1000)
+df_norm <- data.frame(x = x_vals, y = dnorm(x_vals))
+
+ggplot(df_norm, aes(x, y)) +
+  geom_line(size = 1) +
+  
+  # Regiones de rechazo
+  geom_area(data = subset(df_norm, x <= -VC), fill="red", alpha=0.3) +
+  geom_area(data = subset(df_norm, x >=  VC), fill="red", alpha=0.3) +
+  
+  # Líneas de VC
+  geom_vline(xintercept = -VC, linetype="dashed", color="red") +
+  geom_vline(xintercept =  VC, linetype="dashed", color="red") +
+  
+  # Estadístico
+  geom_vline(xintercept = To, linetype="dashed", color="blue", size=1) +
+  
+  annotate("text", x = To, y = 0.1, label = paste("To =", round(To,3)),
+           color="blue", vjust=-0.5) +
+  
+  annotate("text", x = VC, y = 0.1, label = paste("VC =", round(VC,3)),
+           color="red", vjust=-0.5, hjust=-0.1) +
+  
+  annotate("text", x = -VC, y = 0.1, label = paste("VC =", round(-VC,3)),
+           color="red", vjust=-0.5, hjust=1.1) +
+  
+  labs(title = "t-test: Comparación de Medias",
+       x = "Estadístico t") +
+  tema_grafico
+
+
+```
+
+### **Conclusión estádistica:**
+
+$$
+p-value > \alpha = 0.04
+$$
+
+**No se rechaza la hipótesis nula**.
+
+No hay evidencia estadísticamente significativa para afirmar que las medias del impacto percibido de redes sociales sobre la salud mental **difieren entre estudiantes de universidades públicas y privadas**.
+
+Aunque privadas tiene un valor ligeramente mayor (más impacto negativo percibido), **la diferencia no es estadísticamente significativa**. Por lo tanto el impacto percibido de las redes sociales en la salud mental es similar entre estudiantes de universidades públicas y privadas.
+
+# ANÁLISIS DE CASOS CON PRUEBAS NO PARA MÉTRICAS
+
+## Caso 1: Prueba de Independencia - Relación entre plataforma usada y rendimiento acadímico
+
+En el marco de este estudio sobre hábitos digitales de estudiantes universitarios peruanos, es fundamental comprender no solo **cuánto** usan las redes sociales, sino también **cómo su elección de plataformas específicas podría estar relacionada con su rendimiento académico y bienestar**. Los estudiantes de 16 a 29 años, matriculados en universidades públicas y privadas durante el semestre 2025-1, utilizan de forma cotidiana plataformas como Instagram, TikTok, WhatsApp, Facebook o X. Estas redes presentan características distintas en cuanto a diseño, algoritmos, estímulos visuales y patrones de interacción, lo que podría generar **impactos diferenciados en la concentración y el desempeño académico**.
+
+Dentro de este contexto, uno de los aspectos que se busca evaluar es si **la red social que un estudiante usa con mayor frecuencia** está asociada a **la percepción de afectación en su concentración y rendimiento académico**, medida en una escala ordinal de Likert del 1 al 5.
+
+### **Planteamiento de Hipótesis**
+
+La pregunta central:
+
+**¿La red social más usada por los estudiantes está relacionada con el nivel de afectación en su concentración y rendimiento académico?**
+
+Entonces nuestras hipótesis serían:
+
+$$
+H_o: \text{La red social que el estudiante usa con mayor frecuencia no esta asociada con la percepción de rendimiento} \\
+H_a: \text{La red social que el estudiante usa con mayor frecuencia esta asociada con la percepción de rendimiento}
+$$
+
+De otro modo:
+
+$$
+H_o: \text{Las dos variables son independientes} \\
+H_a: \text{Las dos variables son dependientes}
+$$
+
+### **Resolución del caso**
+
+Primero se debe agrupar las redes sociales con muy pocos usuarios (como LinkedIn o Telegram) en una categoría "Otros". Esto se debe a que la prueba de Chi-Cuadrado funciona cuando hay al menos 5 personas por grupo. Algunas redes solo cuentan con 1 registro, como Linkedin. Si previamente no se agrupan en otra categoría, la fórmula matemática se rompe y el resultado no sería válido.
+
+```{r}
+datos_red = read_csv("muestra.csv")
+
+# Agrupación de redes sociales (Preprocesamiento necesario)
+# Las redes principales se mantienen, el resto se agrupa en "Otros"
+datos_red <- datos_red %>%
+  mutate(red_agrupada = case_when(
+    red_mas_usada %in% c("Whatsapp", "Tiktok", "Instagram") ~ red_mas_usada,
+    TRUE ~ "Otros"
+  )) %>%
+  filter(!is.na(afecta_concentracion_rendimiento))
+
+head(datos_red[c("red_agrupada", "afecta_concentracion_rendimiento")])
+```
+
+Se genera una la tabla cruzada para ver cómo se distribuyen los estudiantes según su red favorita y su nivel de afectación (1 al 5).
+
+```{r}
+tab <- table(datos_red$red_agrupada, datos_red$afecta_concentracion_rendimiento)
+tab
+```
+
+De la tabla se obtiene lo siguiente:
+
+-   m=4 filas (Instagram, Tiktok, WhatsApp, Otros)
+
+-   n= 5 columnas (Nivel de afectación: 1, 2, 3, 4, 5)
+
+Por lo que, los grados de libertad serían:
+
+**GL = (4-1)\*(5-1)=12**
+
+Ahora, se calcularán los valores esperados. Verificamos cuántos estudiantes "debería" haber en cada celda si las variables no tuvieran relación.
+
+```{r}
+chisq.test(tab)$expected  # Ver valores esperados en tabla cruzada
+```
+
+Ahora, se obtendrá el Estadístico de Prueba.
+
+```{r}
+chisq.test(tab)  # estadístico y p-valor
+```
+
+Como el **P-valor = 0.7231 \> 0.04:** No rechazo $H_o$. (Las variables son independientes; usar TikTok o WhatsApp da lo mismo para la concentración).
+
+Además, **X-squared = 8.7623** es el estadístico de prueba.
+
+Ahora, se calcula el valor crítico que limita a la región sombreada (cola derecha) para un nivel de confianza del 96%.
+
+$$
+VC=\chi^2(1-\alpha,(F-1)*(C-1))=\chi^2 (0.96, 12) 
+$$
+
+```{r}
+qchisq(0.96, 12) 
+```
+
+### Conclusión 
+
+Como X-squared \< 21.026, no cae en la región sombreada. Además, como el P-valor \> 0.04, **No rechazo Ho**.
+
+Se concluye que no existe evidencia suficiente para afirmar que la red social elegida influye en el nivel de afectación de la concentración. **Los datos son independientes**.
+
+## Caso 2: Regla de decisión - Análisis de la salud corporal con las horas de ejercicio semanal
+
+Se quiere implementar actividades extracurriculares para el bienestar físico y mental de los estudiantes. Como parte del estudio sobre bienestar estudiantil en universitarios peruanos de 16 a 29 años durante el semestre 2025-1, se analiza si el nivel de ejercicio semanal de los estudiantes es adecuado desde una perspectiva de salud. Las guías de la Organización Mundial de la Salud recomiendan al menos **3 horas de ejercicio a la semana** para jóvenes adultos.
+
+Dado que la variable *horas_ejercicio_semanal* no presenta distribución normal y contiene valores discretos con asimetría, se decide aplicar una **prueba no paramétrica basada en la mediana poblacional** para evaluar si el nivel de actividad física de los estudiantes cumple con los estándares recomendados.
+
+**Visualizando distribución de la variable de Horas de ejercicio semanal**
+
+```{r}
+DF_muestra$horas_ejercicio_semanal <- as.numeric(DF_muestra$horas_ejercicio_semanal)
+
+ggplot(DF_muestra, aes(x = factor(horas_ejercicio_semanal))) +
+  geom_bar() +
+  labs(
+    title = "Distribución de Horas de Ejercicio Semanal",
+    x = "Horas de Ejercicio",
+    y = "Frecuencia"
+  ) +
+  theme_minimal()
+```
+
+### **Planteando Hipótesis**
+
+La pregunta central:
+
+$$ \text{¿Los estudiantes universitarios realizan en medianana al menos 3 horas semanales de ejercicio físico?}$$
+
+Las Hipótesis serían:
+
+$$
+H_o: \text{La mediana del número de horas de ejercicio semanal es almenos de 3 horas}  \\
+H_a: \text{La mediana del número de horas de ejercicio semanal es menor a 3 horas} 
+$$
+
+### **Resolución del caso**
+
+Se deben contar cuántos estudiantes están por encima y por debajo de la mediana planteada ($M = 3$ ).
+
+-   Los que hacen **más** de 3 horas ($+$) .
+
+-   Los que hacen **menos** de 3 horas ($-$).
+
+```{r}
+datos_ejercicio = DF_muestra$horas_ejercicio_semanal[!is.na(DF_muestra$horas_ejercicio_semanal)]
+
+mu=3
+
+diferencias = datos_ejercicio - mu
+
+n_pos = sum(diferencias > 0) #Hacen más de 3h
+n_neg= sum(diferencias < 0) #Hacen menos de 3h
+n_total = n_pos + n_neg
+
+print(paste("Estudiantes con > 3 horas de ejercicio (+):", n_pos, "\n"))
+print(paste("Estudiantes con < 3 horas de ejercicio (-):", n_neg, "\n"))
+print(paste("Total de estudiantes (n):", n_total))
+```
+
+152 estudiantes superan las 3 horas de ejercicio, mientras que 165 no alcanzan dicha cifra. Aunque hay más estudiantes en el grupo negativo, la diferencia no es significativa.
+
+Se utilizará la Prueba de Signos debido a la naturaleza no paramétrica de la variable a evaluar. Esta prueba permite evaluar si esta mediana poblacional difiere significativamente del estándar de 3 horas.
+
+```{r}
+resultado_signo = SIGN.test(datos_ejercicio, md = 3, alternative = "less", conf.level = 0.96)
+
+print(resultado_signo)
+```
+
+### Conclusión
+
+Al realizar la prueba de signos con un nivel de confianza del 96% ($\alpha = 0.04$), obtuvimos un P-valor de 0.2502. Dado que $0.2502 > 0.04$, no se rechaza la Hipótesis Nula.
+
+Se concluye que la mediana poblacional es al menos 3 horas, por lo que los, en la población de estudiantes, se está cumpliendo elestándar mínimo de la OMS.
+
+## Caso 3: Prueba de bondad de Ajuste - Analísis del patrón de uso de redes sociales en un día
+
+Uno de nuestros objetivos es **identificar los patrones de uso de redes sociales**, y una forma de hacerlo es evaluar si el uso se distribuye uniformemente a lo largo del día.
+
+Si encontramos diferencias significativas, esto permite entender cuándo los estudiantes están más conectados y cómo eso puede relacionarse con el rendimiento académico o la calidad del sueño.
+
+### **Planteamieto de Hipótesis**
+
+$$
+H_o: \text{La distribución de la red social más usuada  por los estudiantes es uniforme. Se usan todas por igual}\\
+H_a: \text{La distribución no es uniforme. Algunas plataformas se usan más que otras}
+$$
+
+### **Resolución del caso**
+
+Encontramos los datos para poder crear nuestra tabla con las Frecuencias observadas, la probabilidad respecto a la distribución uniforme y el valor esperado que deberían tener. Además de la prueba del Chi-cuadrado.
+
+```{r}
+# Creamos las tablas de frecuencia Real
+observadas <- table(DF$momento_uso_redes_sociales)
+observadas
+
+```
+
+```{r}
+# Número de categorías
+k <- length(observadas)
+```
+
+```{r}
+# Frecuencias esperadas (modelo uniforme)
+esperadas <- rep(sum(observadas) / k, k)
+esperadas
+
+```
+
+```{r}
+# Prueba Chi-cuadrado
+chi_test <- chisq.test(x = observadas, p = rep(1/k, k))
+
+chi_test
+```
+
+**Tabla final armada:**
+
+| Momento del día | Frecuencia observada | Frecuencia esperada | Contribución al Chi-cuadrado | Porcentaje del total |
+|---------------|---------------|---------------|---------------|---------------|
+| Madrugada (12 am – 6 am) | 65 | 353.75 | 251.44 | 4.59% |
+| Mañana (6 am – 11:59 am) | 99 | 353.75 | 184.27 | 7.00% |
+| Tarde (12 pm – 6 pm) | 446 | 353.75 | 21.50 | 31.52% |
+| Noche (6 pm – 12 am) | 805 | 353.75 | 561.56 | 56.89% |
+| **Total** | **1415** | — | **1018.77** | **100%** |
+
+### **Conclusión**
+
+Dado que:
+
+-   El p-valor es mucho menor a 0.05
+
+-   El estadístico Chi-cuadrado es extremamente alto (1018.8)
+
+Se rechaza la hipótesis nula ($H_o$), el uso de redes sociales No es unirme a lo largo del día. Esto significa que hay diferencias altamente significativas entre los momentos del día, y los estudiantes prefieren claramente ciertos horarios.
+
+**Patrón encontrado:**
+
+-   **La noche (805)** es, por amplio margen, el momento con mayor uso.
+
+-   Le sigue la **tarde (446)**.
+
+-   La **mañana (99)** y la **madrugada (65)** presentan un uso muy reducido.
+
+Esto indica que el uso de redes sociales presenta un patrón claramente diferenciado a lo largo del día, concentrándose principalmente en las horas de la noche. Este hallazgo es relevante para comprender los hábitos digitales de los estudiantes universitarios y constituye un insumo para analizar su relación con el rendimiento académico, la calidad del sueño y la salud mental. Ya que usar redes sociales de noche y madrugada suele estar asociado a:
+
+-   procrastinación
+
+-   distracción digital
+
+-   mala higiene del sueño
 
 # ANÁLISIS DE REGRESIÓN LINEAL MÚLTIPLE
 
