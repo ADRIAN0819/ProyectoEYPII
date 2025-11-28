@@ -1039,7 +1039,7 @@ Estimar, con **96% de confianza**, la **proporción de estudiantes** que **utili
 -   **Población:** estudiantes universitarios considerados en el estudio.\
 -   **Variable:** `uso_redes_academicas` (Sí/No). Éxito = “Sí”.
 
-## Método de estimación (IC 96%)
+### Método de estimación (IC 96%)
 
 A partir de la muestra de tamaño $$n$$, se calcula la proporción muestral $$\hat p = x/n$$ y el **intervalo de confianza (IC) de Wald**:
 
@@ -1283,15 +1283,21 @@ $$
 
 $$
 \text{Tamaño del grupo 2 (uso nocturno bajo): } 79 \\
-$$ $$
+$$ 
+
+$$
 \text{Proporciones muestrales: } (p_1 = 0.4216), (p_2 = 0.3671) \\
-$$ $$
+$$ 
+$$
 \text{Diferencia: } (\hat{p}_1 - \hat{p}_2 = 0.0545) \\
-$$ $$
+$$ 
+$$
 \text{Error estándar: } 0.0616 \\
-$$ $$
+$$ 
+$$
 \text{Margen de error: } 0.1264 \\
-$$ $$
+$$ 
+$$
 \text{IC 96%: } [-0.0719, 0.1810]
 $$
 
@@ -2764,6 +2770,60 @@ for (i in 1:nrow(tukey_tabla)) {
 5.  **Recomendaciones**: Con base en estos hallazgos, se sugiere `r if(p_valor < 0.04) "implementar intervenciones educativas sobre higiene del sueño digital y establecer límites en el uso de redes sociales antes de dormir para mejorar el descanso y, consecuentemente, el rendimiento académico de los estudiantes" else "continuar monitoreando estos patrones y realizar estudios complementarios con muestras más grandes o diseños experimentales alternativos"`.
 
 ------------------------------------------------------------------------
+# CONCLUSIONES GENERALES
+
+El presente estudio tuvo como propósito analizar la relación entre el uso de redes sociales, los hábitos de vida y la salud mental digital de estudiantes universitarios de 16 a 29 años matriculados en instituciones públicas y privadas durante el semestre 2025-1. Este análisis permitió comprender de manera integral cómo las prácticas digitales actuales se relacionan con el bienestar académico, emocional y físico de los estudiantes, en coherencia con los cinco objetivos planteados.
+
+En primer lugar, los resultados descriptivos e inferenciales permitieron identificar patrones claros de uso de redes sociales, cumpliendo con el Objetivo 1. Se observó que los estudiantes presentan un uso intensivo de estas plataformas, especialmente durante las horas de la noche, lo cual coincide con estudios previos que asocian el uso nocturno con alteraciones del sueño y disminución del bienestar emocional (Younes et al., 2016; Twenge, 2019). Asimismo, los análisis evidenciaron diferencias relevantes en las rutinas diarias, la calidad del descanso y la autopercepción del impacto emocional del uso digital, indicando que estos hábitos influyen de manera directa en la vida cotidiana de los estudiantes.
+
+En relación con el Objetivo 2, orientado a comparar el impacto del uso de redes y del contexto universitario en el rendimiento académico y la salud mental, se identificaron diferencias significativas entre estudiantes de universidades públicas y privadas en cuanto al rendimiento académico, a favor de las instituciones privadas. Este hallazgo sugiere que los factores contextuales e institucionales, junto con los hábitos digitales, influyen en el desempeño. Sin embargo, no se encontraron diferencias significativas entre ambos grupos respecto al impacto percibido de las redes sociales en la salud mental, lo cual indica que esta afectación es un fenómeno transversal en estudiantes universitarios peruanos, independientemente del tipo de institución.
+
+Respecto al Objetivo 3, referido a evaluar la relación entre el uso de redes sociales y variables de bienestar, las pruebas de hipótesis evidenciaron que los estudiantes duermen en promedio menos de las 7 horas recomendadas, lo que representa un riesgo para su bienestar físico y cognitivo. Igualmente, los análisis demostraron que, aunque el uso nocturno no mostró una diferencia estadísticamente significativa en el impacto emocional, sí se observó una tendencia preocupante hacia una mayor afectación en quienes utilizan redes cinco o más noches por semana. En relación con la actividad física, la prueba de signos mostró que la mediana alcanza las recomendaciones mínimas de la OMS, lo que indica un nivel aceptable de ejercicio dentro de la población estudiada.
+
+El uso de intervalos de confianza permitió, además, estimar con mayor precisión parámetros clave, como la proporción de estudiantes que emplean redes sociales con fines académicos (entre 84.75% y 91.68%). Este hallazgo resulta fundamental, pues demuestra que estas plataformas no cumplen únicamente una función recreativa, sino que también se han integrado como herramientas constantes de apoyo académico, fortaleciendo la conexión con el Objetivo 4, centrado en sensibilizar sobre el impacto del uso digital.
+
+Por otro lado, los análisis mediante pruebas no paramétricas ofrecieron resultados valiosos para comprender las dinámicas digitales de los estudiantes. La independencia entre la plataforma más utilizada y la afectación percibida en el rendimiento académico sugiere que el problema no radica en la red social en sí, sino en el patrón y la intensidad del uso. Asimismo, la distribución no uniforme del uso a lo largo del día, altamente concentrada en la noche, refuerza las preocupaciones sobre el vínculo entre conectividad nocturna, estrés académico y deterioro de la calidad de sueño.
+
+Finalmente, el análisis mediante ANOVA permitió evaluar si la cantidad de horas de uso semanal influía en la afectación de la salud mental digital. Los resultados indicaron que no existen diferencias significativas entre los distintos niveles de uso, lo que revela que la intensidad diaria o semanal no es el único ni el principal predictor del malestar emocional, sugiriendo que variables como la forma de uso, los hábitos nocturnos o las características personales podrían tener un papel más determinante.
+
+En conjunto, todos estos hallazgos ofrecen una visión multidimensional de la relación entre comportamiento digital y bienestar estudiantil, cumpliendo plenamente con el Objetivo 5 del curso al demostrar la aplicación rigurosa de técnicas estadísticas para comprender una problemática contemporánea de alta relevancia social. Este estudio no solo aporta evidencia empírica al contexto peruano —donde existe un vacío importante en la literatura— sino que también proporciona bases para futuras investigaciones y para el diseño de estrategias institucionales que promuevan un uso más equilibrado y saludable de las redes sociales en la comunidad universitaria.
+
+
+# RECOMENDACIONES
+
+## Recomendaciones metodológicas para futuras investigaciones
+
+1. Ampliar el tamaño y la diversidad de la muestra, incorporando estudiantes de más regiones del país, diferentes carreras y modalidades (presencial, semipresencial y virtual). Esto permitiría aumentar la representatividad y mejorar la capacidad de generalización de los resultados.
+
+2. Incluir variables adicionales y más específicas, como tipo de actividad realizada en redes (consumo pasivo vs. participación activa), emociones asociadas al uso, patrones de multitarea, o mecanismos de afrontamiento digital. Esto ayudaría a profundizar en los factores que explican la afectación emocional.
+
+3. Utilizar escalas validadas de salud mental digital, como el DASS-21, el Social Media Disorder Scale o el Fear of Missing Out Scale, para obtener mediciones más precisas y comparables a nivel internacional.
+
+4. Aplicar diseños longitudinales, que permitan evaluar cambios en el impacto del uso digital a lo largo del semestre académico. Con ello, se podrían identificar patrones de aumento o disminución del malestar e inferir relaciones temporales con mayor claridad.
+
+5. Complementar el enfoque cuantitativo con métodos cualitativos, como entrevistas o grupos focales, para comprender con mayor profundidad los factores subjetivos que influyen en la relación entre redes sociales, hábitos y bienestar emocional.
+
+6. Controlar variables de confusión, como carga académica, empleo, responsabilidades familiares o presencia de trastornos previos. Esto permitiría aislar mejor el efecto del uso de redes sociales.
+
+7. Incorporar herramientas digitales de medición objetiva, como registros de tiempo de pantalla o datos de actividad nocturna, para complementar la autopercepción de los estudiantes y reducir el sesgo de respuesta.
+
+## Recomendaciones derivadas de los resultados del estudio
+
+1. Promover hábitos de uso consciente de redes sociales, especialmente durante la noche. Dado que el horario nocturno concentra la mayor actividad digital y se asocia con menor calidad de sueño, se recomienda establecer rutinas tecnológicas responsables antes de dormir.
+
+2. Fomentar el diseño de programas de educación digital universitaria, que orienten a los estudiantes sobre cómo equilibrar el uso recreativo y académico de las redes sociales, considerando que un porcentaje muy alto las utiliza con fines académicos.
+
+3. Implementar talleres de higiene del sueño, pues se comprobó que la mayoría de estudiantes duerme menos de las 7 horas recomendadas. Esto podría incluir técnicas de desconexión digital y manejo de horarios.
+
+4. Promover estrategias de bienestar emocional, como pausas activas, ejercicio regular y actividades fuera de entornos digitales, dado que estas influyen positivamente en el manejo del estrés académico.
+
+5. Desarrollar campañas institucionales centradas en el uso saludable de redes, considerando que la afectación emocional no depende únicamente del número de horas, sino de los patrones de uso y los hábitos de exposición nocturna.
+ 
+6. Monitorear el rendimiento académico, especialmente en estudiantes con altos niveles de uso nocturno de redes, ya que estos comportamientos pueden afectar la concentración, la motivación y el descanso.
+
+7. Incorporar apoyo psicológico preventivo, ofreciendo recursos de orientación sobre autocontrol digital, manejo del tiempo y regulación emocional, en línea con las necesidades detectadas en la población estudiada.
+
+8. Impulsar una cultura digital equilibrada, en la que se reconozca tanto el valor académico de las redes sociales como los riesgos asociados a su uso excesivo o desordenado.
 
 # Bibliografía
 
