@@ -41,6 +41,121 @@ Además, investigaciones internacionales han evidenciado que el uso excesivo de 
 
 5.  **Aplicar los conocimientos del curso de Estadística II** para abordar una problemática social contemporánea, mediante pruebas de hipótesis, regresión y diseño experimental.
 
+# Proveniencia de Datos
+
+Para el presente proyecto se decidió trabajar con una base de datos previamente recolectada durante el ciclo académico 2025-1, a través de un trabajo de campo basado en encuestas aplicadas a estudiantes universitarios de 16 a 29 años, matriculados en universidades públicas y privadas.
+
+El uso de esta base resulta pertinente, ya que abarca un ciclo académico completo, lo que permite observar de manera más clara la relación entre salud mental digital y hábitos de los universitarios en un período determinado. La base de datos incluye un número suficiente de observaciones y se encuentra en formato digital, lo que facilita su acceso, análisis y posterior procesamiento estadístico.
+
+De acuerdo con los objetivos del curso, este proyecto nos permitirá desarrollar competencias en la gestión, análisis y modelamiento estadístico de datos reales, vinculando los contenidos teóricos con una problemática social de gran relevancia.
+
+# Tecnologías y uso en el mundo real
+
+En el contexto actual, el análisis de comportamiento digital y salud mental se ha convertido en un área de interés tanto para la industria tecnológica como para el ámbito de la salud pública. Diversas organizaciones y plataformas utilizan tecnologías modernas para estudiar y monitorear el bienestar digital de los usuarios.
+
+## Herramientas y Tecnologías Aplicadas
+
+### 1. Análisis de Comportamiento Digital
+
+-   **Screen Time Analytics**: Plataformas como iOS Screen Time y Android Digital Wellbeing implementan sistemas de monitoreo de uso de aplicaciones, permitiendo a los usuarios visualizar patrones de consumo digital y establecer límites de tiempo *(Apple Inc., 2024; Google, 2024)*.
+
+-   **Social Media Analytics**: Herramientas como Meta Business Suite, TikTok Analytics e Instagram Insights utilizan algoritmos de machine learning para analizar patrones de engagement, tiempo de uso y comportamiento de usuarios, proporcionando métricas detalladas sobre interacciones digitales *(Meta Platforms, 2024)*.
+
+### 2. Aplicaciones en Salud Mental Digital
+
+-   **Aplicaciones de Bienestar**: Plataformas como Calm, Headspace y aplicaciones universitarias especializadas implementan sistemas de tracking del bienestar estudiantil mediante cuestionarios estandarizados, ejercicios de mindfulness y análisis de comportamiento digital *(Huberty et al., 2019)*.
+
+-   **Sistemas de Detección Temprana**: Instituciones educativas de vanguardia implementan sistemas de *early warning* que correlacionan el uso de plataformas de aprendizaje digital (LMS) con indicadores académicos y de salud mental, permitiendo intervenciones oportunas *(Pistilli & Arnold, 2010)*.
+
+### 3. Herramientas de Ingeniería de Datos y Análisis
+
+-   **Big Data Analytics**: Uso de lenguajes de programación como **Python** (con bibliotecas como pandas, numpy, scikit-learn) y **R** (tidyverse, ggplot2) para el análisis estadístico de grandes volúmenes de datos de comportamiento digital.
+
+-   **Visualización de Datos**: Herramientas empresariales como Tableau y Power BI, junto con bibliotecas especializadas como ggplot2 y Plotly, permiten representar patrones de uso, correlaciones y tendencias de manera interactiva.
+
+-   **Machine Learning**: Modelos predictivos basados en Random Forest, Redes Neuronales y Análisis de Regresión para identificar usuarios en riesgo de adicción digital, problemas de salud mental o bajo rendimiento académico.
+
+### 4. Aplicación en Negocios y Marketing Digital
+
+-   **Customer Engagement Analysis**: Empresas tecnológicas analizan patrones de uso para optimizar experiencias de usuario, personalizar contenido y fomentar un engagement responsable que considere el bienestar digital de los usuarios.
+
+-   **EdTech Platforms**: Plataformas educativas como Canvas, Moodle, Blackboard y Google Classroom integran analytics de comportamiento estudiantil para mejorar resultados académicos, identificar estudiantes en riesgo y personalizar experiencias de aprendizaje.
+
+## Relevancia en el Contexto Peruano
+
+En Perú, el tema de salud mental digital está cobrando relevancia institucional:
+
+-   El **Ministerio de Salud (MINSA)** ha implementado el programa "Salud Mental en Universidades" que incluye componentes de monitoreo del bienestar estudiantil y uso de tecnologías digitales *(MINSA, 2023)*.
+
+-   Universidades peruanas como UTEC, PUCP y UPC están implementando sistemas de *learning analytics* y programas de bienestar estudiantil que consideran el impacto del uso de tecnologías digitales en el rendimiento académico y salud mental.
+
+-   El sector privado, a través de startups peruanas de *healthtech* y *edtech*, está desarrollando soluciones tecnológicas para el monitoreo del bienestar digital y la prevención de problemas de salud mental en población joven.
+
+# Variables
+
+Se han podido identificar las siguientes variables en la base de datos escogida:
+
+```{r}
+library(dplyr)
+library(tibble)
+library(knitr)
+library(kableExtra)
+
+# ---------------------------
+# Definir variables
+# ---------------------------
+tabla <- tribble(
+  ~`N°`, ~Variable, ~Descripción, ~`Tipo de Dato`, ~Categoría,
+  1, "edad", "¿Cuál es tu edad?", "Cuantitativo discreto", "Demográfica",
+  2, "sexo", "¿Cuál es tu sexo?", "Cualitativo nominal", "Demográfica",
+  3, "tipo_universidad", "¿Estás en una universidad privada o pública?", "Cualitativo nominal", "Demográfica",
+  4, "prom_estudio_dia", "¿Cuántas horas en promedio al día estudias?", "Cuantitativo continuo", "Académica",
+  5, "prom_dia_whatsapp", "¿Cuántas horas al día en promedio usas WhatsApp?", "Cualitativo ordinal", "Redes Sociales",
+  6, "prom_dia_instagram", "¿Cuántas horas al día en promedio usas Instagram?", "Cualitativo ordinal", "Redes Sociales",
+  7, "prom_dia_tiktok", "¿Cuántas horas al día en promedio usas TikTok?", "Cualitativo ordinal", "Redes Sociales",
+  8, "prom_dia_linkedin", "¿Cuántas horas al día en promedio usas LinkedIn?", "Cualitativo ordinal", "Redes Sociales",
+  9, "prom_dia_x", "¿Cuántas horas al día en promedio usas X (Twitter)?", "Cualitativo ordinal", "Redes Sociales",
+  10, "ciclo", "¿En qué ciclo te encuentras?", "Cualitativo ordinal", "Académica",
+  11, "prom_ciclo_pasado", "¿Cuál fue tu promedio ponderado el ciclo pasado?", "Cuantitativo continuo", "Académica",
+  12, "total_cursos_actuales", "¿Cuántas asignaturas cursas actualmente?", "Cuantitativo discreto", "Académica",
+  13, "actividad_extracurricular_actual", "¿En qué tipo de actividades extracurriculares participas actualmente?", "Cualitativo nominal", "Actividades",
+  14, "horas_ejercicio_semanal", "¿Cuántas horas a la semana haces ejercicio físico?", "Cuantitativo discreto", "Salud",
+  15, "horas_sueño_xnoche", "¿Cuántas horas duermes aproximadamente por noche?", "Cuantitativo discreto", "Salud",
+  16, "red_mas_usada", "¿Qué plataforma de red social es la que más usas?", "Cualitativo nominal", "Redes Sociales",
+  17, "tiempo_max_sin_redes_dia", "¿Cuál es el tiempo máximo que puedes estar sin revisar tus redes sociales?", "Cuantitativo discreto", "Redes Sociales",
+  18, "notificaciones_estudio_diario", "¿Cuántas veces al día revisas tu teléfono por notificaciones de redes sociales mientras estudias?", "Cuantitativo discreto", "Redes Sociales",
+  19, "dias_redes_antes_de_dormir", "¿Cuántos días a la semana sueles usar redes sociales antes de dormir?", "Cuantitativo discreto", "Redes Sociales",
+  20, "tipo_contenido_redes_sociales", "¿Qué tipo de contenido consumes principalmente en redes sociales?", "Cualitativo nominal", "Redes Sociales",
+  21, "satisfaccion_interaccion_social_presencial", "¿Qué tan satisfecho estás con tu interacción social presencial con amigos o compañeros en tu centro de estudio y/o trabajo?", "Cualitativo ordinal", "Social",
+  22, "afecta_concentracion_rendimiento", "¿Cuanto consideras que el uso de redes sociales afecta tu capacidad de concentración y rendimiento académico?", "Cualitativo ordinal", "Académica",
+  23, "impacto_redes_actividades_extracurriculares", "¿Cuanto consideras que el uso de redes sociales te motiva o desmotiva a participar en actividades extracurriculares?", "Cualitativo ordinal", "Actividades",
+  24, "impacto_redes_salud_mental", "¿Qué tanto sientes que el uso excesivo de redes sociales puede afectar tu salud mental (autoestima, etc.)?", "Cualitativo ordinal", "Salud Mental",
+  25, "momento_uso_redes_sociales", "¿En qué momento del día usas más las redes sociales?", "Cualitativo nominal", "Redes Sociales",
+  26, "uso_redes_academicas", "¿Utilizas las redes sociales para acceder a información académica?", "Cualitativo nominal", "Redes Sociales",
+  27, "satisfaccion_rendimiento_academico", "¿Qué tan satisfecho(a) estás con tu rendimiento académico actual?", "Cualitativo ordinal", "Académica",
+  28, "interaccion_persona_amigos_redes", "¿Con cuántos de los amigos que conociste a través de redes sociales interactúas también en persona?", "Cuantitativo discreto", "Social",
+  29, "frecuencia_descubrimiento_actividades_redes", "¿Con qué frecuencia descubres actividades extracurriculares a través de redes sociales?", "Cualitativo ordinal", "Actividades"
+)
+
+# ---------------------------
+# Mostrar tabla formateada
+# ---------------------------
+kable(tabla,
+      caption = "Tabla 1: Variables del estudio con descripción y tipo de dato",
+      align = c("c","l","l","c","c"),
+      booktabs = TRUE) %>%
+  kable_styling(bootstrap_options = c("striped","hover","condensed","responsive"),
+                full_width = TRUE, font_size = 12) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#3498db") %>%
+  column_spec(1, width = "0.8cm", bold = TRUE) %>%
+  column_spec(2, width = "3.5cm") %>%
+  column_spec(3, width = "7.5cm") %>%
+  column_spec(4, width = "2.6cm") %>%
+  column_spec(5, width = "2.6cm") %>%
+  collapse_rows(columns = 5, valign = "middle")
+
+```
+
 # Configuración Inicial
 
 ```{r setup, message=FALSE, warning=FALSE}
@@ -55,6 +170,302 @@ library(lmtest)     # Para pruebas adicionales de regresión
 library(tidyr)
 library(corrplot)   # Para matriz de correlaciones
 library(gridExtra)  # Para organizar múltiples gráficos
+library(BSDA)
+```
+
+# Factibilidad
+
+El proyecto es factible ya que:
+
+-   Se cuenta con una base de datos existente y accesible, recolectada en el marco del ciclo 2025-1.
+
+-   La base contiene más de 1000 observaciones.
+
+-   Las variables están clasificadas en distintos tipos:
+
+    -   **Categóricas nominales:** Universidad (pública/privada), sexo, uso de redes sociales e impacto en sus actividades diarias.
+
+    -   **Categóricas ordinales:** Satisfacción con el rendimiento académico, efecto en horario de sueño y promedio de uso por red social.
+
+    -   **Cuantitativas continuas:** Promedio de nota del ciclo anterior, promedio de horas de estudio
+
+    -   **Cuantitativas discretas:** Horas de sueño por noche, horas de ejercicio semanal y edad.
+
+Gracias a estas características, se puede realizar un análisis completo y cumplir con los requerimientos metodológicos del curso. En futuras entregas se adjuntará la base de datos en formato CSV (UTF-8).
+
+```{r}
+DF <- read_csv("Estudiantes.csv", col_types = cols(.default = "c"))
+```
+
+```{r}
+DF <- DF %>%
+  mutate(
+    edad = as.integer(edad),
+    prom_estudio_dia = as.numeric(prom_estudio_dia),
+    prom_ciclo_pasado = as.numeric(prom_ciclo_pasado),
+    ciclo = factor(as.character(ciclo), levels = as.character(1:10), ordered = TRUE),
+    total_cursos_actuales = as.integer(total_cursos_actuales),
+    horas_ejercicio_semanal = as.integer(horas_ejercicio_semanal),
+    horas_sueño_xnoche = as.integer(horas_sueño_xnoche),
+    tiempo_max_sin_redes_dia = as.integer(tiempo_max_sin_redes_dia),
+    notificaciones_estudio_diario = as.integer(notificaciones_estudio_diario),
+    dias_redes_antes_de_dormir = as.integer(dias_redes_antes_de_dormir),
+    interaccion_persona_amigos_redes = as.integer(interaccion_persona_amigos_redes),
+
+    sexo = factor(sexo, levels = c("Femenino", "Masculino")),
+    tipo_universidad = factor(tipo_universidad, levels = c("Privada", "Pública")),
+    actividad_extracurricular_actual = factor(actividad_extracurricular_actual),
+    red_mas_usada = factor(red_mas_usada),
+    tipo_contenido_redes_sociales = factor(tipo_contenido_redes_sociales,
+                                           levels = c("Académico", "Entretenimiento", "Noticias", "Socializar")),
+    uso_redes_academicas = factor(uso_redes_academicas, levels = c("No", "Sí")),
+    impacto_redes_actividades_extracurriculares = factor(impacto_redes_actividades_extracurriculares,
+                                                         levels = c("Desmotiva", "Motiva", "No tiene efecto")),
+    momento_uso_redes_sociales = factor(momento_uso_redes_sociales),
+
+    afecta_concentracion_rendimiento = factor(afecta_concentracion_rendimiento,
+                                              levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    impacto_redes_salud_mental = factor(impacto_redes_salud_mental,
+                                        levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    satisfaccion_interaccion_social_presencial = factor(satisfaccion_interaccion_social_presencial,
+                                                        levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    satisfaccion_rendimiento_academico = factor(satisfaccion_rendimiento_academico,
+                                                levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    frecuencia_descubrimiento_actividades_redes = factor(frecuencia_descubrimiento_actividades_redes,
+                                                         levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    
+    prom_dia_whatsapp = factor(prom_dia_whatsapp,
+                               levels = c("0 horas (no lo uso)", "Entre 1-3 horas", "Entre 3-6 horas",
+                                          "Entre 6-9 horas", "Entre 9-12 horas"), ordered = TRUE),
+    prom_dia_instagram = factor(prom_dia_instagram,
+                                levels = c("0 horas (no lo uso)", "Entre 1-3 horas", "Entre 3-6 horas",
+                                           "Entre 6-9 horas", "Entre 9-12 horas"), ordered = TRUE),
+    prom_dia_tiktok = factor(prom_dia_tiktok,
+                             levels = c("0 horas (no lo uso)", "Entre 1-3 horas", "Entre 3-6 horas",
+                                        "Entre 6-9 horas", "Entre 9-12 horas"), ordered = TRUE),
+    prom_dia_linkedin = factor(prom_dia_linkedin,
+                               levels = c("0 horas (no lo uso)", "Entre 1-3 horas", "Entre 3-6 horas",
+                                          "Entre 6-9 horas", "Entre 9-12 horas"), ordered = TRUE),
+    prom_dia_x = factor(prom_dia_x,
+                        levels = c("0 horas (no lo uso)", "Entre 1-3 horas", "Entre 3-6 horas",
+                                   "Entre 6-9 horas", "Entre 9-12 horas"), ordered = TRUE)
+  )
+
+```
+
+```{r}
+str(DF)
+```
+
+```{r}
+df_na <- DF
+
+n <- nrow(df_na)
+
+result_table <- data.frame(
+  Variable = names(df_na),
+  Total = n,
+  Completos = colSums(!is.na(df_na)),
+  `Valores NA` = colSums(is.na(df_na)),
+  `% Completos` = round(colMeans(!is.na(df_na)) * 100, 2),
+  check.names = FALSE
+)
+
+
+kable(result_table, row.names = FALSE)
+
+```
+
+# P1 OBTENER LA MUESTRA
+
+## Tamaño de muestra para nuestra data
+
+Primero, hallamos el tamaño total de nuestra data, para darnos una idea de con qué estamos trabajando.
+
+```{r}
+nrow(df_na)
+```
+
+### Variables cuantitativas
+
+Nuestra población es de 1419 personas, lo cual es bastante. Entonces, sería muy útil sacar una muestra para realizar estimaciones sobre la media o la varianza.
+
+Por ello, hallaremos el tamaño de muestra óptimo para nuestras variables cuantitativas:
+
+Procedemos a ver cuáles son nuestras variables cuantitativas de nuestro dataset.
+
+```{r}
+variables_numericas <- sapply(df_na, is.numeric)
+variables_cuantitativas <- names(df_na)[variables_numericas]
+
+cat("Variables cuantitativas encontradas:\n")
+print(variables_cuantitativas)
+```
+
+En clase, se nos fue proporcionado un código que nos sacaba un tamaño de muestra en base a la desviación estándar, el nivel de confianza y la toleracia (hiperparámetro).
+
+Nuestro nivel de confianza es de 96%. Pero tenemos que hallar las desviaciones estándar de nuestros atributos cuantitativos. Por ello, hallamos las desviaciones
+
+```{r}
+# Calcular desviaciones estándar
+desviaciones <- sapply(df_na[variables_cuantitativas], sd, na.rm = TRUE)
+
+cat("\nDesviaciones estándar:\n")
+print(desviaciones)
+```
+
+Ahora calculamos los tamaños de muestra para nuestro atributos:
+
+```{r echo=TRUE}
+Tamaño_muestra_media<-function (ds, nc, t){return ((qnorm((1+nc)/2)*ds/t)^2)}
+
+desv.est=8.900324#desviación estándar  (dato)
+nc=0.96#nivel de confianza 
+
+t=1 #tolerancia
+
+Tamaño_muestra_media(desv.est,nc,t)
+```
+
+Tamaño de muestra para:
+
+-   edad: 257.1364 (Tol: 0.3)
+
+-   prom_estudio_dia: 319.7174 (Tol: 0.3)
+
+-   prom_ciclo_pasado: 298.0289 (Tol: 0.6)
+
+-   total_cursos_actuales: 347.5482 (Tol: 0.15)
+
+-   horas_ejercicio_semanal: 263.6122 (Tol: 0.5)
+
+-   horas_sueño_xnoche: 272.9765 (Tol: 0.15)
+
+-   tiempo_max_sin_redes_dia: 300.8955 (Tol: 0.6)
+
+-   notificaciones_estudio_diario: 331.1856 (Tol: 1.5)
+
+-   dias_redes_antes_de_dormir: 390.2158 (Tol: 0.2)
+
+-   interaccion_persona_amigos_redes: 334.123 (Tol: 1)
+
+Para hallar el tamaño de muestra, aplicamos:
+
+$$
+n=\max_{1\leq i\leq M} n_{i}
+$$
+
+Es decir, de todos los tamaños de muestra que tenemos, tenemos que elegir el más grande. Entonces, la muestra máxima cuantitativa sería: 347.5482 que pasa a ser 348.
+
+### Variables Cualitativas
+
+Para variables cualitativas, necesitamos saber las proporciones de cada valor que puede tomar cada atributo cuanlitativo.
+
+```{r}
+# Identificar variables cualitativas
+variables_no_numericas <- sapply(df_na, function(x) !is.numeric(x))
+variables_cualitativas <- names(df_na)[variables_no_numericas]
+
+cat("Variables cualitativas encontradas:\n")
+print(variables_cualitativas)
+```
+
+```{r}
+# Para una variable específica
+variable <- variables_cualitativas[19]  # Primera variable cualitativa
+tabla_frecuencias <- table(df_na[[variable]])
+proporciones <- prop.table(tabla_frecuencias)  # En porcentaje
+
+cat("Proporciones para:", variable, "\n")
+print(proporciones)
+```
+
+Observación: En nuestro dataset, hay algunas variables cualitativas que tienen más de dos valores posibles, por lo que no se puede usar directamente el código proporcionado por el profesor. Por ende, se hará uso de la proporción que sea más cercana a 0.5, o la más conservadora.
+
+```{r}
+Tamaño_muestral_proporciones<-function (po, nc, t){return (po*(1-po)*((qnorm((1+nc)/2) /t)^2) )}
+
+po=0.712758375  #Proporcion poblacional o proporcion estimada
+nc=0.96#nivel de confianza (dato)
+t=0.050 #tolerancia ( en proporciones la tolerancia no pasa de 1)
+
+Tamaño_muestral_proporciones(po,nc,t)
+```
+
+Tamaños de muestra cualitativa para:
+
+1.  "sexo": 275.393 (Tol: 0.060)
+
+2.  "tipo_universidad": 315.2984 (Tol: 0.050)
+
+3.  "prom_dia_whatsapp": 292.5329 (Tol: 0.060)
+
+4.  "ciclo": 255.4911 (Tol: 0.050)
+
+5.  "actividad_extracurricular_actual": 292.8445 (Tol: 0.060)
+
+6.  "red_mas_usada": 291.3654 (Tol: 0.060)
+
+7.  "tipo_contenido_redes_sociales": 354.1118 (Tol: 0.050)
+
+8.  "satisfaccion_interaccion_social_presencial": 334.1264 (Tol: 0.055)
+
+9.  "afecta_concentracion_rendimiento": 365.5023 (Tol: 0.050)
+
+10. "impacto_redes_actividades_extracurriculares": 292.3487 (Tol: 0.060)
+
+11. "impacto_redes_salud_mental": 260.1794 (Tol: 0.060)
+
+12. "momento_uso_redes_sociales": 287.3459 (Tol: 0.060)
+
+13. "uso_redes_academicas": 317.4495 (Tol: 0.040)
+
+14. "satisfaccion_rendimiento_academico": 285.5579 (Tol: 0.060)
+
+15. "frecuencia_descubrimiento_actividades_redes": 269.4867 (Tol: 0.060)
+
+16. "prom_dia_instagram": 289.3336 (Tol: 0.060)
+
+17. "prom_dia_tiktok": 284.3253 (Tol: 0.060)
+
+18. "prom_dia_linkedin": 322.582 (Tol: 0.050)
+
+19. "prom_dia_x": 345.4175 (Tol: 0.050)
+
+Volvemos a usar:
+
+$$
+n=\max_{1\leq i\leq M} n_{i}
+$$
+
+Entonces, nuestro tamaño de muestra máximo cualitativo sería 365.5023 que pasa a ser 366.
+
+## Tamaño final de la muestra:
+
+Para elegir el tamaño de muestra final aplicamos: máx(max_cuantitativo, max_cualitativo)
+
+Comparando el máximo tamaño de muestra cuantitativo con el cualitativo, tenemos que nuestro tamaño de muestra final será de 366.
+
+Entonces, sacamos la muestra y la guardamos en un csv, para los futuros ejercicios.
+
+```{r}
+# Para que los resultados sean reproducibles
+set.seed(123)  # Cualquier número
+max_size = 366
+muestra <- df_na[sample(nrow(df_na), max_size), ]
+```
+
+```{r}
+muestra
+```
+
+```{r}
+#Para guardar la muerta en un csv
+#write_csv(muestra, "muestra.csv")
+```
+
+```{r}
+write_csv(muestra, "muestra.csv")
 ```
 
 # Carga y Preparación de Datos
@@ -116,7 +527,789 @@ cat("Total de observaciones válidas para análisis:",
                                "dias_redes_antes_de_dormir")])), "\n")
 ```
 
-# ANÁLISIS DE CASOS CON PRUEBAS DE HIPOTESIS
+# P2 CASOS DE DISTRIBUCIONES
+
+### Caso 1
+
+Efecto del uso nocturno de redes sociales en las horas de sueño de estudiantes universitarios
+
+#### Contexto
+
+El incremento del uso nocturno de redes sociales entre los jóvenes universitarios se ha asociado con una reducción en las horas de descanso, afectando su concentración y bienestar general.
+
+Se desea analizar si los estudiantes que usan redes sociales más de 5 noches por semana duermen significativamente menos horas que aquellos que las usan menos de 3 noches por semana. Este análisis contribuye al objetivo de comparar el impacto del uso de redes sociales en el rendimiento académico y la calidad del sueño de los universitarios.
+
+#### Tipo de análisis y distribución utilizada:
+
+El objetivo es comparar las medias de horas de sueño entre dos grupos independientes (A y B), definidos por su frecuencia de uso nocturno de redes sociales.
+
+\
+Por ello, se analizará la distribución muestral de la diferencia de medias, que nos permite inferir si la diferencia observada entre ambos grupos es estadísticamente significativa o podría deberse al azar.
+
+Dado que ambas muestras superan los 30 elementos y se desconoce la distribución poblacional de las horas de sueño, se aplica el Teorema del Límite Central (TLC), que garantiza que la distribución muestral de las medias se aproxima a una distribución normal. La diferencia de medias muestrales se distribuye como:
+
+$$
+\bar{X}_A - \bar{X}_B \sim N\left(
+  \mu_A - \mu_B,\;
+  \sqrt{\frac{\sigma_A^2}{n_A} + \frac{\sigma_B^2}{n_B}}
+\right)
+$$
+
+#### Variables utilizadas:
+
+-   `dias_redes_antes_de_dormir` : número de días por semana que el estudiante usa redes antes de dormir.
+
+-   `horas_sueño_xnoche` : promedio de horas dormidas por noche.
+
+#### Grupos definidos:
+
+-   Grupo A: quienes usan redes ≤ 3 días por semana
+
+-   Grupo B: quienes usan redes ≥ 5 días por semana
+
+```{r}
+
+# Crear grupos
+grupo_A <- DF %>% filter(dias_redes_antes_de_dormir <= 3)
+grupo_B <- DF %>% filter(dias_redes_antes_de_dormir >= 5)
+```
+
+#### Estadísticos descriptivos:
+
+Se necesitan los promedios, desviaciones estándar de `horas_sueño_xnoche` en cada grupo, y sus tamaños muestrales (`n`):
+
+```{r}
+# Estadísticos resumen
+resumen = DF %>%
+  mutate(grupo = case_when(
+    dias_redes_antes_de_dormir <= 3 ~ "A_poco_uso",
+    dias_redes_antes_de_dormir >= 5 ~ "B_alto_uso",
+    TRUE ~ "intermedio"
+  )) %>%
+  filter(grupo != "intermedio") %>%
+  group_by(grupo) %>%
+  summarise(
+    n = n(),
+    media = mean(horas_sueño_xnoche, na.rm = TRUE),
+    sd = sd(horas_sueño_xnoche, na.rm = TRUE)
+  )
+
+resumen
+```
+
+De aca se obtiene que:
+
+-   El grupo A cuenta con 54 registros, un $\overline{x}$ de 6,2222 y un $s$ de 1,4879
+
+-   El grupo B cuenta con 287 registros, un $\overline{x}$ de 6,2578 y un $s$ de 1,1631
+
+Estos valores son nuestras estimaciones de los parámetros poblacionales.
+
+#### Cálculos inferenciales:
+
+-   La diferencia de medias:
+
+$$
+\bar{X}_A - \bar{X}_B
+$$
+
+Esta cantidad representa cuánto difiere, en promedio, el número de horas de sueño entre los dos grupos.
+
+-   La desviación estándar de la diferencia:
+
+$$
+\sigma_{\bar{X}_A - \bar{X}_B} = \sqrt{\frac{s_A^2}{n_A} + \frac{s_B^2}{n_B}}
+$$
+
+donde:
+
+1.  $s_A, s_B$ son las desviaciones estándar muestrales de cada grupo,
+
+2.  $n_A,n_B$ son los tamaños de muestra
+
+3.  $\sigma_{\bar{X} _A - \bar{X}_B}$ mide la variabilidad esperada entre posibles diferencias de medias si se repite el muestreo muchas veces.
+
+-   Probabilidad de observar una diferencia igual o mayor a 0.5 horas:
+
+Se utiliza la distribución normal estándar:
+
+$$
+P(\bar{X}_A - \bar{X}_B \ge 0.5) = 1 - \Phi\left(
+  \frac{0.5 - (\bar{X}_A - \bar{X}_B)}{
+    \sigma_{\bar{X}_A - \bar{X}_B}
+  }
+\right)
+$$
+
+donde $\Phi(z)$ es la función de distribución acumulada de la normal estándar.
+
+A continuación se calculan la diferencia de medias, su desviación estándar y la probabilidad de observar una diferencia de al menos 0.5 horas.
+
+```{r}
+# Extraer valores del resumen
+muA = resumen$media[resumen$grupo == "A_poco_uso"]
+muB = resumen$media[resumen$grupo == "B_alto_uso"]
+sigmaA = resumen$sd[resumen$grupo == "A_poco_uso"]
+sigmaB = resumen$sd[resumen$grupo == "B_alto_uso"]
+nA = resumen$n[resumen$grupo == "A_poco_uso"]
+nB = resumen$n[resumen$grupo == "B_alto_uso"]
+
+# Media y desviación de la diferencia
+media_dif = muA - muB
+desv_dif = sqrt((sigmaA^2 / nA) + (sigmaB^2 / nB))
+
+# Probabilidad de que la diferencia sea >= 0.5 h
+probabilidad = pnorm(0.5, mean = media_dif, sd = desv_dif, lower.tail = FALSE)
+
+media_dif; desv_dif; probabilidad
+```
+
+Se obtuvo que:
+
+-   La diferencia promedio real entre los grupos (en horas):
+
+    $$
+    |\bar{X}_A - \bar{X}_B|=0.0356
+    $$
+
+-   La desviación estándar de la diferencia muestral:
+
+    $$
+    \sigma_{\bar{X}_A - \bar{X}_B} = 0.2138
+    $$
+
+-   La probabilidad de una diferencia mayor o igual a 0.5 horas:
+
+    $$
+    P(\bar{X}_A - \bar{X}_B \ge 0.5) = 0.0061
+    $$
+
+#### Visualización de la distribución muestral:
+
+```{r, echo=FALSE}
+# Crear un rango de posibles diferencias
+difs <- seq(-1, 1, length.out = 200)
+densidad <- dnorm(difs, mean = media_dif, sd = desv_dif)
+
+ggplot(data.frame(difs, densidad), aes(x = difs, y = densidad)) +
+  geom_line(color = "steelblue", size = 1) +
+  geom_vline(xintercept = 0.5, color = "red", linetype = "dashed") +
+  labs(
+    title = "Distribución muestral de la diferencia de medias",
+    x = "Diferencia de medias (horas)",
+    y = "Densidad"
+  ) +
+  theme_minimal()
+
+```
+
+El gráfico muestra que la distribución muestral de la diferencia de medias está centrada cerca de cero, lo que indica una diferencia promedio mínima en las horas de sueño entre los grupos. La línea roja (diferencia de 0.5 horas) cae en la cola derecha de la distribución, donde la probabilidad es muy baja, evidenciando que sería poco común observar una diferencia tan grande por azar. Esto respalda la conclusión de que el uso nocturno frecuente de redes sociales no se asocia significativamente con una menor cantidad de sueño en esta muestra.
+
+#### Interpretación de los resultados:
+
+Los resultados muestran que la diferencia promedio real en las horas de sueño entre ambos grupos es muy pequeña (≈ 0.036 horas). La desviación estándar muestral de la diferencia es 0.214, lo que sugiere una baja variabilidad entre posibles diferencias obtenidas en muestras similares. La probabilidad de observar una diferencia igual o mayor a 0.5 horas fue 0.0061, lo que indica que es muy poco probable que ocurra por azar.
+
+Por tanto, el uso frecuente de redes antes de dormir no parece asociarse con una reducción significativa en las horas de sueño dentro de esta muestra.
+
+Sin embargo, es importante considerar que pueden existir otros factores (como el nivel de estrés o el tipo de contenido consumido) que moderen esta relación.
+
+En conclusión, los resultados no respaldan la hipótesis de una diferencia significativa en las horas de sueño asociada al uso frecuente de redes sociales antes de dormir.
+
+## Caso 2
+
+## Contexto
+
+Se desea evaluar la variabilidad en el tiempo de estudio diario entre estudiantes universitarios de diferente sexo que utilizan redes sociales de manera intensa, para este caso será enfocada en Instagram. Se tienen 2 poblaciones, una de sexo femenino y otra de sexo masculino. El primer grupo son los estudiantes de sexo masculino que usan Instagram más de 3 horas al día. El otro grupo son los estudiantes de sexo femenino que usan Instagram más de 3 horas al día. ¿Cuál es la probabilidad de que la varianza del promedio de horas de estudio diarias de los estudiantes masculinos que usan Instagram más de 3 horas al día supere a la varianza de las estudiantes femeninas que usan Instagram más de 3 horas al día en un 40% de su valor?
+
+### Variables a utilizar:
+
+-   `sexo` : Determina el sexo del estudiante.
+
+-   `prom_estudio_dia` : promedio de horas de estudio en el día.
+
+### Solución
+
+Primero, tenemos que hallar las dos poblaciones: Masculino y Femenino.
+
+```{r}
+# Población 1: Masculino
+datos_masculino <- DF %>%
+  filter(sexo == "Masculino") %>%
+  filter(!is.na(prom_estudio_dia))
+
+# Población 2: Femenino
+datos_femenino <- DF %>%
+  filter(sexo == "Femenino") %>%
+  filter(!is.na(prom_estudio_dia))
+```
+
+Ahora podemos sacar las varianzas de nuestras poblaciones:
+
+```{r}
+varF <- var(datos_femenino$prom_estudio_dia)
+varF
+```
+
+```{r}
+varM <- var(datos_masculino$prom_estudio_dia)
+varM
+```
+
+Ahora hallamos el tamaño de nuestras muestras, para masculino como para femenino:
+
+```{r, echo=FALSE}
+
+M_2 <- datos_masculino %>%
+  filter(prom_dia_instagram %in% c("Entre 3-6 horas", "Entre 6-9 horas", "Entre 9-12 horas")) %>%
+  filter(!is.na(prom_estudio_dia)) %>%
+  filter(!is.na(sexo))
+
+cat("=== DATOS FILTRADOS ===\n")
+cat("Total de estudiantes masculinos que usan Instagram >3 horas (nm):", nrow(M_2), "\n\n")
+
+```
+
+```{r, echo=FALSE}
+
+F_2 <- datos_femenino %>%
+  filter(prom_dia_instagram %in% c("Entre 3-6 horas", "Entre 6-9 horas", "Entre 9-12 horas")) %>%
+  filter(!is.na(prom_estudio_dia)) %>%
+  filter(!is.na(sexo))
+
+cat("=== DATOS FILTRADOS ===\n")
+cat("Total de estudiantes femeninos que usan Instagram >3 horas (nf):", nrow(F_2), "\n\n")
+
+```
+
+Podemos visualizar estas dos muestras de la siguiente manera:
+
+```{r, echo=FALSE}
+# Combinar ambos dataframes y agregar columna de sexo
+M_2_plot <- M_2 %>%
+  mutate(sexo = "Masculino")
+
+F_2_plot <- F_2 %>%
+  mutate(sexo = "Femenino")
+
+# Unir ambos dataframes
+datos_combinados <- bind_rows(M_2_plot, F_2_plot) %>%
+  mutate(sexo = factor(sexo, levels = c("Femenino", "Masculino")))
+
+# Crear boxplot comparativo
+ggplot(datos_combinados, aes(x = sexo, y = prom_estudio_dia, fill = sexo)) +
+  geom_boxplot(alpha = 0.7, outlier.color = "red", outlier.shape = 16) +
+  geom_jitter(width = 0.2, alpha = 0.3, size = 2) +
+  stat_summary(fun = mean, geom = "point", shape = 23, size = 4, 
+               fill = "white", color = "black", stroke = 1.5) +
+  labs(title = "Distribución del Tiempo de Estudio por Sexo",
+       subtitle = "Estudiantes que usan Instagram >3 horas/día",
+       x = "Sexo",
+       y = "Horas de Estudio Diarias",
+       caption = paste0("n(Masculino) = ", nrow(M_2), 
+                       " | n(Femenino) = ", nrow(F_2),
+                       "\nVar(M) = ", round(var(M_2$prom_estudio_dia, na.rm = TRUE), 3),
+                       " | Var(F) = ", round(var(F_2$prom_estudio_dia, na.rm = TRUE), 3))) +
+  scale_fill_manual(values = c("Femenino" = "#FF69B4", "Masculino" = "#4169E1")) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+        plot.subtitle = element_text(hjust = 0.5, size = 11),
+        plot.caption = element_text(hjust = 0.5, size = 9),
+        legend.position = "none",
+        axis.title = element_text(face = "bold"),
+        panel.grid.major.x = element_blank())
+
+```
+
+Los resultados muestran que la varianza del tiempo de estudio en hombres (11.834) es aproximadamente 2.37 veces mayor que en mujeres (4.99), superando ampliamente el umbral del 40% establecido en la pregunta de investigación. Esta diferencia sustancial indica que los estudiantes masculinos presentan una mayor inconsistencia en sus hábitos de estudio, con algunos estudiando muy poco y otros dedicando hasta 20 horas diarias, mientras que las estudiantes femeninas mantienen patrones más regulares y concentrados alrededor de 4 horas diarias.
+
+Esto implica que el uso intensivo de Instagram afecta de manera diferenciada la consistencia de los hábitos de estudio según el género: las mujeres demuestran mayor autorregulación y estabilidad en sus rutinas académicas a pesar del uso intensivo de redes sociales, mientras que los hombres exhiben comportamientos más polarizados, con mayor dispersión entre aquellos que compensan el tiempo en redes estudiando más y aquellos que se distraen considerablemente. Este hallazgo resulta relevante para comprender cómo las redes sociales impactan diferencialmente el rendimiento académico según características demográficas de los estudiantes universitarios.
+
+A continuación, calculamos la probabilidad:
+
+$$
+P\left(S_M^2 \geq S_F^2 \cdot 1{,}40\right) \
+=P\left(\frac{S_M^2}{S_F^2} \cdot \frac{\sigma_M^2}{\sigma_F^2} \geq 1{,}40 \frac{\sigma_M^2}{\sigma_F^2}\right) \
+=P\left(F(nm-1, nf-1) \geq 1{,}40\frac{\sigma_M^2}{\sigma_F^2}\right)
+$$
+
+Siendo:
+
+-   nm: Tamaño de muestra de masculino
+-   nf: tamaño de muestra de femenino.
+
+```{r}
+pf(1.40*varM/varF,41,33, lower.tail = FALSE)
+```
+
+### Conclusiones
+
+Se halló que la probabilidad es de aproximadamente 6%. Esto significa que, si repetimos el muestreo muchas veces, solo en aproximadamente 6 de cada 100 muestras observaríamos que la varianza masculina supera en 40% o más a la femenina. Este resultado sugiere que aunque es poco probable que esta diferencia de varianzas ocurra por azar en muestras aleatorias, en los datos observados el fenómeno está claramente presente.
+
+# Caso 3
+
+Se desea analizar si los estudiantes que realizan más horas de ejercicio físico a la semana presentan, en promedio, un rendimiento académico previo (medido como el prom_ciclo_pasado) al menos 0.5 puntos superior al de aquellos que realizan menos actividad física.
+
+Para ello, se utilizarán las siguientes variables del conjunto de datos:
+
+-   *prom_ciclo_pasado:* variable continua, que representa el promedio académico obtenido por el estudiante en el ciclo anterior.
+
+-   *horas_ejercicio_semanal:* variable discreta, que indica el número de horas dedicadas al ejercicio físico por semana. Se utilizará para dividir la muestra en dos grupos:
+
+    -   *Alto ejercicio:* estudiantes que realizan 5 horas o más por semana.
+
+    -   *Bajo ejercicio:* estudiantes que realizan menos de 5 horas por semana.
+
+-   *prom_estudio_dia:* variable continua, que representa las horas promedio de estudio diario. Esta variable podrá considerarse más adelante como covariable para controlar su posible efecto en el rendimiento.
+
+El análisis se basará en el uso de distribuciones muestrales de la diferencia de medias y la aproximación normal proporcionada por el Teorema Central del Límite (TCL).
+
+### Concepto Estadistico
+
+Aplicaremos una distribución muestral de la diferencia de medias. Si se extraen muestras independientes de dos poblaciones, la diferencia muestral de medias
+
+$$
+\overline{X_1} - \overline{X_2}
+$$
+
+se distribuye aproximadamente como una normal:
+
+$$
+\overline{X_1} - \overline{X_2} ~ N( \mu_1 - \mu_2, \sqrt{\frac{S^2_1}{n_1}+\frac{S^2_2}{n_2}}
+$$
+
+Usaremos esta distribución para hallar la probabilidad de que la diferencia sea \>= 0.5.
+
+### Resolución práctica
+
+Transformamos la variable para poder evaluarla por intervalos:
+
+```{r}
+DF_S3 <- DF %>%
+  mutate(
+    grupo_ejercicio = ifelse(horas_ejercicio_semanal >= 5, 
+                            "Alto ejercicio (≥5h)", 
+                            "Bajo ejercicio (<5h)")
+  )
+```
+
+Vemos la frecuencia y proporción de cada clase:
+
+```{r}
+tabla_freq <- table(DF_S3$grupo_ejercicio)
+cat("\nDistribución de estudiantes por grupo:\n")
+print(tabla_freq)
+cat("\nPorcentajes:\n")
+print(prop.table(tabla_freq) * 100)
+```
+
+Vemos los datos estádisticos
+
+```{r, echo=FALSE}
+estadisticas <- DF_S3 %>%
+  group_by(grupo_ejercicio) %>%
+  summarise(
+    n = n(),
+    media = mean(prom_ciclo_pasado, na.rm = TRUE),
+    mediana = median(prom_ciclo_pasado, na.rm = TRUE),
+    desv_std = sd(prom_ciclo_pasado, na.rm = TRUE),
+    varianza = var(prom_ciclo_pasado, na.rm = TRUE),
+    minimo = min(prom_ciclo_pasado, na.rm = TRUE),
+    maximo = max(prom_ciclo_pasado, na.rm = TRUE),
+    Q1 = quantile(prom_ciclo_pasado, 0.25, na.rm = TRUE),
+    Q3 = quantile(prom_ciclo_pasado, 0.75, na.rm = TRUE),
+    error_std = sd(prom_ciclo_pasado) / sqrt(n())
+  )
+print(estadisticas)
+```
+
+Revisamos las distribuciones mediante histogramas:
+
+```{r, echo=FALSE}
+# Gráfico 1: Histogramas por grupo
+p1 <- ggplot(DF_S3, aes(x = prom_ciclo_pasado, fill = grupo_ejercicio)) +
+  geom_histogram(alpha = 0.6, position = "identity", bins = 20) +
+  facet_wrap(~grupo_ejercicio, ncol = 1) +
+  labs(title = "Distribución del Promedio Académico por Grupo",
+       x = "Promedio Ciclo Pasado",
+       y = "Frecuencia") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+# Gráfico 2: Boxplots comparativos
+p2 <- ggplot(DF_S3, aes(x = grupo_ejercicio, y = prom_ciclo_pasado, 
+                        fill = grupo_ejercicio)) +
+  geom_boxplot(alpha = 0.7) +
+  geom_jitter(width = 0.2, alpha = 0.3) +
+  stat_summary(fun = mean, geom = "point", shape = 23, size = 3, 
+               fill = "red", color = "red") +
+  labs(title = "Comparación de Promedios Académicos",
+       subtitle = "El rombo rojo indica la media",
+       x = "Grupo de Ejercicio",
+       y = "Promedio Ciclo Pasado") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+# Gráfico 3: Densidad
+p3 <- ggplot(DF_S3, aes(x = prom_ciclo_pasado, fill = grupo_ejercicio)) +
+  geom_density(alpha = 0.5) +
+  geom_vline(DF_S3 = estadisticas, aes(xintercept = media, color = grupo_ejercicio),
+             linetype = "dashed", size = 1) +
+  labs(title = "Distribución de Densidad por Grupo",
+       x = "Promedio Ciclo Pasado",
+       y = "Densidad",
+       fill = "Grupo",
+       color = "Media") +
+  theme_minimal()
+
+# Mostrar gráficos
+print(p1)
+print(p2)
+```
+
+Vamos a separar los grupos por las clases en que clasificamos la variable de promedio de horas de ejercicio. De esta manera calcularemos sus estadísticos mustrales.\
+
+```{r, echo=FALSE}
+# Separar grupos
+grupo_alto <- DF_S3 %>% filter(grupo_ejercicio == "Alto ejercicio (≥5h)")
+grupo_bajo <- DF_S3 %>% filter(grupo_ejercicio == "Bajo ejercicio (<5h)")
+```
+
+```{r, echo=FALSE}
+# Estadísticos muestrales
+n1 <- nrow(grupo_alto)
+n2 <- nrow(grupo_bajo)
+x_barra1 <- mean(grupo_alto$prom_ciclo_pasado, na.rm= TRUE)
+x_barra2 <- mean(grupo_bajo$prom_ciclo_pasado, na.rm= TRUE)
+s1 <- sd(grupo_alto$prom_ciclo_pasado, na.rm= TRUE)
+s2 <- sd(grupo_bajo$prom_ciclo_pasado, na.rm= TRUE)
+```
+
+```{r, echo=FALSE}
+cat("\n--- Estadísticos Muestrales ---\n")
+cat(sprintf("Grupo Alto Ejercicio: n₁ = %d, x̄₁ = %.4f, s₁ = %.4f\n", n1, x_barra1, s1))
+cat(sprintf("Grupo Bajo Ejercicio: n₂ = %d, x̄₂ = %.4f, s₂ = %.4f\n", n2, x_barra2, s2))
+```
+
+Tenemos un $n_2 =245$ con un $\overline{X_2} = 13.2061$ y $S_2=4.8043$
+
+```{r, echo=FALSE}
+# Diferencia observada
+diferencia_obs <- x_barra1 - x_barra2
+cat(sprintf("\nDiferencia observada: x̄₁ - x̄₂ = %.4f\n", diferencia_obs))
+```
+
+```{r, echo=FALSE}
+# Error estándar de la diferencia
+delta0 <- 0.5021
+ee_diferencia <- sqrt((s1^2/n1) + (s2^2/n2))
+ee_diferencia
+```
+
+```{r}
+# Estadístico Z
+z_calculado <- (diferencia_obs - delta0) / ee_diferencia
+cat(sprintf("\nEstadístico de prueba: Z = %.4f\n", z_calculado))
+```
+
+```{r}
+# Valor crítico y p-valor
+alpha <- 0.05
+z_critico <- qnorm(1 - alpha)
+p_valor <- 1 - pnorm(z_calculado)
+cat(sprintf("Valor crítico (α=0.05): Z_crítico = %.4f\n", z_critico))
+cat(sprintf("P-valor: %.6f\n", p_valor))
+```
+
+### Conclusiones
+
+No existe evidencia estadística suficiente para afirmar que los estudiantes con alto nivel de ejercicio físico tienen, en promedio, un rendimiento académico previo **al menos 0.5 puntos superior** al de los estudiantes con bajo nivel de ejercicio.
+
+En otras palabras, aunque el grupo con mayor actividad física podría mostrar una leve diferencia positiva, **esta no es estadísticamente significativa** según los datos disponibles.
+
+# P3 INTERVALOS DE CONFIANZA
+
+## Caso 1: IC para una proporción
+
+### Planteamiento
+
+Estimar, con **96% de confianza**, la **proporción de estudiantes** que **utilizan redes sociales para acceder a información académica** en la población objetivo.
+
+### Población y variable
+
+-   **Población:** estudiantes universitarios considerados en el estudio.\
+-   **Variable:** `uso_redes_academicas` (Sí/No). Éxito = “Sí”.
+
+## Método de estimación (IC 96%)
+
+A partir de la muestra de tamaño $$n$$, se calcula la proporción muestral $$\hat p = x/n$$ y el **intervalo de confianza (IC) de Wald**:
+
+$$
+\hat p \pm z_{0.98}\,\sqrt{\frac{\hat p(1-\hat p)}{n}}.
+$$
+
+donde $$z_{0.98} \approx 2.0537$$ corresponde a un nivel de confianza del 96% donde α=0.04
+
+### Cálculo en R
+
+```{r}
+# IC 96% para una proporción (Wald) usando la muestra en DF
+nc <- 0.96
+alpha <- 1 - nc
+z_critico <- qnorm(1 - alpha/2)
+
+x <- sum(DF$uso_redes_academicas == "Sí", na.rm = TRUE)  # éxitos
+n <- sum(!is.na(DF$uso_redes_academicas))                # n válido
+p <- x / n
+
+error_estandar <- sqrt(p * (1 - p) / n)
+margen_de_error <- z_critico * error_estandar
+
+extremo_inferior <- p - margen_de_error
+extremo_superior <- p + margen_de_error
+
+# Imprimir resultados:  
+print(paste("significación:",alpha)) 
+print(paste("Error estándar:", error_estandar)) 
+print(paste("Z crítico:", z_critico)) 
+print(paste("margen de error o Tolerancia:", margen_de_error))  
+print(paste("IC: (",round(extremo_inferior, 4),";", round(extremo_superior, 4),")"))  
+
+
+```
+
+Con un nivel de significación α=0.04 (confianza del 96%), estimamos la proporción de estudiantes que utilizan redes sociales con fines académicos. El intervalo de confianza obtenido es **\[0.8475, 0.9168\]**, lo que indica que, en la población de interés, **entre 84.75% y 91.68%** de los estudiantes harían uso académico de las redes.
+
+**Para el proyecto**, este resultado respalda que el **uso académico de redes es alto** en la población estudiantil.
+
+## Caso 2: Diferencia de medias: rendimiento (pública vs privada)
+
+### Planteamiento
+
+Tratamos de comparar el impacto del uso de redes sociales en el rendimiento académico entre estudiantes de universidades públicas y privadas.\
+¿Difieren las medias de `prom_ciclo_pasado` entre los tipos de universidad (Pública vs Privada)?
+
+```{r}
+# Paso 1: Filtrado de datos válidos
+# Se consideran estudiantes entre 16 y 29 años con promedio registrado
+DFx <- subset(DF, is.na(edad) | (edad >= 16 & edad <= 29))
+DFx <- subset(DFx, !is.na(prom_ciclo_pasado) & tipo_universidad %in% c("Privada", "Pública"))
+
+# Paso 2: Separación por tipo de universidad
+Priv <- subset(DFx, tipo_universidad == "Privada")
+Publ <- subset(DFx, tipo_universidad == "Pública")
+```
+
+#### Estadísticas muestrales
+
+$$
+\text{Para cada grupo } k \in \{1=\text{Privada},\,2=\text{Pública}\}:
+\quad n_k \ (\text{tamaño}),\quad \bar x_k \ (\text{media}),\quad s_k \ (\text{desv. est.}).
+$$
+
+$$
+\begin{aligned}
+\textbf{Privada:}&\quad n_1 = 267,\quad s_1 = 4.221017,\quad \bar x_1 = 13.83307,\\[4pt]
+\textbf{Pública:}&\quad n_2 = 98,\quad s_2 = 6.145050,\quad \bar x_2 = 10.24265.
+\end{aligned}
+$$
+
+```{r}
+# Paso 3: Cálculo de medias y desviaciones estándar 
+mean(Priv$prom_ciclo_pasado)   # Media Privada
+sd(Priv$prom_ciclo_pasado)     # Desviación estándar Privada
+
+mean(Publ$prom_ciclo_pasado)   # Media Pública
+sd(Publ$prom_ciclo_pasado)     # Desviación estándar Pública
+```
+
+Complementaremos el análisis con el fundamento teórico detrás del código en R:
+
+#### Diferencia de medias y error estándar
+
+$$
+\hat\Delta=\bar x_1-\bar x_2,\qquad
+SE=\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}.
+$$
+
+$$
+\hat\Delta = 13.83307-10.24265=3.59042,\qquad
+SE=\sqrt{\frac{4.221017^2}{267}+\frac{6.145050^2}{98}}\approx 0.67235.
+$$
+
+#### Grados de libertad:
+
+$$
+\nu \approx 
+\frac{\left(\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}\right)^2}{
+\frac{\left(\frac{s_1^2}{n_1}\right)^2}{n_1-1}+
+\frac{\left(\frac{s_2^2}{n_2}\right)^2}{n_2-1}
+}
+\approx 132.06.
+$$
+
+#### Valor crítico (96%)
+
+$$
+t^\* = t_{0.98,\ \nu\approx132} \approx 2.07.
+$$
+
+```{r}
+# --- Paso 4: Evaluación de igualdad de varianzas ---
+# Cálculo del intervalo de confianza para la razón de varianzas (Privada/Pública)
+var1 <- sd(Priv$prom_ciclo_pasado)^2   # Varianza Privada
+var2 <- sd(Publ$prom_ciclo_pasado)^2   # Varianza Pública
+nc <- 0.96
+n1 <- length(Priv$prom_ciclo_pasado)
+n2 <- length(Publ$prom_ciclo_pasado)
+alpha <- 1 - nc
+
+VC1 <- qf(alpha/2, n2-1, n1-1)
+VC2 <- qf(1 - alpha/2, n2-1, n1-1)
+
+extremo_inf <- (var1/var2) * VC1
+extremo_sup <- (var1/var2) * VC2
+
+var1
+var2
+n1
+n2
+VC1
+VC2
+extremo_inf
+extremo_sup
+```
+
+#### Intervalo de confianza al 96%
+
+$$
+\hat\Delta \pm t^\* SE
+= 3.59042 \pm 2.07\times 0.67235
+\Rightarrow (\,2.196,\ 4.985\,).
+$$
+
+```{r}
+# Paso 5: Prueba t para la diferencia de medias (Welch)
+t.test(Priv$prom_ciclo_pasado, Publ$prom_ciclo_pasado,
+       var.equal = FALSE, conf.level = 0.96)
+```
+
+Con un nivel de confianza del 96%, se encontró que los estudiantes de universidades privadas presentan un promedio de rendimiento entre **2.20 y 4.99 puntos superior** al de los estudiantes de universidades públicas. Dado que el intervalo de confianza no incluye el valor cero y el p-valor es extremadamente bajo (p \< 0.001), se concluye que **existe una diferencia significativa** en el rendimiento académico promedio según el tipo de universidad.
+
+## Caso 3: Diferencia de proporciones: Impacto en salud mental según uso nocturno de redes sociales
+
+### Planteamiento
+
+En esta situación se busca analizar si los universitarios peruanos de 16 a 29 años que usan redes sociales con mayor frecuencia antes de dormir (≥5 noches por semana) presentan mayor proporción de alto impacto en salud mental (niveles 4 y 5 en la escala) que quienes no lo hacen tan seguido.
+
+### Fundamento teórico
+
+El intervalo de confianza para la **diferencia de proporciones** se utiliza cuando se desea comparar la proporción de éxito en dos grupos independientes.\
+Sea:
+
+$$
+\hat{p}_1 = \frac{x_1}{n_1}, \qquad \hat{p}_2 = \frac{x_2}{n_2}
+$$
+
+donde:
+
+$$
+(x_1), (x_2): \text{ número de individuos que presentan la característica de interés (éxitos).} \\
+(n_1), (n_2): \text{ tamaños muestrales de cada grupo.}
+$$
+
+El estimador puntual de la diferencia es:
+
+$$
+\hat{p}_1 - \hat{p}_2
+$$
+
+y su error estándar se calcula como:
+
+$$
+SE = \sqrt{\frac{\hat{p}_1(1-\hat{p}_1)}{n_1} + \frac{\hat{p}_2(1-\hat{p}_2)}{n_2}}
+$$
+
+El intervalo de confianza al nivel (1 - alpha) es entonces:
+
+$$
+(\hat{p}_1 - \hat{p}_2) \pm z_{1-\alpha/2} \times SE
+$$
+
+Si el intervalo **incluye el valor cero**, no se puede afirmar que exista una diferencia estadísticamente significativa entre las proporciones de ambos grupos.
+
+### Desarrollo y código
+
+```{r}
+DF16_29 <- DF |>
+  filter(as.integer(edad) >= 16, as.integer(edad) <= 29)
+
+# Definir alto uso nocturno y alto impacto (codificación numérica 1–5)
+DFy <- DF16_29 |>
+  mutate(
+    alto_noct    = dias_redes_antes_de_dormir >= 5,
+    alto_impacto = as.numeric(impacto_redes_salud_mental) >= 4
+  ) |>
+  filter(!is.na(alto_noct), !is.na(alto_impacto))
+
+# Conteos por grupo
+n1 <- sum(DFy$alto_noct)                            
+x1 <- sum(DFy$alto_noct & DFy$alto_impacto)         
+n2 <- sum(!DFy$alto_noct)                           
+x2 <- sum(!DFy$alto_noct & DFy$alto_impacto)        
+
+# Proporciones muestrales
+p1 <- x1/n1
+p2 <- x2/n2
+
+# Nivel de confianza (96%)
+nc <- 0.96
+alpha <- 1 - nc
+z_crítico <- qnorm(1 - alpha/2, 0, 1)
+
+# Cálculo del intervalo de confianza (Wald)
+error_estandar <- sqrt(p1*(1-p1)/n1 + p2*(1-p2)/n2)
+margen_de_error <- z_crítico * error_estandar
+extremo_inferior <- (p1 - p2) - margen_de_error
+extremo_superior <- (p1 - p2) + margen_de_error
+
+print(paste("IC: (", extremo_inferior, ";", extremo_superior, ")"))
+```
+
+Los resultados obtenidos con la muestra fueron los siguientes:
+
+$$
+\text{Tamaño del grupo 1 (uso nocturno alto): } 287 
+$$
+
+$$
+\text{Tamaño del grupo 2 (uso nocturno bajo): } 79 \\
+$$ $$
+\text{Proporciones muestrales: } (p_1 = 0.4216), (p_2 = 0.3671) \\
+$$ $$
+\text{Diferencia: } (\hat{p}_1 - \hat{p}_2 = 0.0545) \\
+$$ $$
+\text{Error estándar: } 0.0616 \\
+$$ $$
+\text{Margen de error: } 0.1264 \\
+$$ $$
+\text{IC 96%: } [-0.0719, 0.1810]
+$$
+
+```{r}
+# Reproducción del intervalo con los valores hallados
+p1 <- 0.4216; p2 <- 0.3671; n1 <- 287; n2 <- 79
+z <- qnorm(0.98)
+se <- sqrt(p1*(1-p1)/n1 + p2*(1-p2)/n2)
+li <- (p1-p2) - z*se; ls <- (p1-p2) + z*se
+c(LI = li, LS = ls)
+```
+
+Con un **nivel de confianza del 96 %**, la diferencia de proporciones de estudiantes con **alto impacto en salud mental** entre quienes usan redes **≥ 5 noches por semana** y quienes lo hacen con menor frecuencia se encuentra entre **−7.2 % y +18.1 %**.
+
+Dado que el intervalo **incluye 0**, **no se evidencia una diferencia estadísticamente significativa** entre ambos grupos.\
+Sin embargo, el valor puntual (≈ 5.4 % más alto en los de uso nocturno intenso) sugiere una **tendencia leve** hacia mayor afectación entre quienes utilizan redes sociales con mayor frecuencia antes de dormir.
+
+# P4 ANÁLISIS DE CASOS CON PRUEBAS DE HIPOTESIS
 
 ## Caso 1: Comparación base del rendimiento académico entre universidades
 
@@ -131,7 +1324,7 @@ En este estudio, se desea comparar a dos grupos:
 El objetivo es evaluar si **la proporción de estudiantes con promedio aprobatorio (≥ 13)** es similar en ambos tipos de universidad.\
 La dirección académica desea comprobar, con evidencia estadística, si ambas proporciones pueden considerarse iguales.
 
-### **Planteamiento de la hipótesis:**
+### Planteamiento de la hipótesis
 
 Las proporciones a evaluar son:
 
@@ -156,12 +1349,12 @@ $$
 
 Asumimos un 4% de significación.
 
-### **Resolución del caso**:
+### Resolución del caso
 
 Vamos a calcular las proporciones del dataset original de datos:
 
 ```{r}
-datos = DF_muestra %>%
+datos = DF %>%
   mutate(prom_ciclo_pasado = as.numeric(prom_ciclo_pasado)) %>% #Convertir texto a número
   filter(prom_ciclo_pasado > 0) %>%#Filtro alumnos con al menos 1 ciclo
   mutate(aprobado = ifelse(prom_ciclo_pasado >= 13, 1, 0))#
@@ -210,7 +1403,7 @@ VC2 = qnorm(1 - alfa/2, 0, 1)
 print(paste("Valor Crítico Superior:", VC2))
 ```
 
-Como $Z_o = 5.81$, es mayor que $VC_2 = 2.05$, por lo que cae en la región sombreada.
+Como $Z_o = 5.819$, es mayor que $VC_2 = 2.05$, por lo que cae en la región sombreada.
 
 Por tanto, se rechaza $H_o$
 
@@ -258,7 +1451,7 @@ grafico1 <- ggplot(df_norm, aes(x, y)) +
 print(grafico1)
 ```
 
-### Conclusión:
+### Conclusión
 
 Dado que se rechaza $H_o$, existe evidencia estadística suficiente (con un 96% de confianza) para afirmar que sí hay diferencia en la proporción de aprobados entre universidades privadas y públicas. Los datos sugieren que el rendimiento no es igual en ambos grupos.
 
@@ -272,7 +1465,7 @@ Estudios previos sugieren que los estudiantes deberían dormir **al menos 7 hora
 
 Para este análisis contamos con una muestra, obtenida previamente, de 366 estudiantes.
 
-### **Planteamiento de la hipótesis:**
+### Planteamiento de la hipótesis
 
 La media a evaluar es:
 
@@ -296,13 +1489,13 @@ $$
 
 Asumimos un 4% de significación.
 
-### **Resolución del caso:**
+### Resolución del caso
 
 Dado que el tamaño de la muestra es grande ($n>30$) se aplicó el Teorema del Límite Central para utilizar el estadístico $T$. Se estandarizó la media muestral calculando cuántas desviaciones estándar se alejan del valor hipotético de 7 horas.
 
 ```{r}
 #limpiamos variable a utilizar, borramos NAs
-datos_sueño = DF_muestra %>%
+datos_sueño = DF %>%
   mutate(horas_sueño_xnoche = as.numeric(horas_sueño_xnoche)) %>%
   filter(!is.na(horas_sueño_xnoche)) 
 
@@ -388,7 +1581,7 @@ Como parte del estudio sobre comportamiento digital y bienestar estudiantil para
 
 El objetivo es ver un contraste estadístico que compare **la media del impacto percibido** entre estudiantes de **universidades privadas** y **universidades públicas**.
 
-### **Planteamiento de la hipótesis:**
+### Planteamiento de la hipótesis
 
 Nuestras medias a evaluar son:
 
@@ -411,7 +1604,7 @@ H_o: \mu_1 = \mu_2 \\
 H_a: \mu_1 \neq \mu_2
 $$
 
-### **Resolución del caso**:
+### Resolución del caso
 
 Dado que es un problema de diferencia de medias, primero tendremos que comprobar si las varianzas de ambas poblaciones son iguales. Utilizaremos el **var.test** para comprobarlo, con un 96% de confianza y con las siguientes hipótesis:
 
@@ -428,12 +1621,12 @@ $$\
 
 ```{r}
 # Tratamos nuestras variables:
-DF_muestra$impacto_redes_salud_mental <- as.numeric(DF_muestra$impacto_redes_salud_mental)
+DF$impacto_redes_salud_mental <- as.numeric(DF$impacto_redes_salud_mental)
 
 ## Lo separamos en DF diferentes para publico y privado
 
-DF_publico <- DF_muestra %>% filter(tipo_universidad == "Pública")
-DF_privado <- DF_muestra %>% filter(tipo_universidad == "Privada")
+DF_publico <- DF %>% filter(tipo_universidad == "Pública")
+DF_privado <- DF %>% filter(tipo_universidad == "Privada")
 
 var.test(
   DF_publico$impacto_redes_salud_mental,
@@ -498,7 +1691,7 @@ ggplot(df_norm, aes(x, y)) +
   tema_grafico
 ```
 
-### **Conclusión estadística:**
+### Conclusión estadística
 
 $$
 p-valor > \alpha = 0.04
@@ -575,7 +1768,7 @@ ggplot(df_norm, aes(x, y)) +
 
 ```
 
-### **Conclusión estádistica:**
+### Conclusión estádistica
 
 $$
 p-value > \alpha = 0.04
@@ -587,7 +1780,9 @@ No hay evidencia estadísticamente significativa para afirmar que las medias del
 
 Aunque privadas tiene un valor ligeramente mayor (más impacto negativo percibido), **la diferencia no es estadísticamente significativa**. Por lo tanto el impacto percibido de las redes sociales en la salud mental es similar entre estudiantes de universidades públicas y privadas.
 
-# ANÁLISIS DE CASOS CON PRUEBAS NO PARA MÉTRICAS
+Ambos perciben que el impacto de las redes sociales en su rendimiento es medio, lo que puede indicar que no atribuyen su bajo rendimiento al consumo de las redes sociales.
+
+# P5 ANÁLISIS DE CASOS CON PRUEBAS NO PARA MÉTRICAS
 
 ## Caso 1: Prueba de Independencia - Relación entre plataforma usada y rendimiento acadímico
 
@@ -595,7 +1790,7 @@ En el marco de este estudio sobre hábitos digitales de estudiantes universitari
 
 Dentro de este contexto, uno de los aspectos que se busca evaluar es si **la red social que un estudiante usa con mayor frecuencia** está asociada a **la percepción de afectación en su concentración y rendimiento académico**, medida en una escala ordinal de Likert del 1 al 5.
 
-### **Planteamiento de Hipótesis**
+### Planteamiento de Hipótesis
 
 La pregunta central:
 
@@ -615,7 +1810,7 @@ H_o: \text{Las dos variables son independientes} \\
 H_a: \text{Las dos variables son dependientes}
 $$
 
-### **Resolución del caso**
+### Resolución del caso
 
 Primero se debe agrupar las redes sociales con muy pocos usuarios (como LinkedIn o Telegram) en una categoría "Otros". Esto se debe a que la prueba de Chi-Cuadrado funciona cuando hay al menos 5 personas por grupo. Algunas redes solo cuentan con 1 registro, como Linkedin. Si previamente no se agrupan en otra categoría, la fórmula matemática se rompe y el resultado no sería válido.
 
@@ -677,7 +1872,7 @@ $$
 qchisq(0.96, 12) 
 ```
 
-### Conclusión 
+### Conclusión
 
 Como X-squared \< 21.026, no cae en la región sombreada. Además, como el P-valor \> 0.04, **No rechazo Ho**.
 
@@ -692,9 +1887,9 @@ Dado que la variable *horas_ejercicio_semanal* no presenta distribución normal 
 **Visualizando distribución de la variable de Horas de ejercicio semanal**
 
 ```{r}
-DF_muestra$horas_ejercicio_semanal <- as.numeric(DF_muestra$horas_ejercicio_semanal)
+DF$horas_ejercicio_semanal <- as.numeric(DF$horas_ejercicio_semanal)
 
-ggplot(DF_muestra, aes(x = factor(horas_ejercicio_semanal))) +
+ggplot(DF, aes(x = factor(horas_ejercicio_semanal))) +
   geom_bar() +
   labs(
     title = "Distribución de Horas de Ejercicio Semanal",
@@ -704,7 +1899,7 @@ ggplot(DF_muestra, aes(x = factor(horas_ejercicio_semanal))) +
   theme_minimal()
 ```
 
-### **Planteando Hipótesis**
+### Planteando Hipótesis
 
 La pregunta central:
 
@@ -717,7 +1912,7 @@ H_o: \text{La mediana del número de horas de ejercicio semanal es almenos de 3 
 H_a: \text{La mediana del número de horas de ejercicio semanal es menor a 3 horas} 
 $$
 
-### **Resolución del caso**
+### Resolución del caso
 
 Se deben contar cuántos estudiantes están por encima y por debajo de la mediana planteada ($M = 3$ ).
 
@@ -726,7 +1921,7 @@ Se deben contar cuántos estudiantes están por encima y por debajo de la median
 -   Los que hacen **menos** de 3 horas ($-$).
 
 ```{r}
-datos_ejercicio = DF_muestra$horas_ejercicio_semanal[!is.na(DF_muestra$horas_ejercicio_semanal)]
+datos_ejercicio = DF$horas_ejercicio_semanal[!is.na(DF$horas_ejercicio_semanal)]
 
 mu=3
 
@@ -763,14 +1958,14 @@ Uno de nuestros objetivos es **identificar los patrones de uso de redes sociales
 
 Si encontramos diferencias significativas, esto permite entender cuándo los estudiantes están más conectados y cómo eso puede relacionarse con el rendimiento académico o la calidad del sueño.
 
-### **Planteamieto de Hipótesis**
+### Planteamieto de Hipótesis
 
 $$
 H_o: \text{La distribución de la red social más usuada  por los estudiantes es uniforme. Se usan todas por igual}\\
 H_a: \text{La distribución no es uniforme. Algunas plataformas se usan más que otras}
 $$
 
-### **Resolución del caso**
+### Resolución del caso
 
 Encontramos los datos para poder crear nuestra tabla con las Frecuencias observadas, la probabilidad respecto a la distribución uniforme y el valor esperado que deberían tener. Además de la prueba del Chi-cuadrado.
 
@@ -790,7 +1985,18 @@ k <- length(observadas)
 # Frecuencias esperadas (modelo uniforme)
 esperadas <- rep(sum(observadas) / k, k)
 esperadas
+```
 
+```{r}
+# Contribuciones al Chi-cuadrado
+chi_contrib <- (observadas - esperadas)^2 / esperadas
+chi_contrib
+```
+
+```{r}
+# Porcentajes
+porcentaje <- round(observadas / sum(observadas) * 100, 2)
+porcentaje
 ```
 
 ```{r}
@@ -798,35 +2004,54 @@ esperadas
 chi_test <- chisq.test(x = observadas, p = rep(1/k, k))
 
 chi_test
+
+```
+
+```{r}
+# Tabla final
+tabla_resultado <- data.frame(
+  Momento_del_dia = c(
+    "Madrugada (12 am – 6 am)",
+    "Mañana (6 am – 11:59 am)",
+    "Tarde (12 pm – 6 pm)",
+    "Noche (6 pm – 12 am)"
+  ),
+  Frecuencia_observada = as.numeric(observadas),
+  Frecuencia_esperada = round(esperadas, 2),
+  Contribucion_Chi2 = round(chi_contrib, 2),
+  Porcentaje = porcentaje
+)
+
+tabla_resultado
 ```
 
 **Tabla final armada:**
 
 | Momento del día | Frecuencia observada | Frecuencia esperada | Contribución al Chi-cuadrado | Porcentaje del total |
 |---------------|---------------|---------------|---------------|---------------|
-| Madrugada (12 am – 6 am) | 65 | 353.75 | 251.44 | 4.59% |
-| Mañana (6 am – 11:59 am) | 99 | 353.75 | 184.27 | 7.00% |
-| Tarde (12 pm – 6 pm) | 446 | 353.75 | 21.50 | 31.52% |
-| Noche (6 pm – 12 am) | 805 | 353.75 | 561.56 | 56.89% |
-| **Total** | **1415** | — | **1018.77** | **100%** |
+| Madrugada (12 am – 6 am) | 12 | 91.25 | 68.83 | 3.29% |
+| Mañana (6 am – 11:59 am) | 18 | 91.25 | 58.80 | 4.93% |
+| Tarde (12 pm – 6 pm) | 109 | 91.25 | 3.45 | 29.86% |
+| Noche (6 pm – 12 am) | 226 | 91.25 | 198.99 | 61.92% |
+| **Total** | 365 | — | **330.07** | **100%** |
 
-### **Conclusión**
+### Conclusión
 
 Dado que:
 
 -   El p-valor es mucho menor a 0.05
 
--   El estadístico Chi-cuadrado es extremamente alto (1018.8)
+-   El estadístico Chi-cuadrado es extremamente alto (330.07)
 
 Se rechaza la hipótesis nula ($H_o$), el uso de redes sociales No es unirme a lo largo del día. Esto significa que hay diferencias altamente significativas entre los momentos del día, y los estudiantes prefieren claramente ciertos horarios.
 
 **Patrón encontrado:**
 
--   **La noche (805)** es, por amplio margen, el momento con mayor uso.
+-   **La noche (226)** es, por amplio margen, el momento con mayor uso.
 
--   Le sigue la **tarde (446)**.
+-   Le sigue la **tarde (109)**.
 
--   La **mañana (99)** y la **madrugada (65)** presentan un uso muy reducido.
+-   La **mañana (18)** y la **madrugada (12)** presentan un uso muy reducido.
 
 Esto indica que el uso de redes sociales presenta un patrón claramente diferenciado a lo largo del día, concentrándose principalmente en las horas de la noche. Este hallazgo es relevante para comprender los hábitos digitales de los estudiantes universitarios y constituye un insumo para analizar su relación con el rendimiento académico, la calidad del sueño y la salud mental. Ya que usar redes sociales de noche y madrugada suele estar asociado a:
 
@@ -836,7 +2061,7 @@ Esto indica que el uso de redes sociales presenta un patrón claramente diferenc
 
 -   mala higiene del sueño
 
-# ANÁLISIS DE REGRESIÓN LINEAL MÚLTIPLE
+# P6 ANÁLISIS DE REGRESIÓN LINEAL MÚLTIPLE
 
 ## Contexto y Objetivo
 
@@ -1129,7 +2354,7 @@ Con base en el modelo de regresión lineal múltiple ajustado, se pueden estable
 
 ------------------------------------------------------------------------
 
-# DISEÑO EXPERIMENTAL - ANOVA DE UN FACTOR
+# P7 DISEÑO EXPERIMENTAL - ANOVA DE UN FACTOR
 
 ## Contexto y Objetivo
 
@@ -1376,7 +2601,7 @@ print(tukey_result)
 
 # Visualización de intervalos de confianza de Tukey
 plot(tukey_result, las = 1, col = "blue")
-title(main = "Intervalos de Confianza (96%) para Comparaciones Múltiples - Tukey HSD")
+title(main = "Comparaciones Múltiples - Tukey HSD")
 abline(v = 0, lty = 2, col = "red")
 ```
 
