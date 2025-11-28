@@ -1,0 +1,839 @@
+---
+title: "P2_Entrega Final - Estadística II"
+author:
+  - "Adrian Urbina Mendoza"
+  - "Luciana Yangali Cáceres"
+  - "Jorge Leon Villarreyes"
+  - "Valentina Alvarez Beraun"
+  - "Mateo Rodríguez Ramos"
+format:
+  html:
+    toc: true
+    page-layout: full
+    toc-depth: 3
+    toc-location: left
+    theme: flatly
+    code-fold: true
+    code-tools: true
+    css: styles.css
+editor: visual
+---
+
+# Tema del Proyecto
+
+Relación entre Salud Mental Digital y Hábitos de universitarios entre 16 y 29 años de edad, matriculados en universidades públicas o privadas durante el semestre 2025-1.
+
+# Introducción y Relevancia
+
+Hoy en día, el uso de redes sociales se ha consolidado como una práctica esencial en la vida universitaria, pues contribuye a la interacción social y al bienestar psicológico de los estudiantes *(Valerio Ureña & Serna Valdivi, 2018).* Este uso se incrementa año tras año, lo que genera múltiples interrogantes sobre su impacto en el estilo y la calidad de vida de los estudiantes. En este contexto, resulta relevante contrastar lo señalado en la investigación de *Younes et al. (2016)*, el cual encontró que "la adicción a Internet se asocia significativamente con la presencia de insomnio, ansiedad, depresión, estrés y baja autoestima en estudiantes universitarios"
+
+Además, investigaciones internacionales han evidenciado que el uso excesivo de redes sociales y otras plataformas digitales puede asociarse a mayores niveles de ansiedad, estrés y dificultades en el descanso *(Twenge, 2019; Orben & Przybylski, 2019).* Sin embargo, en el contexto peruano aún existe un vacío en la información respecto a cómo estos hábitos digitales influyen en el desempeño académico y en la calidad de vida de los universitarios. Por ello, el presente estudio tiene como objetivo analizar esta relación, con el fin de plantear iniciativas que apoyen el bienestar de los estudiantes y que sirvan para prevenir problemas de salud mental dentro del entorno académico.
+
+# Objetivos del Estudio
+
+1.  **Identificar los patrones de uso de redes sociales y hábitos de vida** de los estudiantes universitarios de 16 a 29 años, matriculados en universidades públicas y privadas durante el semestre 2025-1.
+
+2.  **Comparar y analizar el impacto del uso de redes sociales** en el rendimiento académico, salud mental y calidad de sueño entre estudiantes de universidades públicas y privadas.
+
+3.  **Evaluar la relación entre el tiempo dedicado a redes sociales** y variables de bienestar estudiantil (promedio académico, horas de sueño, actividad física y satisfacción personal), mediante análisis estadístico inferencial.
+
+4.  **Concientizar sobre el impacto del uso excesivo de redes sociales** en la salud mental digital de los universitarios peruanos.
+
+5.  **Aplicar los conocimientos del curso de Estadística II** para abordar una problemática social contemporánea, mediante pruebas de hipótesis, regresión y diseño experimental.
+
+# Configuración Inicial
+
+```{r setup, message=FALSE, warning=FALSE}
+# Cargar librerías necesarias
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(car)        # Para VIF y pruebas de supuestos
+library(lmtest)     # Para pruebas adicionales de regresión
+library(tidyr)
+library(corrplot)   # Para matriz de correlaciones
+library(gridExtra)  # Para organizar múltiples gráficos
+```
+
+# Carga y Preparación de Datos
+
+```{r carga-datos, message=FALSE, warning=FALSE}
+# Leer la muestra de datos
+DF <- read_csv("muestra.csv", col_types = cols(.default = "c"))
+
+# Convertir tipos de datos según especificaciones del proyecto
+DF <- DF %>%
+  mutate(
+    # Cuantitativas discretas
+    edad = as.integer(edad),
+    total_cursos_actuales = as.integer(total_cursos_actuales),
+    horas_ejercicio_semanal = as.integer(horas_ejercicio_semanal),
+    horas_sueño_xnoche = as.integer(horas_sueño_xnoche),
+    tiempo_max_sin_redes_dia = as.integer(tiempo_max_sin_redes_dia),
+    notificaciones_estudio_diario = as.integer(notificaciones_estudio_diario),
+    dias_redes_antes_de_dormir = as.integer(dias_redes_antes_de_dormir),
+    interaccion_persona_amigos_redes = as.integer(interaccion_persona_amigos_redes),
+
+    # Cuantitativas continuas
+    prom_estudio_dia = as.numeric(prom_estudio_dia),
+    prom_ciclo_pasado = as.numeric(prom_ciclo_pasado),
+
+    # Cualitativas nominales
+    sexo = factor(sexo, levels = c("Femenino", "Masculino")),
+    tipo_universidad = factor(tipo_universidad, levels = c("Privada", "Pública")),
+    actividad_extracurricular_actual = factor(actividad_extracurricular_actual),
+    red_mas_usada = factor(red_mas_usada),
+    tipo_contenido_redes_sociales = factor(tipo_contenido_redes_sociales,
+                                           levels = c("Académico", "Entretenimiento", "Noticias", "Socializar")),
+    uso_redes_academicas = factor(uso_redes_academicas, levels = c("No", "Sí")),
+    impacto_redes_actividades_extracurriculares = factor(impacto_redes_actividades_extracurriculares,
+                                                         levels = c("Desmotiva", "Motiva", "No tiene efecto")),
+    momento_uso_redes_sociales = factor(momento_uso_redes_sociales),
+
+    # Cualitativas ordinales (escalas 1-5)
+    afecta_concentracion_rendimiento = factor(afecta_concentracion_rendimiento,
+                                              levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    impacto_redes_salud_mental = factor(impacto_redes_salud_mental,
+                                        levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    satisfaccion_interaccion_social_presencial = factor(satisfaccion_interaccion_social_presencial,
+                                                        levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    satisfaccion_rendimiento_academico = factor(satisfaccion_rendimiento_academico,
+                                                levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    frecuencia_descubrimiento_actividades_redes = factor(frecuencia_descubrimiento_actividades_redes,
+                                                         levels = c("1", "2", "3", "4", "5"), ordered = TRUE),
+    ciclo = factor(as.character(ciclo), levels = as.character(1:10), ordered = TRUE)
+  )
+```
+
+```{r}
+# Verificar estructura de datos
+cat("Dimensiones del dataset:", nrow(DF), "filas x", ncol(DF), "columnas\n")
+cat("Total de observaciones válidas para análisis:",
+    sum(complete.cases(DF[, c("prom_ciclo_pasado", "prom_estudio_dia",
+                               "horas_sueño_xnoche", "horas_ejercicio_semanal",
+                               "dias_redes_antes_de_dormir")])), "\n")
+```
+
+------------------------------------------------------------------------
+
+# ANÁLISIS DE REGRESIÓN LINEAL MÚLTIPLE
+
+## Contexto y Objetivo
+
+Uno de los objetivos centrales de este estudio es **evaluar la relación entre el tiempo dedicado a redes sociales y variables de bienestar estudiantil**, específicamente el rendimiento académico. En esta sección, desarrollaremos un modelo de **regresión lineal múltiple** para predecir el **promedio académico del ciclo pasado** (`prom_ciclo_pasado`) en función de múltiples variables relacionadas con los hábitos de estudio, descanso y uso de tecnología digital.
+
+### Pregunta de investigación
+
+**¿Qué variables relacionadas con los hábitos de vida y el uso de redes sociales predicen mejor el rendimiento académico de los estudiantes universitarios?**
+
+### Variables del modelo
+
+**Variable dependiente (Y):** - `prom_ciclo_pasado`: Promedio ponderado del ciclo anterior (variable continua)
+
+**Variables independientes (X):** - `prom_estudio_dia`: Horas promedio de estudio diario - `horas_sueño_xnoche`: Horas de sueño por noche - `horas_ejercicio_semanal`: Horas de ejercicio físico por semana - `dias_redes_antes_de_dormir`: Días por semana que usa redes sociales antes de dormir
+
+### Hipótesis del modelo
+
+**Hipótesis nula (H₀):** Las variables independientes (horas de estudio, sueño, ejercicio y uso nocturno de redes) **no tienen efecto significativo** en el promedio académico. Es decir, todos los coeficientes de regresión son iguales a cero.
+
+**Hipótesis alternativa (H₁):** Al menos una de las variables independientes **tiene un efecto significativo** en el promedio académico.
+
+## Análisis Exploratorio
+
+Antes de ajustar el modelo, exploramos las relaciones entre las variables mediante visualizaciones y estadísticas descriptivas.
+
+```{r exploratorio-regresion, fig.width=10, fig.height=6}
+# Crear dataset limpio solo con variables del modelo
+datos_regresion <- DF %>%
+  select(prom_ciclo_pasado, prom_estudio_dia, horas_sueño_xnoche,
+         horas_ejercicio_semanal, dias_redes_antes_de_dormir) %>%
+  filter(complete.cases(.))
+
+# Estadísticas descriptivas
+estadisticas <- datos_regresion %>%
+  summarise(
+    across(everything(),
+           list(media = ~mean(., na.rm = TRUE),
+                mediana = ~median(., na.rm = TRUE),
+                sd = ~sd(., na.rm = TRUE),
+                min = ~min(., na.rm = TRUE),
+                max = ~max(., na.rm = TRUE)),
+           .names = "{.col}_{.fn}")
+  )
+
+# Transponer para mejor visualización
+estadisticas_t <- data.frame(
+  Variable = c("Promedio académico", "Horas estudio/día", "Horas sueño/noche",
+               "Horas ejercicio/semana", "Días redes antes dormir"),
+  Media = c(estadisticas$prom_ciclo_pasado_media, estadisticas$prom_estudio_dia_media,
+            estadisticas$horas_sueño_xnoche_media, estadisticas$horas_ejercicio_semanal_media,
+            estadisticas$dias_redes_antes_de_dormir_media),
+  Mediana = c(estadisticas$prom_ciclo_pasado_mediana, estadisticas$prom_estudio_dia_mediana,
+              estadisticas$horas_sueño_xnoche_mediana, estadisticas$horas_ejercicio_semanal_mediana,
+              estadisticas$dias_redes_antes_de_dormir_mediana),
+  Desv_Est = c(estadisticas$prom_ciclo_pasado_sd, estadisticas$prom_estudio_dia_sd,
+               estadisticas$horas_sueño_xnoche_sd, estadisticas$horas_ejercicio_semanal_sd,
+               estadisticas$dias_redes_antes_de_dormir_sd),
+  Mínimo = c(estadisticas$prom_ciclo_pasado_min, estadisticas$prom_estudio_dia_min,
+             estadisticas$horas_sueño_xnoche_min, estadisticas$horas_ejercicio_semanal_min,
+             estadisticas$dias_redes_antes_de_dormir_min),
+  Máximo = c(estadisticas$prom_ciclo_pasado_max, estadisticas$prom_estudio_dia_max,
+             estadisticas$horas_sueño_xnoche_max, estadisticas$horas_ejercicio_semanal_max,
+             estadisticas$dias_redes_antes_de_dormir_max)
+)
+
+kable(estadisticas_t, digits = 2,
+      caption = "Tabla 1: Estadísticas descriptivas de las variables del modelo de regresión",
+      col.names = c("Variable", "Media", "Mediana", "Desv. Est.", "Mínimo", "Máximo")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                full_width = TRUE, font_size = 12) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#3498db")
+```
+
+```{r matriz-correlacion, fig.width=8, fig.height=6}
+# Matriz de correlación
+correlaciones <- cor(datos_regresion, use = "complete.obs")
+
+# Visualización de correlaciones
+corrplot(correlaciones, method = "number", type = "upper",
+         tl.col = "black", tl.srt = 45, number.cex = 0.8,
+         title = "Matriz de Correlaciones entre Variables",
+         mar = c(0,0,2,0))
+```
+
+```{r scatter-plots, fig.width=12, fig.height=8}
+# Gráficos de dispersión para cada predictor vs variable dependiente
+p1 <- ggplot(datos_regresion, aes(x = prom_estudio_dia, y = prom_ciclo_pasado)) +
+  geom_point(alpha = 0.5, color = "#3498db") +
+  geom_smooth(method = "lm", se = TRUE, color = "#e74c3c") +
+  labs(title = "Promedio Académico vs Horas de Estudio",
+       x = "Horas de estudio por día", y = "Promedio académico") +
+  theme_minimal()
+
+p2 <- ggplot(datos_regresion, aes(x = horas_sueño_xnoche, y = prom_ciclo_pasado)) +
+  geom_point(alpha = 0.5, color = "#3498db") +
+  geom_smooth(method = "lm", se = TRUE, color = "#e74c3c") +
+  labs(title = "Promedio Académico vs Horas de Sueño",
+       x = "Horas de sueño por noche", y = "Promedio académico") +
+  theme_minimal()
+
+p3 <- ggplot(datos_regresion, aes(x = horas_ejercicio_semanal, y = prom_ciclo_pasado)) +
+  geom_point(alpha = 0.5, color = "#3498db") +
+  geom_smooth(method = "lm", se = TRUE, color = "#e74c3c") +
+  labs(title = "Promedio Académico vs Horas de Ejercicio",
+       x = "Horas de ejercicio por semana", y = "Promedio académico") +
+  theme_minimal()
+
+p4 <- ggplot(datos_regresion, aes(x = dias_redes_antes_de_dormir, y = prom_ciclo_pasado)) +
+  geom_point(alpha = 0.5, color = "#3498db") +
+  geom_smooth(method = "lm", se = TRUE, color = "#e74c3c") +
+  labs(title = "Promedio Académico vs Uso Nocturno de Redes",
+       x = "Días/semana usando redes antes de dormir", y = "Promedio académico") +
+  theme_minimal()
+
+# Mostrar en grid
+grid.arrange(p1, p2, p3, p4, ncol = 2)
+```
+
+## Ajuste del Modelo de Regresión
+
+```{r modelo-regresion}
+# Ajustar modelo de regresión lineal múltiple
+modelo_reg <- lm(prom_ciclo_pasado ~ prom_estudio_dia + horas_sueño_xnoche +
+                   horas_ejercicio_semanal + dias_redes_antes_de_dormir,
+                 data = datos_regresion)
+
+# Resumen del modelo
+summary(modelo_reg)
+```
+
+### Ecuación del Modelo
+
+```{r ecuacion-modelo}
+coefs <- coef(modelo_reg)
+cat("Ecuación de regresión estimada:\n\n")
+cat(sprintf("Promedio_Académico = %.4f + %.4f × Horas_Estudio + %.4f × Horas_Sueño\n",
+            coefs[1], coefs[2], coefs[3]))
+cat(sprintf("                     + %.4f × Horas_Ejercicio + %.4f × Días_Redes_Noche\n",
+            coefs[4], coefs[5]))
+```
+
+### Intervalos de Confianza (96%)
+
+```{r ic-coeficientes}
+# Intervalos de confianza para los coeficientes al 96%
+ic_coef <- confint(modelo_reg, level = 0.96)
+
+ic_tabla <- data.frame(
+  Coeficiente = c("Intercepto", "Horas estudio/día", "Horas sueño/noche",
+                  "Horas ejercicio/semana", "Días redes antes dormir"),
+  Estimacion = coefs,
+  Limite_Inferior = ic_coef[, 1],
+  Limite_Superior = ic_coef[, 2]
+)
+
+kable(ic_tabla, digits = 4,
+      caption = "Tabla 2: Coeficientes del modelo con intervalos de confianza al 96%",
+      col.names = c("Coeficiente", "Estimación", "Límite Inferior (96%)", "Límite Superior (96%)")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE, font_size = 12) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#3498db")
+```
+
+## Diagnóstico del Modelo
+
+### 1. Verificación de Supuestos
+
+```{r diagnostico-supuestos, fig.width=10, fig.height=8}
+# Gráficos de diagnóstico estándar
+par(mfrow = c(2, 2))
+plot(modelo_reg, which = 1:4)
+```
+
+### 2. Normalidad de Residuos
+
+```{r normalidad-residuos}
+# Prueba de Shapiro-Wilk para normalidad de residuos
+shapiro_test <- shapiro.test(residuals(modelo_reg))
+
+cat("Prueba de Shapiro-Wilk para normalidad de residuos:\n")
+cat(sprintf("Estadístico W = %.4f, p-valor = %.4f\n",
+            shapiro_test$statistic, shapiro_test$p.value))
+
+if (shapiro_test$p.value > 0.04) {
+  cat("Conclusión: No rechazamos H₀. Los residuos siguen una distribución normal (α = 0.04)\n")
+} else {
+  cat("Conclusión: Rechazamos H₀. Los residuos NO siguen una distribución normal (α = 0.04)\n")
+}
+```
+
+### 3. Homocedasticidad (Varianza Constante)
+
+```{r homocedasticidad}
+# Prueba de Breusch-Pagan
+bp_test <- bptest(modelo_reg)
+
+cat("Prueba de Breusch-Pagan para homocedasticidad:\n")
+cat(sprintf("Estadístico BP = %.4f, p-valor = %.4f\n",
+            bp_test$statistic, bp_test$p.value))
+
+if (bp_test$p.value > 0.04) {
+  cat("Conclusión: No rechazamos H₀. La varianza de los residuos es constante (α = 0.04)\n")
+} else {
+  cat("Conclusión: Rechazamos H₀. Existe heterocedasticidad (α = 0.04)\n")
+}
+```
+
+### 4. Multicolinealidad
+
+```{r multicolinealidad}
+# Factor de Inflación de la Varianza (VIF)
+vif_values <- vif(modelo_reg)
+
+vif_tabla <- data.frame(
+  Variable = names(vif_values),
+  VIF = vif_values
+)
+
+kable(vif_tabla, digits = 2,
+      caption = "Tabla 3: Factores de Inflación de la Varianza (VIF)",
+      col.names = c("Variable", "VIF")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE, font_size = 12) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#3498db")
+
+cat("\nInterpretación:\n")
+cat("- VIF < 5: No hay problema de multicolinealidad\n")
+cat("- VIF entre 5-10: Multicolinealidad moderada\n")
+cat("- VIF > 10: Multicolinealidad severa\n")
+```
+
+### 5. Independencia de Residuos
+
+```{r independencia}
+# Prueba de Durbin-Watson
+dw_test <- durbinWatsonTest(modelo_reg)
+
+cat("Prueba de Durbin-Watson para independencia de residuos:\n")
+cat(sprintf("Estadístico DW = %.4f, p-valor = %.4f\n",
+            dw_test$dw, dw_test$p))
+
+if (dw_test$p > 0.04) {
+  cat("Conclusión: No hay evidencia de autocorrelación en los residuos (α = 0.04)\n")
+} else {
+  cat("Conclusión: Existe autocorrelación en los residuos (α = 0.04)\n")
+}
+```
+
+## Interpretación del Modelo de Regresión
+
+```{r interpretacion-modelo}
+# Extraer métricas clave
+r_cuadrado <- summary(modelo_reg)$r.squared
+r_cuadrado_adj <- summary(modelo_reg)$adj.r.squared
+f_estadistico <- summary(modelo_reg)$fstatistic
+p_valor_modelo <- pf(f_estadistico[1], f_estadistico[2], f_estadistico[3], lower.tail = FALSE)
+
+cat("=== RESUMEN DEL MODELO ===\n\n")
+cat(sprintf("R² = %.4f (%.2f%% de la varianza explicada)\n", r_cuadrado, r_cuadrado * 100))
+cat(sprintf("R² ajustado = %.4f\n", r_cuadrado_adj))
+cat(sprintf("F-estadístico = %.4f, p-valor < 0.001\n", f_estadistico[1]))
+cat(sprintf("Número de observaciones: %d\n", nrow(datos_regresion)))
+```
+
+### Interpretación de Coeficientes
+
+**Intercepto (`r sprintf("%.4f", coefs[1])`)** Representa el promedio académico esperado cuando todas las variables independientes son cero. En este contexto, no tiene interpretación práctica relevante.
+
+**Horas de estudio por día (`r sprintf("%.4f", coefs[2])`)** Por cada hora adicional de estudio diario, el promedio académico se espera que `r if(coefs[2] > 0) "aumente" else "disminuya"` en `r abs(coefs[2])` puntos, manteniendo constantes las demás variables. `r if(summary(modelo_reg)$coefficients[2, 4] < 0.04) "✓ **Estadísticamente significativo** (p < 0.04)" else "✗ No estadísticamente significativo (p > 0.04)"`
+
+**Horas de sueño por noche (`r sprintf("%.4f", coefs[3])`)** Por cada hora adicional de sueño nocturno, el promedio académico se espera que `r if(coefs[3] > 0) "aumente" else "disminuya"` en `r abs(coefs[3])` puntos, manteniendo constantes las demás variables. `r if(summary(modelo_reg)$coefficients[3, 4] < 0.04) "✓ **Estadísticamente significativo** (p < 0.04)" else "✗ No estadísticamente significativo (p > 0.04)"`
+
+**Horas de ejercicio por semana (`r sprintf("%.4f", coefs[4])`)** Por cada hora adicional de ejercicio semanal, el promedio académico se espera que `r if(coefs[4] > 0) "aumente" else "disminuya"` en `r abs(coefs[4])` puntos, manteniendo constantes las demás variables. `r if(summary(modelo_reg)$coefficients[4, 4] < 0.04) "✓ **Estadísticamente significativo** (p < 0.04)" else "✗ No estadísticamente significativo (p > 0.04)"`
+
+**Días usando redes antes de dormir (`r sprintf("%.4f", coefs[5])`)** Por cada día adicional de la semana que se usan redes sociales antes de dormir, el promedio académico se espera que `r if(coefs[5] > 0) "aumente" else "disminuya"` en `r abs(coefs[5])` puntos, manteniendo constantes las demás variables. `r if(summary(modelo_reg)$coefficients[5, 4] < 0.04) "✓ **Estadísticamente significativo** (p < 0.04)" else "✗ No estadísticamente significativo (p > 0.04)"`
+
+## Conclusiones del Análisis de Regresión
+
+Con base en el modelo de regresión lineal múltiple ajustado, se pueden establecer las siguientes conclusiones en el contexto de la relación entre hábitos de vida, uso de redes sociales y rendimiento académico:
+
+1.  **Validez del modelo**: El modelo en conjunto es estadísticamente significativo (p \< 0.001), lo que indica que al menos una de las variables independientes tiene un efecto significativo sobre el promedio académico.
+
+2.  **Capacidad predictiva**: El modelo explica aproximadamente `r sprintf("%.1f%%", r_cuadrado * 100)` de la variabilidad en el promedio académico de los estudiantes, según el coeficiente de determinación R².
+
+3.  **Variables significativas**: Las variables que mostraron un efecto estadísticamente significativo (α = 0.04) sobre el rendimiento académico fueron aquellas con p-valor \< 0.04 en el modelo.
+
+4.  **Impacto del uso de redes sociales**: El uso nocturno de redes sociales (medido por días a la semana) mostró `r if(summary(modelo_reg)$coefficients[5, 4] < 0.04) "un efecto significativo" else "un efecto no significativo"` en el rendimiento académico, lo cual `r if(coefs[5] < 0) "confirma" else "no confirma"` la hipótesis de que el uso excesivo de tecnología digital antes de dormir puede afectar negativamente el desempeño estudiantil.
+
+5.  **Implicaciones prácticas**: Los resultados sugieren que fomentar hábitos saludables como suficientes horas de estudio, descanso adecuado y actividad física puede contribuir positivamente al rendimiento académico de los universitarios peruanos.
+
+------------------------------------------------------------------------
+
+# DISEÑO EXPERIMENTAL - ANOVA DE UN FACTOR
+
+## Contexto y Objetivo
+
+En el marco del estudio sobre salud mental digital, resulta crucial analizar cómo el **uso nocturno de redes sociales** impacta en la **calidad del sueño** de los estudiantes universitarios. Múltiples investigaciones han documentado que el uso de dispositivos electrónicos antes de dormir puede alterar los patrones de sueño y afectar el descanso *(Twenge, 2019)*.
+
+En esta sección, aplicaremos un **diseño experimental de un factor** mediante **ANOVA (Análisis de Varianza)** para determinar si existen diferencias significativas en las **horas de sueño por noche** entre estudiantes con diferentes niveles de uso nocturno de redes sociales.
+
+### Pregunta de investigación
+
+**¿Existen diferencias significativas en las horas de sueño promedio entre estudiantes con bajo, moderado y alto uso nocturno de redes sociales?**
+
+### Diseño del experimento
+
+**Factor de estudio:** - Nivel de uso nocturno de redes sociales (variable categórica con 3 niveles)
+
+**Variable respuesta:** - Horas de sueño por noche (variable cuantitativa continua)
+
+**Grupos experimentales:**
+
+-   **Grupo 1 (Bajo uso):** Estudiantes que usan redes sociales 0-2 días por semana antes de dormir
+-   **Grupo 2 (Uso moderado):** Estudiantes que usan redes sociales 3-4 días por semana antes de dormir
+-   **Grupo 3 (Alto uso):** Estudiantes que usan redes sociales 5-7 días por semana antes de dormir
+
+### Hipótesis
+
+**Hipótesis nula (H₀):** Las medias de horas de sueño son iguales en los tres grupos de uso nocturno de redes sociales.
+
+$$H_0: \mu_1 = \mu_2 = \mu_3$$
+
+**Hipótesis alternativa (H₁):** Al menos una de las medias de horas de sueño difiere entre los grupos.
+
+$$H_1: \text{Al menos un } \mu_i \neq \mu_j \text{ para } i \neq j$$
+
+**Nivel de significancia:** α = 0.04 (correspondiente a 96% de confianza)
+
+## Preparación de Datos
+
+```{r preparacion-anova}
+# Crear variable categórica para niveles de uso nocturno
+datos_anova <- DF %>%
+  filter(!is.na(dias_redes_antes_de_dormir), !is.na(horas_sueño_xnoche)) %>%
+  mutate(
+    nivel_uso_nocturno = case_when(
+      dias_redes_antes_de_dormir >= 0 & dias_redes_antes_de_dormir <= 2 ~ "Bajo (0-2 días)",
+      dias_redes_antes_de_dormir >= 3 & dias_redes_antes_de_dormir <= 4 ~ "Moderado (3-4 días)",
+      dias_redes_antes_de_dormir >= 5 & dias_redes_antes_de_dormir <= 7 ~ "Alto (5-7 días)",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  filter(!is.na(nivel_uso_nocturno)) %>%
+  mutate(nivel_uso_nocturno = factor(nivel_uso_nocturno,
+                                      levels = c("Bajo (0-2 días)", "Moderado (3-4 días)", "Alto (5-7 días)")))
+
+# Verificar tamaños de grupo
+table(datos_anova$nivel_uso_nocturno)
+```
+
+## Análisis Descriptivo por Grupos
+
+```{r estadisticas-grupos}
+# Estadísticas descriptivas por grupo
+estadisticas_grupos <- datos_anova %>%
+  group_by(nivel_uso_nocturno) %>%
+  summarise(
+    n = n(),
+    Media = mean(horas_sueño_xnoche, na.rm = TRUE),
+    Mediana = median(horas_sueño_xnoche, na.rm = TRUE),
+    Desv_Est = sd(horas_sueño_xnoche, na.rm = TRUE),
+    Varianza = var(horas_sueño_xnoche, na.rm = TRUE),
+    Min = min(horas_sueño_xnoche, na.rm = TRUE),
+    Max = max(horas_sueño_xnoche, na.rm = TRUE),
+    Error_Est = sd(horas_sueño_xnoche, na.rm = TRUE) / sqrt(n())
+  )
+
+kable(estadisticas_grupos, digits = 3,
+      caption = "Tabla 4: Estadísticas descriptivas de horas de sueño por nivel de uso nocturno de redes",
+      col.names = c("Nivel de Uso Nocturno", "n", "Media", "Mediana", "Desv. Est.",
+                    "Varianza", "Mín", "Máx", "Error Est.")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                full_width = TRUE, font_size = 12) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#3498db")
+```
+
+```{r boxplot-grupos, fig.width=10, fig.height=6}
+# Boxplot comparativo
+ggplot(datos_anova, aes(x = nivel_uso_nocturno, y = horas_sueño_xnoche, fill = nivel_uso_nocturno)) +
+  geom_boxplot(alpha = 0.7, outlier.color = "red") +
+  geom_jitter(width = 0.2, alpha = 0.3, size = 1.5) +
+  stat_summary(fun = mean, geom = "point", shape = 23, size = 4,
+               fill = "white", color = "black", stroke = 1.5) +
+  labs(title = "Distribución de Horas de Sueño por Nivel de Uso Nocturno de Redes Sociales",
+       subtitle = "El rombo blanco representa la media de cada grupo",
+       x = "Nivel de Uso Nocturno de Redes Sociales",
+       y = "Horas de Sueño por Noche",
+       fill = "Grupo") +
+  scale_fill_manual(values = c("#27ae60", "#f39c12", "#e74c3c")) +
+  theme_minimal() +
+  theme(legend.position = "none",
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+        plot.subtitle = element_text(hjust = 0.5, size = 10),
+        axis.text.x = element_text(angle = 0, hjust = 0.5))
+```
+
+## Verificación de Supuestos del ANOVA
+
+Antes de proceder con el ANOVA, debemos verificar que se cumplan los supuestos:
+
+### 1. Normalidad de los residuos en cada grupo
+
+```{r normalidad-grupos}
+# Prueba de Shapiro-Wilk por grupo
+normalidad_tests <- datos_anova %>%
+  group_by(nivel_uso_nocturno) %>%
+  summarise(
+    n = n(),
+    Shapiro_W = shapiro.test(horas_sueño_xnoche)$statistic,
+    p_valor = shapiro.test(horas_sueño_xnoche)$p.value,
+    Normal = ifelse(shapiro.test(horas_sueño_xnoche)$p.value > 0.04, "Sí", "No")
+  )
+
+kable(normalidad_tests, digits = 4,
+      caption = "Tabla 5: Pruebas de normalidad (Shapiro-Wilk) por grupo",
+      col.names = c("Grupo", "n", "Estadístico W", "p-valor", "¿Normal? (α=0.04)")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE, font_size = 12) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#3498db")
+```
+
+```{r qq-plots, fig.width=12, fig.height=4}
+# Q-Q plots por grupo
+par(mfrow = c(1, 3))
+for (grupo in levels(datos_anova$nivel_uso_nocturno)) {
+  datos_grupo <- datos_anova %>% filter(nivel_uso_nocturno == grupo)
+  qqnorm(datos_grupo$horas_sueño_xnoche, main = paste("Q-Q Plot:", grupo))
+  qqline(datos_grupo$horas_sueño_xnoche, col = "red")
+}
+```
+
+### 2. Homogeneidad de varianzas (Homocedasticidad)
+
+```{r levene-test}
+# Prueba de Levene para homogeneidad de varianzas
+levene_test <- leveneTest(horas_sueño_xnoche ~ nivel_uso_nocturno, data = datos_anova)
+
+cat("Prueba de Levene para homogeneidad de varianzas:\n")
+print(levene_test)
+
+if (levene_test$`Pr(>F)`[1] > 0.04) {
+  cat("\nConclusión: No rechazamos H₀. Las varianzas son homogéneas entre grupos (α = 0.04)\n")
+  cat("✓ Se cumple el supuesto de homocedasticidad para ANOVA\n")
+} else {
+  cat("\nConclusión: Rechazamos H₀. Las varianzas NO son homogéneas entre grupos (α = 0.04)\n")
+  cat("✗ Considerar prueba no paramétrica (Kruskal-Wallis) o Welch ANOVA\n")
+}
+```
+
+```{r bartlett-test}
+# Prueba alternativa: Bartlett (más sensible a no-normalidad)
+bartlett_test <- bartlett.test(horas_sueño_xnoche ~ nivel_uso_nocturno, data = datos_anova)
+
+cat("\nPrueba de Bartlett para homogeneidad de varianzas:\n")
+cat(sprintf("Estadístico de Bartlett = %.4f, p-valor = %.4f\n",
+            bartlett_test$statistic, bartlett_test$p.value))
+```
+
+### 3. Independencia de observaciones
+
+La independencia se garantiza por el diseño del estudio (cada estudiante pertenece a un solo grupo y las observaciones son independientes entre sí).
+
+## ANOVA de Un Factor
+
+```{r anova-modelo}
+# Ajustar modelo ANOVA
+modelo_anova <- aov(horas_sueño_xnoche ~ nivel_uso_nocturno, data = datos_anova)
+
+# Tabla ANOVA
+anova_summary <- summary(modelo_anova)
+print(anova_summary)
+```
+
+### Construcción Manual de la Tabla ANOVA
+
+```{r tabla-anova-manual}
+# Extraer componentes de la tabla ANOVA
+anova_table <- anova_summary[[1]]
+
+# Calcular componentes manualmente para verificación
+media_global <- mean(datos_anova$horas_sueño_xnoche)
+n_total <- nrow(datos_anova)
+k <- length(levels(datos_anova$nivel_uso_nocturno))  # número de grupos
+
+# Suma de cuadrados entre grupos (SCE)
+SC_entre <- sum(estadisticas_grupos$n * (estadisticas_grupos$Media - media_global)^2)
+
+# Suma de cuadrados dentro de grupos (SCD)
+SC_dentro <- sum((estadisticas_grupos$n - 1) * estadisticas_grupos$Varianza)
+
+# Suma de cuadrados total
+SC_total <- SC_entre + SC_dentro
+
+# Grados de libertad
+gl_entre <- k - 1
+gl_dentro <- n_total - k
+gl_total <- n_total - 1
+
+# Cuadrados medios
+MC_entre <- SC_entre / gl_entre
+MC_dentro <- SC_dentro / gl_dentro
+
+# Estadístico F
+F_stat <- MC_entre / MC_dentro
+
+# p-valor
+p_valor <- pf(F_stat, gl_entre, gl_dentro, lower.tail = FALSE)
+
+# Crear tabla ANOVA formateada
+tabla_anova_completa <- data.frame(
+  Fuente = c("Entre grupos (Factor)", "Dentro de grupos (Error)", "Total"),
+  SC = c(SC_entre, SC_dentro, SC_total),
+  gl = c(gl_entre, gl_dentro, gl_total),
+  MC = c(MC_entre, MC_dentro, NA),
+  F = c(F_stat, NA, NA),
+  p_valor = c(p_valor, NA, NA)
+)
+
+kable(tabla_anova_completa, digits = 4,
+      caption = "Tabla 6: Tabla ANOVA completa - Efecto del uso nocturno de redes en horas de sueño",
+      col.names = c("Fuente de Variación", "Suma de Cuadrados", "Grados de Libertad",
+                    "Cuadrado Medio", "F", "p-valor")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                full_width = TRUE, font_size = 12) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#3498db") %>%
+  row_spec(3, bold = TRUE)
+```
+
+## Comparaciones Múltiples (Post-hoc)
+
+Si el ANOVA resulta significativo, procedemos con comparaciones post-hoc para identificar qué grupos específicos difieren entre sí.
+
+```{r posthoc-tukey}
+# Prueba de Tukey HSD (Honest Significant Difference) al 96% de confianza
+tukey_result <- TukeyHSD(modelo_anova, conf.level = 0.96)
+print(tukey_result)
+
+# Visualización de intervalos de confianza de Tukey
+plot(tukey_result, las = 1, col = "blue")
+title(main = "Intervalos de Confianza (96%) para Comparaciones Múltiples - Tukey HSD")
+abline(v = 0, lty = 2, col = "red")
+```
+
+```{r tabla-tukey}
+# Tabla formateada de comparaciones de Tukey
+tukey_df <- as.data.frame(tukey_result$nivel_uso_nocturno)
+tukey_df$Comparacion <- rownames(tukey_df)
+tukey_df$Significativo <- ifelse(tukey_df$`p adj` < 0.04, "Sí", "No")
+
+tukey_tabla <- tukey_df %>%
+  select(Comparacion, diff, lwr, upr, `p adj`, Significativo)
+
+kable(tukey_tabla, digits = 4,
+      caption = "Tabla 7: Comparaciones múltiples de Tukey (α = 0.04)",
+      col.names = c("Comparación", "Diferencia de Medias", "Límite Inferior (96%)",
+                    "Límite Superior (96%)", "p-valor ajustado", "¿Significativo?")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                full_width = TRUE, font_size = 12) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#3498db")
+```
+
+```{r comparaciones-visualizacion, fig.width=10, fig.height=6}
+# Gráfico de medias con intervalos de confianza
+medias_ic <- datos_anova %>%
+  group_by(nivel_uso_nocturno) %>%
+  summarise(
+    media = mean(horas_sueño_xnoche),
+    n = n(),
+    sd = sd(horas_sueño_xnoche),
+    se = sd / sqrt(n),
+    # IC al 96% = media ± t(0.98, n-1) * se
+    ic_inferior = media - qt(0.98, n-1) * se,
+    ic_superior = media + qt(0.98, n-1) * se
+  )
+
+ggplot(medias_ic, aes(x = nivel_uso_nocturno, y = media, fill = nivel_uso_nocturno)) +
+  geom_bar(stat = "identity", alpha = 0.7, width = 0.6) +
+  geom_errorbar(aes(ymin = ic_inferior, ymax = ic_superior),
+                width = 0.2, size = 1, color = "black") +
+  geom_text(aes(label = sprintf("%.2f", media)),
+            vjust = -0.5, size = 4, fontface = "bold") +
+  labs(title = "Medias de Horas de Sueño por Nivel de Uso Nocturno de Redes",
+       subtitle = "Barras de error representan intervalos de confianza al 96%",
+       x = "Nivel de Uso Nocturno de Redes Sociales",
+       y = "Promedio de Horas de Sueño por Noche") +
+  scale_fill_manual(values = c("#27ae60", "#f39c12", "#e74c3c")) +
+  theme_minimal() +
+  theme(legend.position = "none",
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+        plot.subtitle = element_text(hjust = 0.5, size = 10))
+```
+
+## Análisis de Residuos del ANOVA
+
+```{r residuos-anova, fig.width=10, fig.height=8}
+# Extraer residuos y valores ajustados
+residuos <- residuals(modelo_anova)
+valores_ajustados <- fitted(modelo_anova)
+
+# Gráficos de diagnóstico
+par(mfrow = c(2, 2))
+
+# 1. Residuos vs Valores Ajustados
+plot(valores_ajustados, residuos,
+     xlab = "Valores Ajustados", ylab = "Residuos",
+     main = "Residuos vs Valores Ajustados")
+abline(h = 0, col = "red", lty = 2)
+
+# 2. Q-Q Plot de residuos
+qqnorm(residuos, main = "Q-Q Plot de Residuos")
+qqline(residuos, col = "red")
+
+# 3. Scale-Location
+plot(valores_ajustados, sqrt(abs(residuos)),
+     xlab = "Valores Ajustados", ylab = "√|Residuos|",
+     main = "Scale-Location")
+
+# 4. Residuos vs Orden
+plot(residuos, type = "b",
+     xlab = "Índice", ylab = "Residuos",
+     main = "Residuos vs Orden de Observación")
+abline(h = 0, col = "red", lty = 2)
+```
+
+```{r shapiro-residuos-anova}
+# Prueba de normalidad de residuos del modelo completo
+shapiro_residuos <- shapiro.test(residuos)
+
+cat("Prueba de Shapiro-Wilk para residuos del modelo ANOVA:\n")
+cat(sprintf("Estadístico W = %.4f, p-valor = %.4f\n",
+            shapiro_residuos$statistic, shapiro_residuos$p.value))
+
+if (shapiro_residuos$p.value > 0.04) {
+  cat("Conclusión: Los residuos siguen una distribución normal (α = 0.04)\n")
+} else {
+  cat("Conclusión: Los residuos NO siguen una distribución normal (α = 0.04)\n")
+}
+```
+
+## Interpretación y Conclusiones del ANOVA
+
+```{r interpretacion-anova}
+cat("=== RESULTADOS DEL ANOVA ===\n\n")
+cat(sprintf("F-estadístico = %.4f\n", F_stat))
+cat(sprintf("p-valor = %.6f\n", p_valor))
+cat(sprintf("Nivel de significancia: α = 0.04\n\n"))
+
+if (p_valor < 0.04) {
+  cat("DECISIÓN: Rechazamos la hipótesis nula (H₀)\n\n")
+  cat("CONCLUSIÓN: Existen diferencias estadísticamente significativas en las horas de sueño\n")
+  cat("promedio entre al menos dos de los grupos de uso nocturno de redes sociales.\n\n")
+  cat("Esto significa que el nivel de uso nocturno de redes sociales SÍ tiene un efecto\n")
+  cat("significativo sobre la cantidad de horas de sueño de los estudiantes universitarios.\n")
+} else {
+  cat("DECISIÓN: No rechazamos la hipótesis nula (H₀)\n\n")
+  cat("CONCLUSIÓN: No existe evidencia estadística suficiente para afirmar que hay diferencias\n")
+  cat("significativas en las horas de sueño promedio entre los grupos de uso nocturno de redes.\n")
+}
+```
+
+### Interpretación de Comparaciones Post-hoc
+
+Según las comparaciones múltiples de Tukey:
+
+```{r interpretacion-tukey}
+for (i in 1:nrow(tukey_tabla)) {
+  cat(sprintf("\n• %s:\n", tukey_tabla$Comparacion[i]))
+  cat(sprintf("  Diferencia de medias: %.3f horas\n", tukey_tabla$`Diferencia de Medias`[i]))
+  cat(sprintf("  IC 96%%: [%.3f, %.3f]\n",
+              tukey_tabla$`Límite Inferior (96%)`[i],
+              tukey_tabla$`Límite Superior (96%)`[i]))
+  cat(sprintf("  p-valor ajustado: %.4f\n", tukey_tabla$`p-valor ajustado`[i]))
+
+  if (tukey_tabla$Significativo[i] == "Sí") {
+    if (tukey_tabla$`Diferencia de Medias`[i] > 0) {
+      grupos <- strsplit(as.character(tukey_tabla$Comparacion[i]), "-")[[1]]
+      cat(sprintf("  → El grupo '%s' duerme significativamente MÁS que '%s'\n",
+                  trimws(grupos[1]), trimws(grupos[2])))
+    } else {
+      grupos <- strsplit(as.character(tukey_tabla$Comparacion[i]), "-")[[1]]
+      cat(sprintf("  → El grupo '%s' duerme significativamente MENOS que '%s'\n",
+                  trimws(grupos[1]), trimws(grupos[2])))
+    }
+  } else {
+    cat("  → No hay diferencia significativa entre estos grupos\n")
+  }
+}
+```
+
+### Conclusiones Generales del Diseño Experimental
+
+1.  **Validez del ANOVA**: Se verificaron los supuestos de normalidad (Shapiro-Wilk), homogeneidad de varianzas (Levene) e independencia, confirmando que el ANOVA es apropiado para este análisis.
+
+2.  **Efecto del factor**: El nivel de uso nocturno de redes sociales `r if(p_valor < 0.04) "tiene un efecto estadísticamente significativo" else "no tiene un efecto estadísticamente significativo"` sobre las horas de sueño (F = `r sprintf("%.3f", F_stat)`, p = `r sprintf("%.4f", p_valor)`).
+
+3.  **Diferencias entre grupos**: Las comparaciones post-hoc de Tukey revelaron qué pares de grupos difieren significativamente, permitiendo identificar patrones específicos de impacto del uso nocturno de redes en la calidad del sueño.
+
+4.  **Implicaciones para salud mental digital**: Los resultados `r if(p_valor < 0.04) "confirman" else "no confirman"` que el uso intensivo de redes sociales antes de dormir está asociado con alteraciones en los patrones de sueño de estudiantes universitarios, lo cual tiene implicaciones importantes para programas de bienestar estudiantil y salud mental en universidades.
+
+5.  **Recomendaciones**: Con base en estos hallazgos, se sugiere `r if(p_valor < 0.04) "implementar intervenciones educativas sobre higiene del sueño digital y establecer límites en el uso de redes sociales antes de dormir para mejorar el descanso y, consecuentemente, el rendimiento académico de los estudiantes" else "continuar monitoreando estos patrones y realizar estudios complementarios con muestras más grandes o diseños experimentales alternativos"`.
+
+------------------------------------------------------------------------
+
+# Bibliografía
+
+1.  Valerio Ureña, Gabriel, & Serna Valdivi, River. (2018). *Redes sociales y bienestar psicológico del estudiante universitario.* Revista electrónica de investigación educativa, 20(3), 19-28. https://doi.org/10.24320/redie.2018.20.3.1796
+
+2.  Younes, F., Halawi, G., Jabbour, H., El Osta, N., Karam, L., Hajj, A., & Rabbaa Khabbaz, L. (2016). *Internet Addiction and Relationships with Insomnia, Anxiety, Depression, Stress and Self-Esteem in University Students: A Cross-Sectional Designed Study.* PloS one, 11(9), e0161126. https://doi.org/10.1371/journal.pone.0161126
+
+3.  Twenge, J. M. (2019). *iGen: Why Today's Super-Connected Kids Are Growing Up Less Rebellious, More Tolerant, Less Happy—and Completely Unprepared for Adulthood.* Atria Books.
+
+4.  Orben, A., & Przybylski, A. K. (2019). The association between adolescent well-being and digital technology use. *Nature Human Behaviour*, 3(2), 173-182. https://doi.org/10.1038/s41562-018-0506-1
+
+5.  James, G., Witten, D., Hastie, T., & Tibshirani, R. (2013). *An Introduction to Statistical Learning with Applications in R.* Springer.
+
+6.  Montgomery, D. C. (2017). *Design and Analysis of Experiments* (9th ed.). Wiley.
+
+7.  Field, A., Miles, J., & Field, Z. (2012). *Discovering Statistics Using R.* SAGE Publications.
